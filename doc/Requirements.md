@@ -88,9 +88,8 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 ## Context Diagram
 
-\<Define here Context diagram using UML use case diagram>
+![Alt text](../risorse/context-diagram.png)
 
-\<actors are a subset of stakeholders>
 
 ## Interfaces
 
@@ -99,7 +98,13 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 |   Actor   | Logical Interface | Physical Interface |
 | :-------: | :---------------: | :----------------: |
-| Actor x.. |                   |                    |
+| Servizio pagamenti |   API Paypal, BancaSella, IntesaSanpaolo, Unicredit     |       Connessione Internet          |
+| Viewer |  GUI | PC |
+| Operator | GUI | PC |
+| Amministratore | GUI | PC |
+| Tecnico | GUI | PC |
+| Ambiente |  Temperatura e illuminazione e varie | Modulo di misurazione del sensore |
+
 
 # Stories and personas
 
