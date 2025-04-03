@@ -39,12 +39,50 @@ Version: V1 - description of Geocontrol as described in the swagger
 GeoControl is a software system designed for monitoring physical and environmental variables in various contexts: from hydrogeological analyses of mountain areas to the surveillance of historical buildings, and even the control of internal parameters (such as temperature or lighting) in residential or working environments.
 
 # Business Model
+L'azienda sviluppatrice viene incaricata di realizzare un sistema software (**GeoControl**) per il monitoraggio di parametri interni, quali temperatura e illuminazione, e l'analisi idrogeologica di aree montuose.
+La realizzazione del software viene richiesta e finanziata parzialmente dall'unione delle comunità montane della regione Piemonte, ma prevede, a seguito di trattative con la comunità, di poter avere come **target di mercato** anche entità pubbliche o private che necessitano di monitoraggio costante per parametri come quelli sopra citati.\
+E' previsto anche, in futuro, la progettazione e vendita di sensori ottimizzati per il sistema.
+La principale strategia di marketing è quella di generare **revenues** mediante la vendita di lincenze.\
+Inzialmente sono previsti piani a pagamento aventi costo differente a seconda della durata della licenza, in particolare:
+
+
+| Licenza |  Durata | Risparmio |
+| :--------------: | :---------: | :---------: |
+| Mensile  | 1 mese | 0%  |
+| Annuale  | 12 mesi | 10% |
+
+E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. L'applicativo deve poter supportare sensori di tipo COTS, reperibili sul mercato, e i sensori che in futuro verranno progettati e venduti dall'azienda.
+Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
+
+| User |  Funzionalità disponibili |
+| :--------------: | :---------: |
+| Operatore |  inserimento manualmente delle misurazioni, gestione dei dispositivi come sensori, gateways etc|
+| Viewer | operazione di sola lettura su dati, sensori e gateway|
+| Amministratore | ha accesso a tutte le risorse, quindi può eseguire operazioni su utenti e reti |
+
+Visto quindi la possibile diversità di utenti, bisognerà offrire un sistema di autenticazione, con diverse interfacce
+
+Inoltre, GeoControl dovrà essere in grado di comunicare con dispositivi come sensori e gateways tramite Internet, utilizzando il protocollo HTTP. Questo permetterà al sistema di ricevere, gestire e analizzare i dati e i timestamps provenienti dalle misurazioni, effettuate con una frequenza di aggiornamento ogni 10 minuti, garantendo così un monitoraggio costante e in tempo reale delle variabili ambientali.\
+Perciò le features principali del software, che costituiscono un valore,  saranno:
+- capacità di gestione di grandi quantità di dati 
+- scalabilità: possibilità di aggiungere quanti più dispositivi si desidera
+- affidabilità: basso tasso di misurazioni incorrette in 1 anno
+- facilità di utilizzo -> basta inserire i dati dei propri sensori
+
 
 # Stakeholders
 
 | Stakeholder name | Description |
 | :--------------: | :---------: |
-| Stakeholder x..  |             |
+| Unità delle comunità montane  |  Analisi del territorio e dei relativi parametri|
+| Ambiente (Zone montuose  e Edifici storici)| Mantenimento sotto controllo e in salute |
+| Viewer | Disponibilità di una grande quantità di misurazioni da poter consultare|
+| Operator | Gestione e mantenimento di una grande quantità di misurazioni |
+| Amministratore | Gestione degli utenti e delle reti |
+| Servizio di pagamenti | Gestione dei pagamenti delle licenze |
+| Tecnico | Manutenzione/ Installazione / Configurazione dei sensori |
+
+
 
 # Context Diagram and interfaces
 
