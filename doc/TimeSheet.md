@@ -11,7 +11,7 @@ These figures will not be used to evaluate neither the project nor the team, the
 |      Week      | requirement engineering | design | coding | unit testing | integration testing | acceptance testing | containerization | management |
 | :------------: | :---------------------: | :----: | :----: | :----------: | :-----------------: | :----------------: | :--------------: | :--------: |
 |  Mar 24 - 30   |                         |        |        |              |                     |                    |                  |            |
-| Mar 31 - Apr 6 |          4ph               |        |        |              |                     |                    |                  |            |
+| Mar 31 - Apr 6 |          9ph            |        |        |              |                     |                    |                  |            |
 |   Apr 7 - 13   |                         |        |        |              |                     |                    |                  |            |
 |  Apr 14 - 20   |                         |        |        |              |                     |                    |                  |            |
 |  Apr 21 - 27   |                         |        |        |              |                     |                    |                  |            |

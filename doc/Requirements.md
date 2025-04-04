@@ -134,9 +134,36 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 |  ID   | Description |
 | :---: | :---------: |
-|  FR1  |             |
-|  FR2  |             |
-| FRx.. |             |
+|  FR1  | Autenticazione |
+| FR1.1 | Login (inserimento username e password) |
+| FR1.2 | Generazione del token di sessione |
+| FR1.3 | Logout |
+| FR2   | CRUD utenze |
+| FR2.1 | Creazione e inserimento dell'utenza |
+| FR2.1.1 | Raccolta informazioni utente |
+| FR2.1.2 | Inserimento utenza con credenziali di default (amministratore) |
+| FR2.2 | Modifica dell'utenza |
+| FR2.2.1 | Modifica lato amministratore |
+| FR2.2.2 | Modifica lato utente (credenziali/informazioni) |
+| FR2.3 | Cancellazione dell'utenza |
+| FR2.4 | Ricerca utenze |
+| FR2.4.1 | Operazioni di filtraggio delle utenze |
+| FR3 | CRUD misurazioni |
+| FR3.1 | Creazione e inserimento delle misurazioni |
+| FR3.1.1 | Conversione timezone del timestamp della misurazione |
+| FR3.1.2 | Inserimento e associazione delle misurazioni ricevute |
+| FR3.1.3 | Inserimento misurazioni lato operatore/amministratore |
+| FR3.2 | Modifica delle misurazioni |
+| FR3.3 | Cancellazione delle misurazioni |
+| FR3.4 | Navigazione e ricerca delle misurazioni |
+| FR3.4.1 | Operazioni di filtraggio delle misurazioni |
+| FR4   | Gestione della topologia |
+| FR4.1 | Inserimento nuovi dispositivi |
+| FR4.1.1 | Generazione ID univoco secondo specifiche |
+| FR4.2 | Modifica della topologia |
+| FR4.3 | Rimozione dispositivi |
+| FR4.4 | Navigazione dei dispositivi |
+| FR5   | Operazioni di calcolo e analisi statistica |
 
 ## Non Functional Requirements
 
@@ -144,9 +171,12 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 |   ID    | Type (efficiency, reliability, ..) | Description | Refers to |
 | :-----: | :--------------------------------: | :---------: | :-------: |
-|  NFR1   |                                    |             |           |
-|  NFR2   |                                    |             |           |
-|  NFR3   |                                    |             |           |
+|  NFR1   |      Efficienza                    | Le misurazioni devono essere realizzate ogni 10 minuti | FR3.1.2 |
+|  NFR2   |      Privacy                       | I dati devono essere trattati in accordo con le normative del GDPR | FR2 |
+|  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
+|  NFR4   |      Affidabilità                  | Non più di 6 misurazioni all'anno, per sensore, devono essere perse | FR3 |
+|  NFR3   |      Sicurezza                     | Il sistema deve impedire agli utenti di eseguire operazioni per le quali non sono autorizzati e deve impedire accessi malevoli| FR1, FR2 |
+|  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
 | NFRx .. |                                    |             |           |
 
 # Use case diagram and use cases
