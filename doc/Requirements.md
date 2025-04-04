@@ -108,11 +108,21 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 # Stories and personas
 
-\<A Persona is a realistic impersonation of an actor. Define here a few personas and describe in plain text how a persona interacts with the system>
+| ID Persona  | Sesso | Età | Occupazione | Conoscenza Tecnica | Conoscenza di Dominio |
+| :-------: | :---------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| 1 | M | Mezza età | Manager del Museo | Bassa | Alta |
+| 2 | F | Giovane | Studente PhD | Alta | Alta |
+| 3 | M | Mezza età | Tecnico | Alta | Media |
+| 4 | F | Giovane | Fotografo | Media | Alta |
+| 5 | M | Anziano | Pensionato | Bassa | Bassa |
+| 6 | M | Giovane | Amministratore | Alta | Media |
 
-\<Persona is-an-instance-of actor>
-
-\<stories will be formalized later as scenarios in use cases>
+- **Storia persona 1**: Ha bisogno di capire se è necessario investire in un nuovo sistema di regolazione della temperature e/o di illuminazione, necessita di dati molto precisi e affidabili per prendere una decisione.
+- **Storia persona 2**: Sta effettuando un progetto di ricerca in collaborazione con un ente che si occupa del monitoraggio e depurazione della rete fognaria di una grande città. Ha bisogno di fare analisi su una grandi moli di dati relativi ad un ampio intervallo temporale.
+- **Storia persona 3**: Deve installare il sistema GeoControl presso aziende/strutture/località montane. Deve aver la possibilità di interagire con il sistema temporaneamente con il ruolo di Amministratore e necessità di un sistema fortemente integrato.
+- **Storia persona 4**: Ha uno studio fotografico e deve poter tenere sotto controllo il livello dell'illuminazione per poter offrire un servizio di qualità.
+- **Storia persona 5**: L'Istituto Nazionale di Geofisica e Vulcanologia mette a disposizione i dati delle misurazioni dell'attività sismica di alcune zone d'Italia per gli utenti, attraverso il ruolo Viewer dell'applicativo. L'interfaccia deve essere estremamente user friendly, garantendo la fruizione di dati semplici e dettagliati.
+- **Storia persona 6**: È l'amministratore di sistema di un'azienda privata che vuole tenere sotto controllo la temperatura dell'ambiente di lavoro. Deve poter gestire le reti e i ruoli del sistema in maniera intuitiva e affidabile.
 
 # Functional and non functional requirements
 
