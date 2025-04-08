@@ -1,3 +1,5 @@
+# Plantuml diagrams
+
 ## Use cases diagram
 
 ``` plantuml
@@ -61,6 +63,7 @@ Operatore --> UC20
 
 ## Class diagram
 
+```
 @startuml
 class Utente{
   - email: string
@@ -116,3 +119,4 @@ Sensor "1" -- "1" Posizione: si trova in >
 Misurazione "*" -- "1" Sensor : generata da >
 Ruolo <- Utente
 @enduml
+```

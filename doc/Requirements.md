@@ -385,7 +385,7 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
 
 ### Use case 4: Gestione Topologia
 
-| Actors Involved  |             Sistema(network), Utente(Amministratore, Operatore)                                                         |
+| Actors Involved  |             Sistema(Network), Utente(Amministratore, Operatore)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. |
 |  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |
@@ -530,6 +530,8 @@ Creazione di un Nuovo Ruolo Utente con Permessi Specifici
 \<use UML class diagram to define important terms, or concepts in the domain of the application, and their relationships>
 
 \<concepts must be used consistently all over the document, ex in use cases, requirements etc>
+
+![Alt text](../risorse/class-diagram.png)
 
 # System Design
 
