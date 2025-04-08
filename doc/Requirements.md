@@ -199,7 +199,7 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 |     Variants     |                      Nessuno specificato al momento.                      |
 |    Exceptions    |                        E1: Credenziali Invalide. E2: Errore interno del sistema durante l'autenticazione.                        |
 
-##### Scenario 1.1
+#### Scenario 1.1
 
 Autenticazione Utente con Successo
 
@@ -220,7 +220,7 @@ Autenticazione Utente con Successo
 |      10       |     Il sistema restituisce il token all'applicazione client dell'utente.| 
 |      11      |     L'utente viene reindirizzato alla pagina principale o all'area riservata.                                                                      | 
 
-##### Scenario 1.2
+#### Scenario 1.2
 
 Tentativo di Autenticazione con Credenziali Invalide
 
@@ -241,9 +241,9 @@ Tentativo di Autenticazione con Credenziali Invalide
 
 
 
-### Use case 2: Visualizzazione Dati di Monitoraggio
+### Use case 2: Visualizzazione Misurazioni
 
-| Actors Involved  |             Utente (Operatore, Amministratore)                                                         |
+| Actors Involved  |            Utente(Amministratore, Operatore,Visualizzatore)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'utente è autenticato e possiede un token valido. Sono presenti dati di monitoraggio nel sistema. |
 |  Post condition  |  I dati di monitoraggio selezionati vengono visualizzati all'utente.   |
@@ -251,13 +251,13 @@ Tentativo di Autenticazione con Credenziali Invalide
 |     Variants     |          V1: Visualizzazione in formato tabellare. V2: Visualizzazione in formato grafico.                      |
 |    Exceptions    |         E1: Nessun dato disponibile per la selezione. E2: Errore durante il recupero dei dati dal database.                       |
 
-##### Scenario 2.1
+#### Scenario 2.1
 
 Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
 
 
 
-|  Scenario 1.1  |                                                                            |
+|  Scenario 2.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | L'utente è autenticato e possiede un token valido. Sono presenti misurazioni per il sensore selezionato. |
 | Post condition |  Le misurazioni del sensore selezionato vengono visualizzate in una tabella con timestamp e valori.   |
@@ -271,7 +271,7 @@ Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
 |      7       |     Il sistema formatta i dati in una tabella con colonne per timestamp e valore della misurazione.                                                                       |
 |      8       |    	Il sistema visualizza la tabella all'utente.                                                                        |
 
-##### Scenario 2.2
+#### Scenario 2.2
 Nessun Dato Disponibile per il Sensore Selezionato
 
 
@@ -287,11 +287,52 @@ Nessun Dato Disponibile per il Sensore Selezionato
 |      5       |               Il database non trova misurazioni per quel sensore.                                                            |
 |      6       |                      Il sistema visualizza un messaggio all'utente (es. "Nessun dato di monitoraggio disponibile per il sensore selezionato.").                                                      |
      
+#### Scenario 2.3
+
+Filtraggio e Visualizzazione Tabellare delle Misurazioni in un Intervallo Valido
 
 
-### Use case 3: Creazione e Inserimento di Misurazioni
+|  Scenario 2.3  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato. Sono presenti misurazioni per il sensore selezionato all'interno dell'intervallo specificato. |
+| Post condition |  Le misurazioni del sensore che rientrano nell'intervallo di tempo sono visualizzate in formato tabellare.  |
+|     Step#      |                                Descrizione                                 |
+|       1        |     L'utente naviga alla sezione di visualizzazione dati e seleziona un sensore.                                                                       |
+|       2        |       L'utente individua e seleziona l'opzione "Filtra per Intervallo di Tempo".                                                                     |
+|      3       |        Vengono mostrati i campi per inserire la data e l'ora di inizio. L'utente li compila.                                                                    |
+|      4       |          Vengono mostrati i campi per inserire la data e l'ora di fine. L'utente li compila, assicurandosi che la data di fine sia successiva o uguale alla data di inizio.                                                                  |
+|      5       |        L'utente clicca sul pulsante "Applica Filtro" o "Cerca".                                                                    |
+|      6       |             Il sistema riceve i parametri del filtro (ID sensore, data/ora inizio, data/ora fine).                                                               |
+|      7       |           Il sistema interroga il database selezionando le misurazioni del sensore specificato con timestamp compresi tra l'inizio e la fine dell'intervallo.                                                                 |
+|      8       |           Il database restituisce le misurazioni trovate.                                                                 |
+|      9       |           Il sistema formatta le misurazioni in una tabella (timestamp, valore).                                                                 |
+|      10       |            	Il sistema visualizza la tabella all'utente.                                                                |
 
-| Actors Involved  |             Sistema (attraverso i Gateway), Amministratore                                                     |
+
+#### Scenario 2.4
+
+Inserimento di un Intervallo di Tempo Non Valido 
+
+
+|  Scenario 2.4  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato e sta tentando di filtrare le misurazioni. |
+| Post condition |  Viene visualizzato un messaggio di errore che indica che l'intervallo di tempo non è valido. La ricerca non viene eseguita con parametri errati. |
+|     Step#      |                                Descrizione                                 |
+|       1        |   L'utente naviga alla sezione di visualizzazione dati e seleziona un sensore.                                                            |
+|       2        |       L'utente seleziona l'opzione "Filtra per Intervallo di Tempo".                                                                    |
+|      3       |       L'utente inserisce una data e un'ora di inizio.                                                             |
+|      4       |         L'utente inserisce una data e un'ora di fine che è precedente alla data e ora di inizio.                                            |
+|      5       |       L'utente clicca sul pulsante "Applica Filtro" o "Cerca".                                                                 |
+|      6       |           Il sistema verifica la validità dell'intervallo (data/ora inizio <= data/ora fine).                                      |
+|      7       |         Il sistema rileva che la data di fine è precedente alla data di inizio.                                                          |
+|      8       |          Il sistema visualizza un messaggio di errore all'utente (es. "L'intervallo di tempo inserito non è valido. La data di fine deve essere successiva o uguale alla data di inizio.").                                             |
+|      9       |         	Il sistema non esegue la ricerca con l'intervallo non valido e permette all'utente di correggere gli input.                                                     |
+
+
+### Use case 3: Gestione Misurazioni
+
+| Actors Involved  |             Sistema (Gateway), Utente(Amministratore, Operatore)                                                     |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | Il sistema GeoControl è attivo. Per l'inserimento via Gateway: il Gateway è configurato correttamente e connesso. Per l'inserimento manuale: l'Amministratore è autenticato. |
 |  Post condition  | 	La nuova misurazione è stata memorizzata nel database ed è associata al sensore corretto. Il timestamp è in formato ISO8601.  |
@@ -299,7 +340,7 @@ Nessun Dato Disponibile per il Sensore Selezionato
 |     Variants     |          	Nessuno specificato al momento.                    |
 |    Exceptions    |      E1: Errore di validazione dei dati. E2: Errore durante la conversione del timestamp. E3: Errore durante la memorizzazione nel database.    |
 
-##### Scenario 3.1
+#### Scenario 3.1
 
 Ricezione e Inserimento di una Misurazione Valida da Gateway
 
@@ -321,11 +362,11 @@ Ricezione e Inserimento di una Misurazione Valida da Gateway
 |      10       |          Il sistema (opzionalmente) invia una conferma di ricezione al Gateway.                                                                  |
 
 
-##### Scenario 3.2
+#### Scenario 3.2
 
 Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
 
-|  Scenario 1.1  |                                                                            |
+|  Scenario 3.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | Il sistema GeoControl è attivo. L'Amministratore è autenticato e ha accesso alla funzionalità di inserimento manuale. |
 | Post condition |  La misurazione inserita è stata validata, il timestamp convertito in ISO8601 e memorizzata nel database associata al sensore selezionato.   |
@@ -342,9 +383,9 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
 |      10       |          Il sistema visualizza un messaggio di conferma dell'inserimento.                                                                  |
 
 
-### Use case 4: Gestione della Topologia
+### Use case 4: Gestione Topologia
 
-| Actors Involved  |             Amministratore                                                         |
+| Actors Involved  |             Sistema(network), Utente(Amministratore, Operatore)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. |
 |  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |
@@ -352,12 +393,12 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
 |     Variants     |          V1: Inserimento di una nuova rete. V2: Inserimento di un nuovo gateway. V3: Inserimento di un nuovo sensore. V4: Modifica di un dispositivo esistente. V5: Rimozione di un dispositivo.                     |
 |    Exceptions    |        E1: Errore di validazione dei dati inseriti. E2: Tentativo di inserire un ID univoco già esistente. E3: Errore durante l'aggiornamento del database. E4: Tentativo di rimuovere un dispositivo con dipendenze attive.                |
 
-##### Scenario 4.1
+#### Scenario 4.1
 
 Inserimento di un Nuovo Sensore
 
 
-|  Scenario 1.1  |                                                                            |
+|  Scenario 4.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. Esiste almeno un gateway nel sistema a cui poter associare il sensore. |
 | Post condition |  Un nuovo sensore è stato registrato nel sistema con un ID univoco generato secondo le specifiche ed è associato al gateway selezionato.   |
@@ -371,17 +412,13 @@ Inserimento di un Nuovo Sensore
 |      7       |         Il sistema visualizza un messaggio di conferma dell'inserimento, mostrando l'ID univoco generato.                                                                   |
 
 
-##### Scenario 4.2
+#### Scenario 4.2
 
 Tentativo di Inserire un Sensore con un ID Univoco Già Esistente (se permesso l'inserimento manuale dell'ID)
 
-\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
 
-\<a scenario is a more formal description of a story>
 
-\<only relevant scenarios should be described>
-
-|  Scenario 1.1  |                                                                            |
+|  Scenario 4.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. |
 | Post condition |  L'inserimento del sensore fallisce e viene visualizzato un messaggio di errore.   |
@@ -395,85 +432,98 @@ Tentativo di Inserire un Sensore con un ID Univoco Già Esistente (se permesso l
 |      7       |               Il sistema visualizza un messaggio di errore (es. "L'ID univoco specificato è già in uso. Si prega di inserirne uno diverso o lasciare che il sistema ne generi uno automaticamente.").                                                             |
 |      8       |           	Il sistema non memorizza le informazioni del nuovo sensore.                                                                 |
 
-
-### Use case 5: Modifica di un Sensore Esistente
-| Actors Involved  |             Amministratore                                                         |
-| :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. Esiste almeno un sensore registrato nel sistema.|
-|  Post condition  | Le informazioni del sensore selezionato sono state aggiornate nel sistema.   |
-| Nominal Scenario |         1. L'Amministratore seleziona "Modifica Dispositivo" e sceglie un sensore. 2. Il sistema visualizza i dettagli del sensore. 3. L'Amministratore modifica i campi desiderati. 4. L'Amministratore conferma le modifiche. 5. Il sistema convalida i nuovi dati. 6. Il sistema aggiorna il database. 7. Il sistema visualizza un messaggio di conferma.      |
-|     Variants     |        	Nessuno specificato al momento.                     |
-|    Exceptions    |         E1: Tentativo di modifica di un campo non modificabile. E2: Inserimento di dati non validi. E3: Tentativo di associare a un gateway inesistente. E4: Errore durante l'aggiornamento del database.      |
-
-#### Scenario 5.1
+#### Scenario 4.3
 
 Modifica del Nome Descrittivo di un Sensore
 
 
 
-|  Scenario 5.1  |                                                                            |
+|  Scenario 4.3  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. |
 | Post condition |  Il nome descrittivo del sensore è stato aggiornato nel sistema.  |
-|     Step#      |                                Description                                 |
-|       1        |                                                                            |
-|       2        |                                                                            |
-|      3       |                                                                            |
-|      4       |                                                                            |
-|      5       |                                                                            |
-|      6       |                                                                            |
-|      7       |                                                                            |
-|      8       |                                                                            |
-|      9       |                                                                            |
-|      10       |                                                                            |
-|      11       |                                                                            |
-|      12       |                                                                            |
+|     Step#      |                                Descrizione                                |
+|       1        |        L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                    |
+|       2        |           L'Amministratore seleziona il sensore desiderato da un elenco.                                                                 |
+|      3       |            	Il sistema visualizza i dettagli del sensore (ID, nome attuale, tipo, gateway associato, ecc.).                                                                |
+|      4       |          L'Amministratore modifica il valore del campo "Nome Descrittivo".                                                                  |
+|      5       |             L'Amministratore clicca sul pulsante "Salva Modifiche" o simile.                                                               |
+|      6       |              Il sistema convalida che il nuovo nome non sia vuoto (se richiesto).                                                              |
+|      7       |              Il sistema aggiorna il campo "Nome" del sensore nel database.                                                              |
+|      8       |               Il sistema visualizza un messaggio di conferma (es. "Sensore aggiornato con successo.").                                                             |
 
 
+#### Scenario 4.4
+
+Tentativo di Modificare l'ID Univoco di un Sensore
 
 
-### Use case 2: Visualizzazione Dati di Monitoraggio
-
-| Actors Involved  |             Utente (Operatore, Amministratore)                                                         |
-| :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | L'utente è autenticato e possiede un token valido. Sono presenti dati di monitoraggio nel sistema. |
-|  Post condition  |  I dati di monitoraggio selezionati vengono visualizzati all'utente.   |
-| Nominal Scenario |         1. L'utente seleziona una rete, un gateway o un sensore. 2. Il sistema recupera le misurazioni associate. 3. Il sistema visualizza i dati.         |
-|     Variants     |          V1: Visualizzazione in formato tabellare. V2: Visualizzazione in formato grafico.                      |
-|    Exceptions    |         E1: Nessun dato disponibile per la selezione. E2: Errore durante il recupero dei dati dal database.                       |
-
-##### Scenario 2.1
-
-Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
-
-\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
-
-\<a scenario is a more formal description of a story>
-
-\<only relevant scenarios should be described>
-
-|  Scenario 1.1  |                                                                            |
+|  Scenario 4.4  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | \<Boolean expression, must evaluate to true before the scenario can start> |
-| Post condition |  \<Boolean expression, must evaluate to true after scenario is finished>   |
-|     Step#      |                                Description                                 |
-|       1        |                                                                            |
-|       2        |                                                                            |
-|      3       |                                                                            |
-|      4       |                                                                            |
-|      5       |                                                                            |
-|      6       |                                                                            |
-|      7       |                                                                            |
-|      8       |                                                                            |
-|      9       |                                                                            |
-|      10       |                                                                            |
-|      11       |                                                                            |
-|      12       |                                                                            |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. L'ID univoco del sensore non è modificabile. |
+| Post condition | L'ID univoco del sensore rimane invariato. Viene visualizzato un messaggio di errore.  |
+|     Step#      |                                Descrizione                                 |
+|       1        |      L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                      |
+|       2        |        L'Amministratore seleziona il sensore desiderato da un elenco.                                                                    |
+|      3       |       Il sistema visualizza i dettagli del sensore, incluso l'ID univoco (che appare non editabile o disabilitato).                                                                     |
+|      4       |          L'Amministratore (ipoteticamente tenta di) modificare il valore del campo "ID Univoco".                                                                  |
+|      5       |         Il sistema impedisce la modifica del campo "ID Univoco".                                                                   |
+|      6       |              Il sistema visualizza un messaggio (es. "L'ID univoco del sensore non può essere modificato.").                                                              |
+|      7       |             L'Amministratore prende atto del messaggio.                                                               |
+
+              |
 
 
-### Use case x, UCx
+### Use case 5: Gestione Utenti
 
-..
+| Actors Involved  |             Utente(Amministratore)                                                         |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione dei ruoli utente. |
+|  Post condition  |  I ruoli utente e i relativi permessi sono stati creati, modificati o visualizzati come richiesto.   |
+| Nominal Scenario |     1. L'Amministratore accede alla gestione dei ruoli. 2. L'Amministratore seleziona l'operazione (crea, modifica, visualizza). 3. L'Amministratore fornisce i dati necessari (nome ruolo, permessi). 4. Il sistema convalida i dati. 5. Il sistema esegue l'operazione e aggiorna il sistema. 6. Il sistema fornisce un feedback all'Amministratore.       |
+|     Variants     |       V1: Creazione di un nuovo ruolo. V2: Modifica dei permessi di un ruolo esistente. V3: Visualizzazione dei dettagli di un ruolo.             |
+|    Exceptions    |     E1: Inserimento di un nome ruolo già esistente (durante la creazione). E2: Tentativo di modificare un ruolo di sistema protetto. E3: Errore durante l'aggiornamento del database dei ruoli e permessi.              |
+
+#### Scenario 5.1
+
+Inserimento di un Nuovo Sensore
+Creazione di un Nuovo Ruolo Utente con Permessi Specifici
+
+|  Scenario 5.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione dei ruoli. Il nome "Tecnico di Campo" non esiste ancora nel sistema. |
+| Post condition |  Un nuovo ruolo utente denominato "Tecnico di Campo" è stato creato con i permessi selezionati.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |   	L'Amministratore naviga alla sezione di gestione dei ruoli utente.                                                                   |
+|       2        |     L'Amministratore seleziona l'opzione "Crea Nuovo Ruolo".                                                              |
+|      3       |       L'Amministratore seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
+|      4       |       Viene visualizzata una lista di permessi disponibili (es. "Visualizza Dati", "Inserisci Misurazioni Limitate"). L'Amministratore seleziona i permessi desiderati.                                     |
+|      5       |     L'Amministratore clicca sul pulsante "Salva Ruolo".                                                          |
+|      6       |       	Il sistema verifica che il nome del ruolo non sia già presente.                                                              |
+|      7       |    Il sistema memorizza il nuovo ruolo e i permessi associati nel database.                                                          |
+|      8       |    Il sistema visualizza un messaggio di conferma (es. "Ruolo 'Tecnico di Campo' creato con successo.").                                                    |
+
+#### Scenario 5.2
+
+ Tentativo di Modificare i Permessi del Ruolo "Amministratore" 
+
+
+
+|  Scenario 5.2  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione dei ruoli. Il ruolo "Amministratore" è un ruolo di sistema protetto. |
+| Post condition | I permessi del ruolo "Amministratore" rimangono invariati. Viene visualizzato un messaggio di errore.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |     L'Amministratore naviga alla sezione di gestione dei ruoli utente.|
+|       2        |    	L'Amministratore seleziona il ruolo "Amministratore" dalla lista dei ruoli esistenti per visualizzarne o modificarne i permessi.                                                   |
+|      3       |          	Il sistema visualizza i permessi correnti del ruolo "Amministratore".                                               |
+|      4       |           L'Amministratore tenta di deselezionare o aggiungere un permesso al ruolo "Amministratore" e clicca su "Salva Modifiche".                                          |
+|      5       |           Il sistema verifica se il ruolo selezionato è un ruolo di sistema protetto.                                               |
+|      6       |        Il sistema identifica "Amministratore" come ruolo protetto.                                               |
+|      7       |         Il sistema impedisce la modifica dei permessi per questo ruolo e visualizza un messaggio di errore (es. "Il ruolo 'Amministratore' non può essere modificato.").                                                             |
+
+
+
 
 # Glossary
 
