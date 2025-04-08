@@ -187,19 +187,262 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 \<next describe here each use case in the UCD>
 
-### Use case 1, UC1
+### Use case 1: Autenticazione Utente
 
-| Actors Involved  |                                                                      |
+| Actors Involved  |                              Utente (Operatore,  Amministratore)                                        |
 | :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | \<Boolean expression, must evaluate to true before the UC can start> |
-|  Post condition  |  \<Boolean expression, must evaluate to true after UC is finished>   |
-| Nominal Scenario |         \<Textual description of actions executed by the UC>         |
-|     Variants     |                      \<other normal executions>                      |
-|    Exceptions    |                        \<exceptions, errors >                        |
+|   Precondition   | Il sistema GeoControl è attivo e accessibile. L'utente possiede credenziali valide. |
+|  Post condition  |  L'utente è autenticato e un token di autenticazione è stato generato e fornito.   |
+| Nominal Scenario |         1. L'utente inserisce username e password. 2. Il sistema verifica le credenziali. 3. Il sistema genera un token di autenticazione. 4. Il sistema restituisce il token all'utente.         |
+|     Variants     |                      Nessuno specificato al momento.                      |
+|    Exceptions    |                        E1: Credenziali Invalide. E2: Errore interno del sistema durante l'autenticazione.                        |
 
 ##### Scenario 1.1
 
-\<describe here scenarios instances of UC1>
+Autenticazione Utente con Successo
+
+|  Scenario 1.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | Il sistema GeoControl è attivo e accessibile. L'utente possiede credenziali valide. |
+| Post condition |    L'utente è autenticato e un token di autenticazione valido è stato generato e fornito.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |   L'utente naviga alla pagina di login.                                                                         |
+|       2        |   L'utente inserisce il proprio username nel campo dedicato.                                                                         |
+|      3       |    L'utente inserisce la propria password nel campo dedicato.                                                                        |
+|      4       |             L'utente clicca sul pulsante "Accedi".                                                               |
+|    5       |       Il sistema riceve le credenziali.                                                                     |
+|      6       |        Il sistema confronta le credenziali inserite con quelle memorizzate nel database.                                                                    |
+|      7       |    	Le credenziali corrispondono.                                                                        |
+|      8       |     Il sistema genera un token di autenticazione univoco.                                                                       |    
+|      9       |     Il sistema memorizza il token associato all'utente e alla sessione (se necessario).                                                                       | 
+|      10       |     Il sistema restituisce il token all'applicazione client dell'utente.| 
+|      11      |     L'utente viene reindirizzato alla pagina principale o all'area riservata.                                                                      | 
+
+##### Scenario 1.2
+
+Tentativo di Autenticazione con Credenziali Invalide
+
+|  Scenario 1.2  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | Il sistema GeoControl è attivo e accessibile. L'utente possiede credenziali non valide o le inserisce in modo errato. |
+| Post condition |  L'utente non è autenticato. Viene visualizzato un messaggio di errore.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |    L'utente naviga alla pagina di login.                                                                        |
+|       2        |      L'utente inserisce un username non valido o inesistente.                                                                      |
+|      3       |       L'utente inserisce una password errata.                                                                     |
+|      4       |       L'utente clicca sul pulsante "Accedi". errata.                                                                     |
+|      5       |      Il sistema riceve le credenziali.errata.                                                                     |
+|      6       |      Il sistema confronta le credenziali inserite con quelle memorizzate nel database.errata.                                                                     |
+|      7       |       Le credenziali non corrispondono. errata.                                                                     |
+|      8       |       Il sistema visualizza un messaggio di errore all'utente (es. "Username o password errati").errata.                                                                     |
+|      9       |       L'utente rimane sulla pagina di login e può tentare nuovamente l'accesso. errata.                                                                     |
+
+
+
+### Use case 2: Visualizzazione Dati di Monitoraggio
+
+| Actors Involved  |             Utente (Operatore, Amministratore)                                                         |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | L'utente è autenticato e possiede un token valido. Sono presenti dati di monitoraggio nel sistema. |
+|  Post condition  |  I dati di monitoraggio selezionati vengono visualizzati all'utente.   |
+| Nominal Scenario |         1. L'utente seleziona una rete, un gateway o un sensore. 2. Il sistema recupera le misurazioni associate. 3. Il sistema visualizza i dati.         |
+|     Variants     |          V1: Visualizzazione in formato tabellare. V2: Visualizzazione in formato grafico.                      |
+|    Exceptions    |         E1: Nessun dato disponibile per la selezione. E2: Errore durante il recupero dei dati dal database.                       |
+
+##### Scenario 2.1
+
+Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
+
+
+
+|  Scenario 1.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato e possiede un token valido. Sono presenti misurazioni per il sensore selezionato. |
+| Post condition |  Le misurazioni del sensore selezionato vengono visualizzate in una tabella con timestamp e valori.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |  L'utente naviga alla sezione di visualizzazione dati.                                                                          |
+|       2        |     	L'utente seleziona un sensore specifico da un elenco o tramite una mappa.                                                                       |
+|      3       |      L'utente seleziona l'opzione di visualizzazione "Tabella".                                                                      |
+|      4       |         Il sistema riceve la richiesta del sensore.                                                                   |
+|      5       |       Il sistema interroga il database per recuperare tutte le misurazioni associate a quel sensore.                                                                     |
+|      6       |     Il database restituisce le misurazioni trovate.                                                                       |
+|      7       |     Il sistema formatta i dati in una tabella con colonne per timestamp e valore della misurazione.                                                                       |
+|      8       |    	Il sistema visualizza la tabella all'utente.                                                                        |
+
+##### Scenario 2.2
+Nessun Dato Disponibile per il Sensore Selezionato
+
+
+|  Scenario 2.2  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato e possiede un token valido. Non sono presenti misurazioni per il sensore selezionato. |
+| Post condition |  Viene visualizzato un messaggio indicante l'assenza di dati.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |      L'utente naviga alla sezione di visualizzazione dati.                                                                      |
+|       2        |         	L'utente seleziona un sensore specifico da un elenco o tramite una mappa.                                                                   |
+|      3       |           Il sistema riceve la richiesta del sensore.                                                                 |
+|      4       |               Il sistema interroga il database per recuperare le misurazioni associate a quel sensore.                                                             |
+|      5       |               Il database non trova misurazioni per quel sensore.                                                            |
+|      6       |                      Il sistema visualizza un messaggio all'utente (es. "Nessun dato di monitoraggio disponibile per il sensore selezionato.").                                                      |
+     
+
+
+### Use case 3: Creazione e Inserimento di Misurazioni
+
+| Actors Involved  |             Sistema (attraverso i Gateway), Amministratore                                                     |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | Il sistema GeoControl è attivo. Per l'inserimento via Gateway: il Gateway è configurato correttamente e connesso. Per l'inserimento manuale: l'Amministratore è autenticato. |
+|  Post condition  | 	La nuova misurazione è stata memorizzata nel database ed è associata al sensore corretto. Il timestamp è in formato ISO8601.  |
+| Nominal Scenario |        1a. (Via Gateway) Il Gateway invia una misurazione. 1b. (Manuale) L'Amministratore inserisce i dati della misurazione. 2. Il sistema valida i dati. 3. Il sistema converte il timestamp in ISO8601. 4. Il sistema associa e memorizza la misurazione.         |
+|     Variants     |          	Nessuno specificato al momento.                    |
+|    Exceptions    |      E1: Errore di validazione dei dati. E2: Errore durante la conversione del timestamp. E3: Errore durante la memorizzazione nel database.    |
+
+##### Scenario 3.1
+
+Ricezione e Inserimento di una Misurazione Valida da Gateway
+
+
+|  Scenario 3.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | Il sistema GeoControl è attivo. Il Gateway è configurato correttamente e connesso. La misurazione inviata è in un formato valido. |
+| Post condition |  La misurazione ricevuta è stata validata, il timestamp convertito in ISO8601 e memorizzata nel database associata al sensore corretto.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |     Il Gateway rileva un valore dal sensore.                                                                       |
+|       2        |          Il Gateway formatta i dati della misurazione (valore, timestamp, ID sensore).                                                                  |
+|      3       |       Il Gateway invia i dati della misurazione al sistema GeoControl (tramite API di ingestione).                                                                     |
+|      4       |      	Il sistema riceve i dati della misurazione.                                                                      |
+|      5       |          Il sistema valida il formato dei dati ricevuti (es. presenza di tutti i campi necessari, tipi di dati corretti).                                                                  |
+|      6       |        Il sistema estrae il timestamp originale.                                                                    |
+|      7       |           Il sistema converte il timestamp nel formato ISO8601.                                                                 |
+|      8       |           	Il sistema identifica il sensore associato tramite l'ID fornito.                                                                 |
+|      9       |             	Il sistema memorizza la misurazione (valore e timestamp convertito) nel database, collegandola al sensore identificato.                                                               |
+|      10       |          Il sistema (opzionalmente) invia una conferma di ricezione al Gateway.                                                                  |
+
+
+##### Scenario 3.2
+
+Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
+
+|  Scenario 1.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | Il sistema GeoControl è attivo. L'Amministratore è autenticato e ha accesso alla funzionalità di inserimento manuale. |
+| Post condition |  La misurazione inserita è stata validata, il timestamp convertito in ISO8601 e memorizzata nel database associata al sensore selezionato.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |      L'Amministratore naviga alla sezione di inserimento manuale misurazioni.                                                                      |
+|       2        |        L'Amministratore seleziona un sensore dalla lista.                                                                    |
+|      3       |          L'Amministratore inserisce il valore della misurazione.                                                                  |
+|      4       |             L'Amministratore inserisce il timestamp della misurazione.                                                               |
+|      5       |           L'Amministratore clicca sul pulsante "Salva".                                                                 |
+|      6       |                   	Il sistema riceve i dati inseriti.                                                         |
+|      7       |                  Il sistema valida il formato dei dati inseriti (es. tipo di dato del valore).                                                          |
+|      8       |               Il sistema converte il timestamp inserito nel formato ISO8601.                                                             |
+|      9       |                	Il sistema memorizza la misurazione (valore e timestamp convertito) nel database, collegandola al sensore selezionato.                                                            |
+|      10       |          Il sistema visualizza un messaggio di conferma dell'inserimento.                                                                  |
+
+
+### Use case 4: Gestione della Topologia
+
+| Actors Involved  |             Amministratore                                                         |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. |
+|  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |
+| Nominal Scenario |       1. L'Amministratore seleziona l'operazione desiderata (inserimento, modifica, rimozione). 2. L'Amministratore fornisce i dati necessari. 3. Il sistema valida i dati. 4. Il sistema esegue l'operazione e (se necessario) genera un ID univoco. 5. Il sistema aggiorna la topologia.        |
+|     Variants     |          V1: Inserimento di una nuova rete. V2: Inserimento di un nuovo gateway. V3: Inserimento di un nuovo sensore. V4: Modifica di un dispositivo esistente. V5: Rimozione di un dispositivo.                     |
+|    Exceptions    |        E1: Errore di validazione dei dati inseriti. E2: Tentativo di inserire un ID univoco già esistente. E3: Errore durante l'aggiornamento del database. E4: Tentativo di rimuovere un dispositivo con dipendenze attive.                |
+
+##### Scenario 4.1
+
+Inserimento di un Nuovo Sensore
+
+
+|  Scenario 1.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. Esiste almeno un gateway nel sistema a cui poter associare il sensore. |
+| Post condition |  Un nuovo sensore è stato registrato nel sistema con un ID univoco generato secondo le specifiche ed è associato al gateway selezionato.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |   	L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                         |
+|       2        |      	L'Amministratore inserisce i dettagli del sensore: nome descrittivo, tipo di sensore.                                                                      |
+|      3       |       L'Amministratore seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
+|      4       |        Il sistema genera un ID univoco per il nuovo sensore secondo le specifiche (FR4.1.1).                                                                    |
+|      5       |       Il sistema convalida i dati inseriti (es. che il gateway selezionato esista).                                                                     |
+|      6       |         	Il sistema memorizza le informazioni del nuovo sensore (ID univoco, nome, tipo, gateway associato) nel database.                                                                   |
+|      7       |         Il sistema visualizza un messaggio di conferma dell'inserimento, mostrando l'ID univoco generato.                                                                   |
+
+
+##### Scenario 4.2
+
+Tentativo di Inserire un Sensore con un ID Univoco Già Esistente (se permesso l'inserimento manuale dell'ID)
+
+\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
+
+\<a scenario is a more formal description of a story>
+
+\<only relevant scenarios should be described>
+
+|  Scenario 1.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. |
+| Post condition |  L'inserimento del sensore fallisce e viene visualizzato un messaggio di errore.   |
+|     Step#      |                                Descrizione                                 |
+|       1        |       L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                     |
+|       2        |       L'Amministratore inserisce i dettagli del sensore, incluso un ID univoco che è già presente nel sistema.                                                                     |
+|      3       |          	L'Amministratore seleziona il gateway a cui associare il sensore.                                                                  |
+|      4       |             	L'Amministratore clicca su "Salva".                                                               |
+|      5       |           Il sistema verifica se l'ID univoco inserito è già presente nel database.                                                                 |
+|      6       |              	L'ID univoco risulta già esistente.                                                              |
+|      7       |               Il sistema visualizza un messaggio di errore (es. "L'ID univoco specificato è già in uso. Si prega di inserirne uno diverso o lasciare che il sistema ne generi uno automaticamente.").                                                             |
+|      8       |           	Il sistema non memorizza le informazioni del nuovo sensore.                                                                 |
+
+
+### Use case 5: Modifica di un Sensore Esistente
+| Actors Involved  |             Amministratore                                                         |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. Esiste almeno un sensore registrato nel sistema.|
+|  Post condition  | Le informazioni del sensore selezionato sono state aggiornate nel sistema.   |
+| Nominal Scenario |         1. L'Amministratore seleziona "Modifica Dispositivo" e sceglie un sensore. 2. Il sistema visualizza i dettagli del sensore. 3. L'Amministratore modifica i campi desiderati. 4. L'Amministratore conferma le modifiche. 5. Il sistema convalida i nuovi dati. 6. Il sistema aggiorna il database. 7. Il sistema visualizza un messaggio di conferma.      |
+|     Variants     |        	Nessuno specificato al momento.                     |
+|    Exceptions    |         E1: Tentativo di modifica di un campo non modificabile. E2: Inserimento di dati non validi. E3: Tentativo di associare a un gateway inesistente. E4: Errore durante l'aggiornamento del database.      |
+
+#### Scenario 5.1
+
+Modifica del Nome Descrittivo di un Sensore
+
+
+
+|  Scenario 5.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. |
+| Post condition |  Il nome descrittivo del sensore è stato aggiornato nel sistema.  |
+|     Step#      |                                Description                                 |
+|       1        |                                                                            |
+|       2        |                                                                            |
+|      3       |                                                                            |
+|      4       |                                                                            |
+|      5       |                                                                            |
+|      6       |                                                                            |
+|      7       |                                                                            |
+|      8       |                                                                            |
+|      9       |                                                                            |
+|      10       |                                                                            |
+|      11       |                                                                            |
+|      12       |                                                                            |
+
+
+
+
+### Use case 2: Visualizzazione Dati di Monitoraggio
+
+| Actors Involved  |             Utente (Operatore, Amministratore)                                                         |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   | L'utente è autenticato e possiede un token valido. Sono presenti dati di monitoraggio nel sistema. |
+|  Post condition  |  I dati di monitoraggio selezionati vengono visualizzati all'utente.   |
+| Nominal Scenario |         1. L'utente seleziona una rete, un gateway o un sensore. 2. Il sistema recupera le misurazioni associate. 3. Il sistema visualizza i dati.         |
+|     Variants     |          V1: Visualizzazione in formato tabellare. V2: Visualizzazione in formato grafico.                      |
+|    Exceptions    |         E1: Nessun dato disponibile per la selezione. E2: Errore durante il recupero dei dati dal database.                       |
+
+##### Scenario 2.1
+
+Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
 
 \<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
 
@@ -214,15 +457,17 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 |     Step#      |                                Description                                 |
 |       1        |                                                                            |
 |       2        |                                                                            |
-|      ...       |                                                                            |
+|      3       |                                                                            |
+|      4       |                                                                            |
+|      5       |                                                                            |
+|      6       |                                                                            |
+|      7       |                                                                            |
+|      8       |                                                                            |
+|      9       |                                                                            |
+|      10       |                                                                            |
+|      11       |                                                                            |
+|      12       |                                                                            |
 
-##### Scenario 1.2
-
-##### Scenario 1.x
-
-### Use case 2, UC2
-
-..
 
 ### Use case x, UCx
 
