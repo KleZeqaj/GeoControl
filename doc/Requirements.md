@@ -185,6 +185,8 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 \<define here UML Use case diagram UCD summarizing all use cases, and their relationships>
 
+![Alt text](../risorse/use-cases.png)
+
 \<next describe here each use case in the UCD>
 
 ### Use case 1: Autenticazione Utente
