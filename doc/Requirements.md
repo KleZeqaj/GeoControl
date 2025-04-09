@@ -620,8 +620,9 @@ Creazione di un Nuovo Ruolo Utente con Permessi Specifici
 
 \<describe here system design>
 
+![Alt text](../risorse/system-design.png)
 \<must be consistent with Context diagram>
 
 # Deployment Diagram
-
+![Alt text](../risorse/deployment-diagram.png)
 \<describe here deployment diagram >
