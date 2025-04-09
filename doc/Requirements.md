@@ -559,6 +559,57 @@ Creazione di un Nuovo Ruolo Utente con Permessi Specifici
 
 
 
+### Use case 6: Analisi Statistica
+
+| Actors Involved  |             Utente (Operatore, Amministratore, Viewer)                                                       |
+| :--------------: | :------------------------------------------------------------------: |
+|   Precondition   |L'utente è autenticato e ha accesso ai dati di monitoraggio. Sono presenti misurazioni nel sistema per i sensori selezionati. |
+|  Post condition  |  Vengono visualizzati i risultati dei calcoli statistici (media, varianza, soglie, outlier) per le misurazioni selezionate.   |
+| Nominal Scenario |    1. L'utente seleziona un sensore o un insieme di sensori e un intervallo di tempo. 2. L'utente seleziona il tipo di calcolo statistico da eseguire (media, varianza, soglie, outlier). 3. Il sistema recupera le misurazioni pertinenti. 4. Il sistema esegue i calcoli statistici. 5. Il sistema visualizza i risultati.   |
+|     Variants     |    V1: Calcolo della media. V2: Calcolo della varianza. V3: Calcolo delle soglie (superiore e inferiore). V4: Identificazione degli outlier.     |
+|    Exceptions    |    	E1: Nessun dato disponibile per i sensori e l'intervallo selezionati. E2: Intervallo di tempo non valido. E3: Errore durante l'esecuzione dei calcoli.            |
+
+#### Scenario 6.1
+
+ Calcolo della Media delle Misurazioni di un Sensore in un Intervallo di Tempo
+
+|  Scenario 6.1  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato e ha accesso ai dati. Sono presenti misurazioni per il sensore selezionato nell'intervallo specificato. |
+| Post condition | Viene visualizzato il valore medio delle misurazioni del sensore per l'intervallo di tempo selezionato.  |
+|     Step#      |                                Descrizione                                 |
+|       1        |   	L'utente naviga alla sezione di analisi statistica o seleziona un'opzione per eseguire calcoli sui dati di un sensore.                                                         |
+|       2        |    L'utente seleziona il sensore desiderato.                                              |
+|      3       |     L'utente specifica l'intervallo di tempo per il quale calcolare la media (data/ora inizio e data/ora fine).                                                 |
+|      4       |     	L'utente seleziona l'operazione "Calcola Media".                               |
+|      5       |   Il sistema recupera tutte le misurazioni del sensore selezionato che rientrano nell'intervallo di tempo specificato.                                         |
+|      6       |     Il sistema calcola la media dei valori delle misurazioni recuperate.                                                   |
+|      7       |  	Il sistema visualizza il risultato (il valore medio) all'utente.                                               |
+
+
+#### Scenario 6.2
+
+ Identificazione degli Outlier per un Sensore in un Intervallo di Tempo
+
+
+
+|  Scenario 6.2  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition  | L'utente è autenticato e ha accesso ai dati. Sono presenti misurazioni per il sensore selezionato nell'intervallo di tempo specificato. Il sistema ha implementate le funzioni per calcolare media e deviazione standard.|
+| Post condition |Viene visualizzato l'elenco dei valori identificati come outlier per il sensore selezionato nell'intervallo di tempo specificato, insieme ai valori delle soglie utilizzate.  |
+|     Step#      |                                Descrizione                                 |
+|       1        |    L'utente naviga alla sezione di analisi statistica o seleziona un'opzione per eseguire calcoli sui dati di un sensore.      |
+|       2        |    L'utente seleziona il sensore desiderato.                                                  |
+|      3       |      L'utente specifica l'intervallo di tempo per il quale identificare gli outlier (data/ora inizio e data/ora fine).                                          |
+|      4       |       L'utente seleziona l'operazione "Identifica Outlier" o simile.                    |
+|      5       |        Il sistema recupera tutte le misurazioni del sensore selezionato che rientrano nell'intervallo di tempo specificato.                                           |
+|      6       |       	Il sistema calcola la media (µ) e la deviazione standard (σ) delle misurazioni recuperate.                             |
+|      7       |         	Il sistema calcola la soglia superiore (µ + 2σ) e la soglia inferiore (µ - 2σ).                 |
+|      8       |        	Il sistema confronta ogni valore di misurazione recuperato con le soglie superiore e inferiore calcolate.              |
+|      9       |     Il sistema identifica i valori che superano la soglia superiore o sono inferiori alla soglia inferiore come outlier.               |
+|      10       |         Il sistema visualizza all'utente: - L'elenco degli outlier identificati. - I valori delle misurazioni identificate come outlier. - I valori della soglia superiore e della soglia inferiore utilizzate.            |
+
+
 # Glossary
 
 \<use UML class diagram to define important terms, or concepts in the domain of the application, and their relationships>
