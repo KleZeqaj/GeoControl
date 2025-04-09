@@ -135,35 +135,45 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 |  ID   | Description |
 | :---: | :---------: |
 |  FR1  | Autenticazione |
-| FR1.1 | Login (inserimento username e password) |
-| FR1.2 | Generazione del token di sessione |
-| FR1.3 | Logout |
+| <ul> FR1.1<ul> | <ul>Login (inserimento username e password)<ul> |
+| <ul>FR1.2<ul> | <ul>Generazione del token di sessione<ul> |
+| <ul>FR1.3<ul> | <ul>Logout<ul> |
 | FR2   | CRUD utenze |
-| FR2.1 | Creazione e inserimento dell'utenza |
-| FR2.1.1 | Raccolta informazioni utente |
-| FR2.1.2 | Inserimento utenza con credenziali di default (amministratore) |
-| FR2.2 | Modifica dell'utenza |
-| FR2.2.1 | Modifica lato amministratore |
-| FR2.2.2 | Modifica lato utente (credenziali/informazioni) |
-| FR2.3 | Cancellazione dell'utenza |
-| FR2.4 | Ricerca utenze |
-| FR2.4.1 | Operazioni di filtraggio delle utenze |
+| <ul>FR2.1<ul> | Creazione e inserimento dell'utenza |
+| <ul><ul>FR2.1.1<ul><ul> | <ul>Raccolta informazioni utente<ul> |
+| <ul><ul>FR2.1.2<ul><ul> | <ul>Inserimento utenza con credenziali di default (amministratore)<ul> |
+| <ul>FR2.2<ul> | <ul>Modifica dell'utenza<ul> |
+| <ul><ul>FR2.2.1<ul><ul> | <ul>Modifica lato amministratore<ul> |
+| <ul><ul>FR2.2.2<ul><ul> | <ul>Modifica lato utente (credenziali/informazioni)<ul> |
+| <ul>FR2.3<ul> | <ul>Cancellazione dell'utenza<ul> |
+| <ul>FR2.4<ul> | <ul>Ricerca utenze<ul> |
+| <ul><ul>FR2.4.1<ul><ul> | <ul>Operazioni di filtraggio delle utenze<ul>|
 | FR3 | CRUD misurazioni |
-| FR3.1 | Creazione e inserimento delle misurazioni |
-| FR3.1.1 | Conversione timezone del timestamp della misurazione |
-| FR3.1.2 | Inserimento e associazione delle misurazioni ricevute |
-| FR3.1.3 | Inserimento misurazioni lato operatore/amministratore |
-| FR3.2 | Modifica delle misurazioni |
-| FR3.3 | Cancellazione delle misurazioni |
-| FR3.4 | Navigazione e ricerca delle misurazioni |
-| FR3.4.1 | Operazioni di filtraggio delle misurazioni |
+| <ul>FR3.1<ul> | <ul>Creazione e inserimento delle misurazioni<ul> |
+| <ul><ul>FR3.1.1<ul><ul> | <ul>Conversione timezone del timestamp della misurazione<ul> |
+| <ul><ul> FR3.1.2<ul><ul> | <ul>Inserimento e associazione delle misurazioni ricevute<ul> |
+| <ul><ul>FR3.1.3<ul><ul> | <ul>Inserimento misurazioni lato operatore/amministratore<ul> |
+| <ul>FR3.2<ul> | <ul>Modifica delle misurazioni<ul> |
+| <ul>FR3.3<ul> | <ul>Cancellazione delle misurazioni<ul> |
+| <ul>FR3.4<ul> | <ul>Navigazione e ricerca delle misurazioni<ul> |
+| <ul><ul>FR3.4.1<ul><ul> | <ul>Operazioni di filtraggio delle misurazioni<ul> |
 | FR4   | Gestione della topologia |
-| FR4.1 | Inserimento nuovi dispositivi |
-| FR4.1.1 | Generazione ID univoco secondo specifiche |
-| FR4.2 | Modifica della topologia |
-| FR4.3 | Rimozione dispositivi |
-| FR4.4 | Navigazione dei dispositivi |
+| <ul>FR4.1<ul> | <ul>Inserimento nuovi dispositivi<ul> |
+| <ul><ul>FR4.1.1<ul><ul> | <ul>Generazione ID univoco secondo specifiche<ul> |
+| <ul>FR4.2<ul> | <ul>Modifica della topologia<ul> |
+| <ul>FR4.3<ul> | <ul>Rimozione dispositivi<ul> |
+| <ul>FR4.4<ul> | <ul>Navigazione dei dispositivi<ul> |
 | FR5   | Operazioni di calcolo e analisi statistica |
+| <ul>FR5.1<ul>  | <ul>Calcolo media<ul> |
+| <ul>FR5.2<ul>  | <ul>Calcolo varianza<ul> |
+| <ul>FR5.3<ul>  | <ul>Calcolo Threshold superirore<ul> |
+| <ul>FR5.4<ul>  | <ul>Calcolo Threshold inferiore<ul> |
+| <ul>FR5.5<ul>  | <ul>Flagging outliers<ul> |
+| FR6   | Gestione Pagamenti |
+| <ul>FR6.1<ul>   | <ul>Richiesta pagamento<ul> |
+| <ul>FR6.2<ul>   | <ul>Gestione  dati di pagamento<ul> |
+| FR7 | Verifica Licenza |
+
 
 ## Non Functional Requirements
 
@@ -177,7 +187,18 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 |  NFR4   |      Affidabilità                  | Non più di 6 misurazioni all'anno, per sensore, devono essere perse | FR3 |
 |  NFR3   |      Sicurezza                     | Il sistema deve impedire agli utenti di eseguire operazioni per le quali non sono autorizzati e deve impedire accessi malevoli| FR1, FR2 |
 |  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
-| NFRx .. |                                    |             |           |
+|  NFR4 |       Usabilità                    |     /   | Tutti |
+|  NFR4.1 |       Usabilità                    |    L'utente di tipo Viewer non deve aver bisogno di training per utilizzare il software    |  |
+|  NFR4.1 |       Usabilità                    |    Gli utenti di tipo Operator e Amministratore devono aver bisogno di un training di al massimo 2 ore    |  |
+| NFR5 |  Efficienza |  Le operazione CRUD sui dati (misurazione e utenze) devono completarsi in un tempo < 0.3s  | FR2, FR3 |
+| NFR6 |  Efficienza | Le misurazioni effettuate dai sensori devono presentare un'accuratezza di almeno 97% | FR3.1 |
+| NFR7 | Portabilità | Il software dev'essere accessibile su diversi sistemi operativi <br/> • Windows <br/> •Linux<br/> • MacOS<br/> | Tutti |
+| NFR8 | Efficienza |  Ogni utente deve individuare non più di 5 bug all'anno | Tutti |
+| NFR9 | Dominio | Le misurazioni devono essere espresse utilizzando le unità di misura previste dal SISTEMA INTERNAZIONALE DELLE UNITA' DI MISURA |
+
+
+
+
 
 # Use case diagram and use cases
 
