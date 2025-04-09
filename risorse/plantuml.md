@@ -108,41 +108,35 @@ class Sensor {
 class Misurazione {
   - valore: float
   - tempo: ISO 8601 format time
-  - outlier: boolean
 } 
 
-class Posizione {
-  - x_cord: float
-  - y_cord: float
-  - z_cord: float
-}
 
-class Statistiche {
+class Analisi{
   - media : float
   - varianza : float 
   - soglia_minima : float
   - soglia_massima : float
   - data_inizio : ISO 8601 format time
   - data_fine : ISO 8601 format time
-}
-
-class Analisi {
 
 }
+
+class Outlier {
+  - outlier : boolean
+}
+
 
 note "Gli amministratori e gli operatori possono \ngestire tutti i network senza limitazioni. \nIn questo diagramma viene salvato l'utente \nche ha creato i network per tracciabilità" as N1
 
 Token "0..*" -- "1" Utente
-Utente "Amministratore" -- "0..*" Network : creata da <
-Utente "Operatore" -- "0..*" Network : creata da <
-Network "1" -- "*" Gateway : connesso a <
+Utente "Amministratore \n1" -- "0..*" Network : creata da <
+Utente "Operatore \n1" -- "0..*" Network : creata da <
+Network "1" -- "*" Gateway : fa parte di <
 Sensor "*" -- "1" Gateway : manda dati a >
-Gateway "1" -- "1" Posizione: si trova in >
-Sensor "1" -- "1" Posizione: si trova in >
 Misurazione "*" -- "1" Sensor : generata da >
 Ruolo <- Utente
 Misurazione "1..*" -- "0..*" Analisi
-Statistiche "1" -- "0..*" Analisi
+(Analisi, Misurazione) .. Outlier
 Utente .. N1
 N1 .. Network
 @enduml
