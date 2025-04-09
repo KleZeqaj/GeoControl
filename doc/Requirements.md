@@ -158,11 +158,24 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 | <ul>FR3.4<ul> | <ul>Navigazione e ricerca delle misurazioni<ul> |
 | <ul><ul>FR3.4.1<ul><ul> | <ul>Operazioni di filtraggio delle misurazioni<ul> |
 | FR4   | Gestione della topologia |
-| <ul>FR4.1<ul> | <ul>Inserimento nuovi dispositivi<ul> |
-| <ul><ul>FR4.1.1<ul><ul> | <ul>Generazione ID univoco secondo specifiche<ul> |
-| <ul>FR4.2<ul> | <ul>Modifica della topologia<ul> |
-| <ul>FR4.3<ul> | <ul>Rimozione dispositivi<ul> |
-| <ul>FR4.4<ul> | <ul>Navigazione dei dispositivi<ul> |
+| <ul>FR4.1<ul> | <ul>CRUD Networks<ul> |
+| <ul><ul>FR4.1.1<ul><ul> | <ul>Inserimento nuovi dispositivi<ul> |
+| <ul><ul>FR4.1.2<ul><ul> | <ul>Generazione ID univoco secondo specifiche<ul> |
+| <ul><ul>FR4.1.3<ul><ul> | <ul>Modifica della topologia<ul> |
+| <ul><ul>FR4.1.4<ul><ul> | <ul>Rimozione dispositivi<ul> |
+| <ul><ul>FR4.1.5<ul><ul> | <ul>Navigazione dei dispositivi<ul> |
+| <ul>FR4.2<ul> | <ul>CRUD Gateways<ul> |
+| <ul><ul>FR4.2.1<ul><ul> | <ul>Inserimento nuovi dispositivi<ul> |
+| <ul><ul>FR4.2.2<ul><ul> | <ul>Generazione ID univoco secondo specifiche<ul> |
+| <ul><ul>FR4.2.3<ul><ul> | <ul>Modifica della topologia<ul> |
+| <ul><ul>FR4.2.4<ul><ul> | <ul>Rimozione dispositivi<ul> |
+| <ul><ul>FR4.2.5<ul><ul> | <ul>Navigazione dei dispositivi<ul> |
+| <ul>FR4.3<ul> | <ul>CRUD Sensori<ul> |
+| <ul><ul>FR4.3.1<ul><ul> | <ul>Inserimento nuovi dispositivi<ul> |
+| <ul><ul>FR4.3.2<ul><ul> | <ul>Generazione ID univoco secondo specifiche<ul> |
+| <ul><ul>FR4.3.3<ul><ul> | <ul>Modifica della topologia<ul> |
+| <ul><ul>FR4.3.4<ul><ul> | <ul>Rimozione dispositivi<ul> |
+| <ul><ul>FR4.3.5<ul><ul> | <ul>Navigazione dei dispositivi<ul> |
 | FR5   | Operazioni di calcolo e analisi statistica |
 | <ul>FR5.1<ul>  | <ul>Calcolo media<ul> |
 | <ul>FR5.2<ul>  | <ul>Calcolo varianza<ul> |
