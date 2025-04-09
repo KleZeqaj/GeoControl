@@ -6,10 +6,16 @@
 @startuml
 left to right direction
 
+rectangle Utente {
+actor Amministratore #red
+actor Operatore #purple
+actor Visualizzatore #blue
+}
 
-actor Amministratore
-actor Operatore
-actor Visualizzatore
+rectangle Sistema {
+actor Network
+actor Gateway
+}
 
 usecase "Autenticazione utente" as UC1
 usecase "Gestione Utenti" as UC2
@@ -23,17 +29,35 @@ usecase "Gestione Misurazioni" as UC14
 usecase "Inserimento Misurazioni" as UC15
 usecase "Modifica Misurazioni" as UC16
 usecase "Cancellazione Misurazioni" as UC17
-usecase "Lettura Misurazioni" as UC18
+usecase "Visualizzazione Misurazioni" as UC18
 usecase "Filtraggio Misurazioni" as UC19
 usecase "Gestione Topologia" as UC20
-usecase "Inserimento Dispositivi" as UC21
-usecase "Modifica Topologia" as UC22
-usecase "Rimozione Dispositivi" as UC23
-usecase "Navigazione Dispositivi" as UC24
-usecase "Generazione Token" as UC26
+usecase "CRUD Network" as UC21
+usecase "CRUD Gateway" as UC22
+usecase "CRUD Sensori" as UC23
+usecase "Creazione Network" as UC24
+usecase "Visualizzazione Network" as UC25
+usecase "Modifica Network" as UC26
+usecase "Cancellazione Network" as UC27
+usecase "Creazione Gateway" as UC28
+usecase "Visualizzazione Gateway" as UC29
+usecase "Modifica Gateway" as UC30
+usecase "Cancellazione Gateway" as UC31
+usecase "Creazione Sensore" as UC32
+usecase "Visualizzazione Sensore" as UC33
+usecase "Modifica Sensore" as UC34
+usecase "Cancellazione Sensore" as UC35
+usecase "Modifica ID univoco sensore" as UC36
+usecase "Generazione Token" as UC37
+usecase "Analisi statistica" as UC38
+usecase "Calcolo media" as UC39
+usecase "Calcolo varianza" as UC40
+usecase "Calcolo threshold superiore" as UC41
+usecase "Calcolo threshold inferiore" as UC42
+usecase "Calcolo outlier" as UC43
 
-UC1 ..> UC11 : include
-UC1 ..> UC26 : include
+UC1 .u.> UC11 : include
+UC1 .d.> UC37 : include
 UC2 ..> UC8 : include
 UC2 ..> UC9 : include
 UC2 ..> UC10 : include
@@ -47,17 +71,39 @@ UC18 ..> UC19 : include
 UC20 ..> UC21 : include
 UC20 ..> UC22 : include
 UC20 ..> UC23 : include
-UC20 ..> UC24 : include
+UC21 ..> UC24 : include
+UC21 ..> UC25 : include
+UC21 ..> UC26 : include
+UC21 ..> UC27 : include
+UC22 ..> UC28 : include
+UC22 ..> UC29 : include
+UC22 ..> UC30 : include
+UC22 ..> UC31 : include
+UC23 ..> UC32 : include
+UC23 ..> UC33 : include
+UC23 ..> UC34 : include
+UC23 ..> UC35 : include
+UC34 ..> UC36 : include
+UC38 ..> UC39 : include
+UC38 ..> UC40 : include
+UC38 ..> UC41 : include
+UC38 ..> UC42 : include
+UC38 ..> UC43 : include
 
-Visualizzatore --> UC1
-Visualizzatore --> UC18
-Amministratore --> UC1
-Amministratore --> UC2
-Amministratore --> UC14
-Amministratore --> UC20
-Operatore --> UC1
-Operatore --> UC14
-Operatore --> UC20
+Visualizzatore --> UC1 #blue
+Visualizzatore --> UC18 #blue
+Visualizzatore --> UC38 #blue
+Amministratore --> UC1 #red
+Amministratore --> UC2 #red
+Amministratore --> UC14 #red
+Amministratore --> UC20 #red
+Amministratore --> UC38 #red
+Operatore --> UC1 #purple
+Operatore --> UC14 #purple
+Operatore --> UC20 #purple
+Operatore --> UC38 #purple
+UC14 --> Gateway
+UC20 --> Network
 @enduml
 ```
 

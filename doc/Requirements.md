@@ -503,9 +503,7 @@ Tentativo di Modificare l'ID Univoco di un Sensore
 |      4       |          L'Amministratore (ipoteticamente tenta di) modificare il valore del campo "ID Univoco".                                                                  |
 |      5       |         Il sistema impedisce la modifica del campo "ID Univoco".                                                                   |
 |      6       |              Il sistema visualizza un messaggio (es. "L'ID univoco del sensore non può essere modificato.").                                                              |
-|      7       |             L'Amministratore prende atto del messaggio.                                                               |
-
-              |
+|      7       |             L'Amministratore prende atto del messaggio.                                                                             |
 
 
 ### Use case 5: Gestione Utenti
