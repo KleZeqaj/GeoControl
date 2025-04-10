@@ -187,3 +187,86 @@ Utente .. N1
 N1 .. Network
 @enduml
 ```
+
+## System Design
+
+``` plantuml
+@startuml
+' Definizione delle classi 
+class "Server GeoControl" as server
+class "Network" as network
+class "Gateway" as gateway
+class "Sensore" as sensore
+class "Sensore temperatura" as s_temperatura
+class "Sensore inclinazione" as s_inclinazione
+class "Sensore illuminazione" as s_illuminazione
+class "Sensore umidità" as s_umidità
+class "Sensore pressione" as s_pressione
+
+
+' Relazioni tra le classi
+
+server o-- network : gestisce
+network o-- gateway : contiene
+gateway o-- sensore : colleziona dati da
+sensore *-- s_temperatura : usa
+sensore *-- s_inclinazione : usa
+sensore *-- s_illuminazione : usa
+sensore *-- s_umidità : usa
+sensore *-- s_pressione : usa
+
+
+@enduml
+```
+
+
+## Deployment Diagram
+
+``` @startuml
+
+node "Server_GeoControl" {
+  component "GeoControl Application" {
+    artifact "GeoControl.war" {
+      node "Application Server" {
+        component "API"
+        component "Database"
+      }
+    }
+    note "Gestisce le Reti (logiche)\n di Gateway e Sensori. \nLe regole di accesso degli \nutenti sono definite a \nlivello di rete." as N1
+  }
+}
+
+node "Gateway_Devices" {
+  component "Gateway Software" {
+    artifact "GatewayApp.jar"
+  }
+  note "Appartiene a una Rete (logica). \nComunica con i sensori e il server." as N2
+}
+
+node "Sensor_Devices" {
+  component "Sensor Hardware"
+  note "Appartiene a una Rete \n(logica) tramite il Gateway. \nEffettua le misurazioni." as N3
+}
+
+database "Database_Server" {
+  node "Database Instance" {
+    component "GeoControl DB"
+  }
+  note "Memorizza informazioni \nsulle Reti, Gateway, \nSensori e utenti/permessi." as N4
+}
+
+node "User_Devices" {
+  component "ViewerBrowser"
+  component "OperatorBrowser"
+  component "AdministratorBrowser"
+  note "Interagiscono con l'applicazione,\ncon accesso limitato in base \nal ruolo e alla Rete." as N5
+}
+
+'Connessioni
+Gateway_Devices -- Server_GeoControl : "via Rete Internet"
+Sensor_Devices -- Gateway_Devices : "Connessione Seriale"
+User_Devices -- Server_GeoControl : "via Rete Internet (HTTP/HTTPS)"
+
+@enduml
+```
+
