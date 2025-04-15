@@ -41,7 +41,6 @@ GeoControl is a software system designed for monitoring physical and environment
 # Business Model
 L'azienda sviluppatrice viene incaricata di realizzare un sistema software (**GeoControl**) per il monitoraggio di parametri interni, quali temperatura e illuminazione, e l'analisi idrogeologica di aree montuose.
 La realizzazione del software viene richiesta e finanziata parzialmente dall'unione delle comunità montane della regione Piemonte, ma prevede, a seguito di trattative con la comunità, di poter avere come **target di mercato** anche entità pubbliche o private che necessitano di monitoraggio costante per parametri come quelli sopra citati.\
-E' previsto anche, in futuro, la progettazione e vendita di sensori ottimizzati per il sistema.
 La principale strategia di marketing è quella di generare **revenues** mediante la vendita di lincenze.\
 Inzialmente sono previsti piani a pagamento aventi costo differente a seconda della durata della licenza, in particolare:
 
@@ -51,23 +50,23 @@ Inzialmente sono previsti piani a pagamento aventi costo differente a seconda de
 | Mensile  | 1 mese | 0%  |
 | Annuale  | 12 mesi | 10% |
 
-E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. L'applicativo deve poter supportare sensori di tipo COTS, reperibili sul mercato, e i sensori che in futuro verranno progettati e venduti dall'azienda.
+E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. L'applicativo deve poter supportare sensori di tipo COTS reperibili sul mercato.
 Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
 
 | User |  Funzionalità disponibili |
 | :--------------: | :---------: |
-| Operatore |  inserimento manualmente delle misurazioni, gestione dei dispositivi come sensori, gateways etc|
 | Viewer | operazione di sola lettura su dati, sensori e gateway|
-| Amministratore | ha accesso a tutte le risorse, quindi può eseguire operazioni su utenti e reti |
+| Operator |  inserimento manuale delle misurazioni, gestione dei dispositivi come sensori, gateways etc.|
+| Admin | ha accesso a tutte le risorse, quindi può eseguire operazioni su utenti e reti |
 
-Visto quindi la possibile diversità di utenti, bisognerà offrire un sistema di autenticazione, con diverse interfacce
+Visto quindi la possibile diversità di utenti, bisognerà offrire un sistema di autenticazione con diverse interfacce.
 
-Inoltre, GeoControl dovrà essere in grado di comunicare con dispositivi come sensori e gateways tramite Internet, utilizzando il protocollo HTTP. Questo permetterà al sistema di ricevere, gestire e analizzare i dati e i timestamps provenienti dalle misurazioni, effettuate con una frequenza di aggiornamento ogni 10 minuti, garantendo così un monitoraggio costante e in tempo reale delle variabili ambientali.\
-Perciò le features principali del software, che costituiscono un valore,  saranno:
+Inoltre, GeoControl dovrà essere in grado di comunicare con dispositivi come sensori e gateways tramite Internet, utilizzando il protocollo HTTP. Questo permetterà al sistema di ricevere, gestire e analizzare i dati e i timestamps provenienti dalle misurazioni, effettuate con una frequenza di aggiornamento di 10 minuti, garantendo così un monitoraggio costante e in tempo reale delle variabili ambientali.\
+Perciò le caratteristiche principali del software, che costituiscono un valore, saranno:
 - capacità di gestione di grandi quantità di dati 
 - scalabilità: possibilità di aggiungere quanti più dispositivi si desidera
 - affidabilità: basso tasso di misurazioni incorrette in 1 anno
-- facilità di utilizzo -> basta inserire i dati dei propri sensori
+- facilità di utilizzo: è sufficiente inserire i dati dei propri sensori
 
 
 # Stakeholders
@@ -75,11 +74,11 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 | Stakeholder name | Description |
 | :--------------: | :---------: |
 | Unità delle comunità montane  |  Analisi del territorio e dei relativi parametri|
-| Ambiente (Zone montuose  e Edifici storici)| Mantenimento sotto controllo e in salute |
-| Viewer | Disponibilità di una grande quantità di misurazioni da poter consultare|
+| Ambiente (Zone montuose e Edifici storici)| Mantenimento sotto controllo e in salute |
+| Viewer | Possibilità di accesso a una grande quantità di misurazioni da poter consultare|
 | Operator | Gestione e mantenimento di una grande quantità di misurazioni |
-| Amministratore | Gestione degli utenti e delle reti |
-| Servizio di pagamenti | Gestione dei pagamenti delle licenze |
+| Admin | Gestione degli utenti e delle reti |
+| Servizio di pagamento | Gestione dei pagamenti delle licenze |
 | Tecnico | Manutenzione/ Installazione / Configurazione dei sensori |
 
 
@@ -93,15 +92,13 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 ## Interfaces
 
-\<describe here each interface in the context diagram>
-
 
 |   Actor   | Logical Interface | Physical Interface |
 | :-------: | :---------------: | :----------------: |
 | Servizio pagamenti |   API Paypal, BancaSella, IntesaSanpaolo, Unicredit     |       Connessione Internet          |
 | Viewer |  GUI | PC |
 | Operator | GUI | PC |
-| Amministratore | GUI | PC |
+| Admin | GUI | PC |
 | Tecnico | GUI | PC |
 | Ambiente |  Temperatura e illuminazione e varie | Modulo di misurazione del sensore |
 
@@ -115,22 +112,18 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 | 3 | M | Mezza età | Tecnico | Alta | Media |
 | 4 | F | Giovane | Fotografo | Media | Alta |
 | 5 | M | Anziano | Pensionato | Bassa | Bassa |
-| 6 | M | Giovane | Amministratore | Alta | Media |
+| 6 | M | Giovane | Admin | Alta | Media |
 
 - **Storia persona 1**: Ha bisogno di capire se è necessario investire in un nuovo sistema di regolazione della temperature e/o di illuminazione, necessita di dati molto precisi e affidabili per prendere una decisione.
 - **Storia persona 2**: Sta effettuando un progetto di ricerca in collaborazione con un ente che si occupa del monitoraggio e depurazione della rete fognaria di una grande città. Ha bisogno di fare analisi su una grandi moli di dati relativi ad un ampio intervallo temporale.
-- **Storia persona 3**: Deve installare il sistema GeoControl presso aziende/strutture/località montane. Deve aver la possibilità di interagire con il sistema temporaneamente con il ruolo di Amministratore e necessità di un sistema fortemente integrato.
+- **Storia persona 3**: Deve installare il sistema GeoControl presso aziende/strutture/località montane. Deve aver la possibilità di interagire con il sistema temporaneamente con il ruolo di Admin e necessità di un sistema fortemente integrato.
 - **Storia persona 4**: Ha uno studio fotografico e deve poter tenere sotto controllo il livello dell'illuminazione per poter offrire un servizio di qualità.
 - **Storia persona 5**: L'Istituto Nazionale di Geofisica e Vulcanologia mette a disposizione i dati delle misurazioni dell'attività sismica di alcune zone d'Italia per gli utenti, attraverso il ruolo Viewer dell'applicativo. L'interfaccia deve essere estremamente user friendly, garantendo la fruizione di dati semplici e dettagliati.
-- **Storia persona 6**: È l'amministratore di sistema di un'azienda privata che vuole tenere sotto controllo la temperatura dell'ambiente di lavoro. Deve poter gestire le reti e i ruoli del sistema in maniera intuitiva e affidabile.
+- **Storia persona 6**: È l'admin di sistema di un'azienda privata che vuole tenere sotto controllo la temperatura dell'ambiente di lavoro. Deve poter gestire le reti e i ruoli del sistema in maniera intuitiva e affidabile.
 
 # Functional and non functional requirements
 
 ## Functional Requirements
-
-\<In the form DO SOMETHING, or VERB NOUN, describe high level capabilities of the system>
-
-\<they match to high level use cases>
 
 |  ID   | Description |
 | :---: | :---------: |
@@ -141,9 +134,9 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 | FR2   | CRUD utenze |
 | <ul>FR2.1<ul> | Creazione e inserimento dell'utenza |
 | <ul><ul>FR2.1.1<ul><ul> | <ul>Raccolta informazioni utente<ul> |
-| <ul><ul>FR2.1.2<ul><ul> | <ul>Inserimento utenza con credenziali di default (amministratore)<ul> |
+| <ul><ul>FR2.1.2<ul><ul> | <ul>Inserimento utenza con credenziali di default (admin)<ul> |
 | <ul>FR2.2<ul> | <ul>Modifica dell'utenza<ul> |
-| <ul><ul>FR2.2.1<ul><ul> | <ul>Modifica lato amministratore<ul> |
+| <ul><ul>FR2.2.1<ul><ul> | <ul>Modifica lato admin<ul> |
 | <ul><ul>FR2.2.2<ul><ul> | <ul>Modifica lato utente (credenziali/informazioni)<ul> |
 | <ul>FR2.3<ul> | <ul>Cancellazione dell'utenza<ul> |
 | <ul>FR2.4<ul> | <ul>Ricerca utenze<ul> |
@@ -152,7 +145,7 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 | <ul>FR3.1<ul> | <ul>Creazione e inserimento delle misurazioni<ul> |
 | <ul><ul>FR3.1.1<ul><ul> | <ul>Conversione timezone del timestamp della misurazione<ul> |
 | <ul><ul> FR3.1.2<ul><ul> | <ul>Inserimento e associazione delle misurazioni ricevute<ul> |
-| <ul><ul>FR3.1.3<ul><ul> | <ul>Inserimento misurazioni lato operatore/amministratore<ul> |
+| <ul><ul>FR3.1.3<ul><ul> | <ul>Inserimento misurazioni lato operator/admin<ul> |
 | <ul>FR3.2<ul> | <ul>Modifica delle misurazioni<ul> |
 | <ul>FR3.3<ul> | <ul>Cancellazione delle misurazioni<ul> |
 | <ul>FR3.4<ul> | <ul>Navigazione e ricerca delle misurazioni<ul> |
@@ -190,8 +183,6 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 ## Non Functional Requirements
 
-\<Describe constraints on functional requirements>
-
 |   ID    | Type (efficiency, reliability, ..) | Description | Refers to |
 | :-----: | :--------------------------------: | :---------: | :-------: |
 |  NFR1   |      Efficienza                    | Le misurazioni devono essere realizzate ogni 10 minuti | FR3.1.2 |
@@ -202,7 +193,7 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 |  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
 |  NFR4 |       Usabilità                    |     /   | Tutti |
 |  NFR4.1 |       Usabilità                    |    L'utente di tipo Viewer non deve aver bisogno di training per utilizzare il software    |  |
-|  NFR4.1 |       Usabilità                    |    Gli utenti di tipo Operator e Amministratore devono aver bisogno di un training di al massimo 2 ore    |  |
+|  NFR4.1 |       Usabilità                    |    Gli utenti di tipo Operator e Admin devono aver bisogno di un training di al massimo 2 ore    |  |
 | NFR5 |  Efficienza |  Le operazione CRUD sui dati (misurazione e utenze) devono completarsi in un tempo < 0.3s  | FR2, FR3 |
 | NFR6 |  Efficienza | Le misurazioni effettuate dai sensori devono presentare un'accuratezza di almeno 97% | FR3.1 |
 | NFR7 | Portabilità | Il software dev'essere accessibile su diversi sistemi operativi <br/> • Windows <br/> •Linux<br/> • MacOS<br/> | Tutti |
@@ -217,15 +208,11 @@ Perciò le features principali del software, che costituiscono un valore,  saran
 
 ## Use case diagram
 
-\<define here UML Use case diagram UCD summarizing all use cases, and their relationships>
-
 ![Alt text](../risorse/use-cases.png)
-
-\<next describe here each use case in the UCD>
 
 ### Use case 1: Autenticazione Utente
 
-| Actors Involved  |                              Utente (Operatore,  Amministratore)                                        |
+| Actors Involved  |                              Utente (Operator,  Admin)                                        |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | Il sistema GeoControl è attivo e accessibile. L'utente possiede credenziali valide. |
 |  Post condition  |  L'utente è autenticato e un token di autenticazione è stato generato e fornito.   |
@@ -277,7 +264,7 @@ Tentativo di Autenticazione con Credenziali Invalide
 
 ### Use case 2: Visualizzazione Misurazioni
 
-| Actors Involved  |            Utente(Amministratore, Operatore,Visualizzatore)                                                         |
+| Actors Involved  |            Utente(Admin, Operator,Visualizzatore)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'utente è autenticato e possiede un token valido. Sono presenti dati di monitoraggio nel sistema. |
 |  Post condition  |  I dati di monitoraggio selezionati vengono visualizzati all'utente.   |
@@ -366,11 +353,11 @@ Inserimento di un Intervallo di Tempo Non Valido
 
 ### Use case 3: Gestione Misurazioni
 
-| Actors Involved  |             Sistema (Gateway), Utente(Amministratore, Operatore)                                                     |
+| Actors Involved  |             Sistema (Gateway), Utente(Admin, Operator)                                                     |
 | :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | Il sistema GeoControl è attivo. Per l'inserimento via Gateway: il Gateway è configurato correttamente e connesso. Per l'inserimento manuale: l'Amministratore è autenticato. |
+|   Precondition   | Il sistema GeoControl è attivo. Per l'inserimento via Gateway: il Gateway è configurato correttamente e connesso. Per l'inserimento manuale: l'Admin è autenticato. |
 |  Post condition  | 	La nuova misurazione è stata memorizzata nel database ed è associata al sensore corretto. Il timestamp è in formato ISO8601.  |
-| Nominal Scenario |        1a. (Via Gateway) Il Gateway invia una misurazione. 1b. (Manuale) L'Amministratore inserisce i dati della misurazione. 2. Il sistema valida i dati. 3. Il sistema converte il timestamp in ISO8601. 4. Il sistema associa e memorizza la misurazione.         |
+| Nominal Scenario |        1a. (Via Gateway) Il Gateway invia una misurazione. 1b. (Manuale) L'Admin inserisce i dati della misurazione. 2. Il sistema valida i dati. 3. Il sistema converte il timestamp in ISO8601. 4. Il sistema associa e memorizza la misurazione.         |
 |     Variants     |          	Nessuno specificato al momento.                    |
 |    Exceptions    |      E1: Errore di validazione dei dati. E2: Errore durante la conversione del timestamp. E3: Errore durante la memorizzazione nel database.    |
 
@@ -398,18 +385,18 @@ Ricezione e Inserimento di una Misurazione Valida da Gateway
 
 #### Scenario 3.2
 
-Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
+Inserimento Manuale di una Misurazione Valida da Parte dell'Admin
 
 |  Scenario 3.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | Il sistema GeoControl è attivo. L'Amministratore è autenticato e ha accesso alla funzionalità di inserimento manuale. |
+|  Precondition  | Il sistema GeoControl è attivo. L'Admin è autenticato e ha accesso alla funzionalità di inserimento manuale. |
 | Post condition |  La misurazione inserita è stata validata, il timestamp convertito in ISO8601 e memorizzata nel database associata al sensore selezionato.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |      L'Amministratore naviga alla sezione di inserimento manuale misurazioni.                                                                      |
-|       2        |        L'Amministratore seleziona un sensore dalla lista.                                                                    |
-|      3       |          L'Amministratore inserisce il valore della misurazione.                                                                  |
-|      4       |             L'Amministratore inserisce il timestamp della misurazione.                                                               |
-|      5       |           L'Amministratore clicca sul pulsante "Salva".                                                                 |
+|       1        |      L'Admin naviga alla sezione di inserimento manuale misurazioni.                                                                      |
+|       2        |        L'Admin seleziona un sensore dalla lista.                                                                    |
+|      3       |          L'Admin inserisce il valore della misurazione.                                                                  |
+|      4       |             L'Admin inserisce il timestamp della misurazione.                                                               |
+|      5       |           L'Admin clicca sul pulsante "Salva".                                                                 |
 |      6       |                   	Il sistema riceve i dati inseriti.                                                         |
 |      7       |                  Il sistema valida il formato dei dati inseriti (es. tipo di dato del valore).                                                          |
 |      8       |               Il sistema converte il timestamp inserito nel formato ISO8601.                                                             |
@@ -419,11 +406,11 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Amministratore
 
 ### Use case 4: Gestione Topologia
 
-| Actors Involved  |             Sistema(Network), Utente(Amministratore, Operatore)                                                         |
+| Actors Involved  |             Sistema(Network), Utente(Admin, Operator)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione della topologia. |
+|   Precondition   | L'Admin è autenticato e ha accesso alle funzionalità di gestione della topologia. |
 |  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |
-| Nominal Scenario |       1. L'Amministratore seleziona l'operazione desiderata (inserimento, modifica, rimozione). 2. L'Amministratore fornisce i dati necessari. 3. Il sistema valida i dati. 4. Il sistema esegue l'operazione e (se necessario) genera un ID univoco. 5. Il sistema aggiorna la topologia.        |
+| Nominal Scenario |       1. L'Admin seleziona l'operazione desiderata (inserimento, modifica, rimozione). 2. L'Admin fornisce i dati necessari. 3. Il sistema valida i dati. 4. Il sistema esegue l'operazione e (se necessario) genera un ID univoco. 5. Il sistema aggiorna la topologia.        |
 |     Variants     |          V1: Inserimento di una nuova rete. V2: Inserimento di un nuovo gateway. V3: Inserimento di un nuovo sensore. V4: Modifica di un dispositivo esistente. V5: Rimozione di un dispositivo.                     |
 |    Exceptions    |        E1: Errore di validazione dei dati inseriti. E2: Tentativo di inserire un ID univoco già esistente. E3: Errore durante l'aggiornamento del database. E4: Tentativo di rimuovere un dispositivo con dipendenze attive.                |
 
@@ -434,12 +421,12 @@ Inserimento di un Nuovo Sensore
 
 |  Scenario 4.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. Esiste almeno un gateway nel sistema a cui poter associare il sensore. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla funzionalità di gestione della topologia. Esiste almeno un gateway nel sistema a cui poter associare il sensore. |
 | Post condition |  Un nuovo sensore è stato registrato nel sistema con un ID univoco generato secondo le specifiche ed è associato al gateway selezionato.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |   	L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                         |
-|       2        |      	L'Amministratore inserisce i dettagli del sensore: nome descrittivo, tipo di sensore.                                                                      |
-|      3       |       L'Amministratore seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
+|       1        |   	L'Admin naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                         |
+|       2        |      	L'Admin inserisce i dettagli del sensore: nome descrittivo, tipo di sensore.                                                                      |
+|      3       |       L'Admin seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
 |      4       |        Il sistema genera un ID univoco per il nuovo sensore secondo le specifiche (FR4.1.1).                                                                    |
 |      5       |       Il sistema convalida i dati inseriti (es. che il gateway selezionato esista).                                                                     |
 |      6       |         	Il sistema memorizza le informazioni del nuovo sensore (ID univoco, nome, tipo, gateway associato) nel database.                                                                   |
@@ -454,13 +441,13 @@ Tentativo di Inserire un Sensore con un ID Univoco Già Esistente (se permesso l
 
 |  Scenario 4.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla funzionalità di gestione della topologia. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla funzionalità di gestione della topologia. |
 | Post condition |  L'inserimento del sensore fallisce e viene visualizzato un messaggio di errore.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |       L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                     |
-|       2        |       L'Amministratore inserisce i dettagli del sensore, incluso un ID univoco che è già presente nel sistema.                                                                     |
-|      3       |          	L'Amministratore seleziona il gateway a cui associare il sensore.                                                                  |
-|      4       |             	L'Amministratore clicca su "Salva".                                                               |
+|       1        |       L'Admin naviga alla sezione di gestione della topologia e seleziona "Aggiungi Nuovo Sensore".                                                                     |
+|       2        |       L'Admin inserisce i dettagli del sensore, incluso un ID univoco che è già presente nel sistema.                                                                     |
+|      3       |          	L'Admin seleziona il gateway a cui associare il sensore.                                                                  |
+|      4       |             	L'Admin clicca su "Salva".                                                               |
 |      5       |           Il sistema verifica se l'ID univoco inserito è già presente nel database.                                                                 |
 |      6       |              	L'ID univoco risulta già esistente.                                                              |
 |      7       |               Il sistema visualizza un messaggio di errore (es. "L'ID univoco specificato è già in uso. Si prega di inserirne uno diverso o lasciare che il sistema ne generi uno automaticamente.").                                                             |
@@ -474,14 +461,14 @@ Modifica del Nome Descrittivo di un Sensore
 
 |  Scenario 4.3  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. |
 | Post condition |  Il nome descrittivo del sensore è stato aggiornato nel sistema.  |
 |     Step#      |                                Descrizione                                |
-|       1        |        L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                    |
-|       2        |           L'Amministratore seleziona il sensore desiderato da un elenco.                                                                 |
+|       1        |        L'Admin naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                    |
+|       2        |           L'Admin seleziona il sensore desiderato da un elenco.                                                                 |
 |      3       |            	Il sistema visualizza i dettagli del sensore (ID, nome attuale, tipo, gateway associato, ecc.).                                                                |
-|      4       |          L'Amministratore modifica il valore del campo "Nome Descrittivo".                                                                  |
-|      5       |             L'Amministratore clicca sul pulsante "Salva Modifiche" o simile.                                                               |
+|      4       |          L'Admin modifica il valore del campo "Nome Descrittivo".                                                                  |
+|      5       |             L'Admin clicca sul pulsante "Salva Modifiche" o simile.                                                               |
 |      6       |              Il sistema convalida che il nuovo nome non sia vuoto (se richiesto).                                                              |
 |      7       |              Il sistema aggiorna il campo "Nome" del sensore nel database.                                                              |
 |      8       |               Il sistema visualizza un messaggio di conferma (es. "Sensore aggiornato con successo.").                                                             |
@@ -494,25 +481,25 @@ Tentativo di Modificare l'ID Univoco di un Sensore
 
 |  Scenario 4.4  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. L'ID univoco del sensore non è modificabile. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. L'ID univoco del sensore non è modificabile. |
 | Post condition | L'ID univoco del sensore rimane invariato. Viene visualizzato un messaggio di errore.  |
 |     Step#      |                                Descrizione                                 |
-|       1        |      L'Amministratore naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                      |
-|       2        |        L'Amministratore seleziona il sensore desiderato da un elenco.                                                                    |
+|       1        |      L'Admin naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                      |
+|       2        |        L'Admin seleziona il sensore desiderato da un elenco.                                                                    |
 |      3       |       Il sistema visualizza i dettagli del sensore, incluso l'ID univoco (che appare non editabile o disabilitato).                                                                     |
-|      4       |          L'Amministratore (ipoteticamente tenta di) modificare il valore del campo "ID Univoco".                                                                  |
+|      4       |          L'Admin (ipoteticamente tenta di) modificare il valore del campo "ID Univoco".                                                                  |
 |      5       |         Il sistema impedisce la modifica del campo "ID Univoco".                                                                   |
 |      6       |              Il sistema visualizza un messaggio (es. "L'ID univoco del sensore non può essere modificato.").                                                              |
-|      7       |             L'Amministratore prende atto del messaggio.                                                                             |
+|      7       |             L'Admin prende atto del messaggio.                                                                             |
 
 
 ### Use case 5: Gestione Utenti
 
-| Actors Involved  |             Utente(Amministratore)                                                         |
+| Actors Involved  |             Utente(Admin)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
-|   Precondition   | L'Amministratore è autenticato e ha accesso alle funzionalità di gestione dei ruoli utente. |
+|   Precondition   | L'Admin è autenticato e ha accesso alle funzionalità di gestione dei ruoli utente. |
 |  Post condition  |  I ruoli utente e i relativi permessi sono stati creati, modificati o visualizzati come richiesto.   |
-| Nominal Scenario |     1. L'Amministratore accede alla gestione dei ruoli. 2. L'Amministratore seleziona l'operazione (crea, modifica, visualizza). 3. L'Amministratore fornisce i dati necessari (nome ruolo, permessi). 4. Il sistema convalida i dati. 5. Il sistema esegue l'operazione e aggiorna il sistema. 6. Il sistema fornisce un feedback all'Amministratore.       |
+| Nominal Scenario |     1. L'Admin accede alla gestione dei ruoli. 2. L'Admin seleziona l'operazione (crea, modifica, visualizza). 3. L'Admin fornisce i dati necessari (nome ruolo, permessi). 4. Il sistema convalida i dati. 5. Il sistema esegue l'operazione e aggiorna il sistema. 6. Il sistema fornisce un feedback all'Admin.       |
 |     Variants     |       V1: Creazione di un nuovo ruolo. V2: Modifica dei permessi di un ruolo esistente. V3: Visualizzazione dei dettagli di un ruolo.             |
 |    Exceptions    |     E1: Inserimento di un nome ruolo già esistente (durante la creazione). E2: Tentativo di modificare un ruolo di sistema protetto. E3: Errore durante l'aggiornamento del database dei ruoli e permessi.              |
 
@@ -523,43 +510,43 @@ Creazione di un Nuovo Ruolo Utente con Permessi Specifici
 
 |  Scenario 5.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione dei ruoli. Il nome "Tecnico di Campo" non esiste ancora nel sistema. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione dei ruoli. Il nome "Tecnico di Campo" non esiste ancora nel sistema. |
 | Post condition |  Un nuovo ruolo utente denominato "Tecnico di Campo" è stato creato con i permessi selezionati.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |   	L'Amministratore naviga alla sezione di gestione dei ruoli utente.                                                                   |
-|       2        |     L'Amministratore seleziona l'opzione "Crea Nuovo Ruolo".                                                              |
-|      3       |       L'Amministratore seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
-|      4       |       Viene visualizzata una lista di permessi disponibili (es. "Visualizza Dati", "Inserisci Misurazioni Limitate"). L'Amministratore seleziona i permessi desiderati.                                     |
-|      5       |     L'Amministratore clicca sul pulsante "Salva Ruolo".                                                          |
+|       1        |   	L'Admin naviga alla sezione di gestione dei ruoli utente.                                                                   |
+|       2        |     L'Admin seleziona l'opzione "Crea Nuovo Ruolo".                                                              |
+|      3       |       L'Admin seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
+|      4       |       Viene visualizzata una lista di permessi disponibili (es. "Visualizza Dati", "Inserisci Misurazioni Limitate"). L'Admin seleziona i permessi desiderati.                                     |
+|      5       |     L'Admin clicca sul pulsante "Salva Ruolo".                                                          |
 |      6       |       	Il sistema verifica che il nome del ruolo non sia già presente.                                                              |
 |      7       |    Il sistema memorizza il nuovo ruolo e i permessi associati nel database.                                                          |
 |      8       |    Il sistema visualizza un messaggio di conferma (es. "Ruolo 'Tecnico di Campo' creato con successo.").                                                    |
 
 #### Scenario 5.2
 
- Tentativo di Modificare i Permessi del Ruolo "Amministratore" 
+ Tentativo di Modificare i Permessi del Ruolo "Admin" 
 
 
 
 |  Scenario 5.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Amministratore è autenticato e ha accesso alla gestione dei ruoli. Il ruolo "Amministratore" è un ruolo di sistema protetto. |
-| Post condition | I permessi del ruolo "Amministratore" rimangono invariati. Viene visualizzato un messaggio di errore.   |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione dei ruoli. Il ruolo "Admin" è un ruolo di sistema protetto. |
+| Post condition | I permessi del ruolo "Admin" rimangono invariati. Viene visualizzato un messaggio di errore.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |     L'Amministratore naviga alla sezione di gestione dei ruoli utente.|
-|       2        |    	L'Amministratore seleziona il ruolo "Amministratore" dalla lista dei ruoli esistenti per visualizzarne o modificarne i permessi.                                                   |
-|      3       |          	Il sistema visualizza i permessi correnti del ruolo "Amministratore".                                               |
-|      4       |           L'Amministratore tenta di deselezionare o aggiungere un permesso al ruolo "Amministratore" e clicca su "Salva Modifiche".                                          |
+|       1        |     L'Admin naviga alla sezione di gestione dei ruoli utente.|
+|       2        |    	L'Admin seleziona il ruolo "Admin" dalla lista dei ruoli esistenti per visualizzarne o modificarne i permessi.                                                   |
+|      3       |          	Il sistema visualizza i permessi correnti del ruolo "Admin".                                               |
+|      4       |           L'Admin tenta di deselezionare o aggiungere un permesso al ruolo "Admin" e clicca su "Salva Modifiche".                                          |
 |      5       |           Il sistema verifica se il ruolo selezionato è un ruolo di sistema protetto.                                               |
-|      6       |        Il sistema identifica "Amministratore" come ruolo protetto.                                               |
-|      7       |         Il sistema impedisce la modifica dei permessi per questo ruolo e visualizza un messaggio di errore (es. "Il ruolo 'Amministratore' non può essere modificato.").                                                             |
+|      6       |        Il sistema identifica "Admin" come ruolo protetto.                                               |
+|      7       |         Il sistema impedisce la modifica dei permessi per questo ruolo e visualizza un messaggio di errore (es. "Il ruolo 'Admin' non può essere modificato.").                                                             |
 
 
 
 
 ### Use case 6: Analisi Statistica
 
-| Actors Involved  |             Utente (Operatore, Amministratore, Viewer)                                                       |
+| Actors Involved  |             Utente (Operator, Admin, Viewer)                                                       |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   |L'utente è autenticato e ha accesso ai dati di monitoraggio. Sono presenti misurazioni nel sistema per i sensori selezionati. |
 |  Post condition  |  Vengono visualizzati i risultati dei calcoli statistici (media, varianza, soglie, outlier) per le misurazioni selezionate.   |
@@ -610,19 +597,11 @@ Creazione di un Nuovo Ruolo Utente con Permessi Specifici
 
 # Glossary
 
-\<use UML class diagram to define important terms, or concepts in the domain of the application, and their relationships>
-
-\<concepts must be used consistently all over the document, ex in use cases, requirements etc>
-
 ![Alt text](../risorse/class-diagram.png)
 
 # System Design
 
-\<describe here system design>
-
 ![Alt text](../risorse/system-design.png)
-\<must be consistent with Context diagram>
 
 # Deployment Diagram
 ![Alt text](../risorse/deployment-diagram.png)
-\<describe here deployment diagram >
