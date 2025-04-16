@@ -24,12 +24,33 @@ Version: V1 - description of Geocontrol as described in the swagger
   - [Non Functional Requirements](#non-functional-requirements)
 - [Use case diagram and use cases](#use-case-diagram-and-use-cases)
   - [Use case diagram](#use-case-diagram)
-    - [Use case 1, UC1](#use-case-1-uc1)
+    - [Use case 1: Autenticazione Utente](#use-case-1-autenticazione-utente)
       - [Scenario 1.1](#scenario-11)
       - [Scenario 1.2](#scenario-12)
-      - [Scenario 1.x](#scenario-1x)
-    - [Use case 2, UC2](#use-case-2-uc2)
-    - [Use case x, UCx](#use-case-x-ucx)
+
+    - [Use case 2: Visualizzazione Misurazioni](#use-case-2-visualizzazione-misurazioni)
+      - [Scenario 2.1](#scenario-21)
+      - [Scenario 2.2](#scenario-22)
+      - [Scenario 2.3](#scenario-23)
+      - [Scenario 2.4](#scenario-24)
+
+    - [Use case 3: Gestione Misurazioni](#use-case-3-gestione-misurazioni)
+      - [Scenario 3.1](#scenario-31)
+      - [Scenario 3.2](#scenario-32)
+
+    - [Use case 4: Gestione Topologia](#use-case-4-gestione-topologia)
+      - [Scenario 4.1](#scenario-41)
+      - [Scenario 4.2](#scenario-42)
+      - [Scenario 4.3](#scenario-43)
+      - [Scenario 4.4](#scenario-44)
+
+    - [Use case 5: Gestione Utenti](#use-case-5-gestione-utenti)
+      - [Scenario 5.1](#scenario-51)
+      - [Scenario 5.2](#scenario-52)
+
+    - [Use case 6: Analisi Statistica](#use-case-6-analisi-statistica)
+      - [Scenario 6.1](#scenario-61)
+      - [Scenario 6.2](#scenario-62)
 - [Glossary](#glossary)
 - [System Design](#system-design)
 - [Deployment Diagram](#deployment-diagram)
@@ -101,7 +122,7 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 | Admin | GUI | PC |
 | Tecnico | GUI | PC |
 | Ambiente |  Temperatura e illuminazione e varie | Modulo di misurazione del sensore |
-| Sensori | Variabili Fisiche e Ambientali | Connessione Internet |
+| Sensori | Variabili Fisiche e Ambientali | Connessione Seriale |
 
 
 # Stories and personas

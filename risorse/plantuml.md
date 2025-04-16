@@ -7,9 +7,9 @@
 left to right direction
 
 rectangle Utente {
-actor Amministratore #red
-actor Operatore #purple
-actor Visualizzatore #blue
+actor Admin #red
+actor Operator #purple
+actor Viewer #blue
 }
 
 rectangle Sistema {
@@ -90,18 +90,18 @@ UC38 ..> UC41 : include
 UC38 ..> UC42 : include
 UC38 ..> UC43 : include
 
-Visualizzatore --> UC1 #blue
-Visualizzatore --> UC18 #blue
-Visualizzatore --> UC38 #blue
-Amministratore --> UC1 #red
-Amministratore --> UC2 #red
-Amministratore --> UC14 #red
-Amministratore --> UC20 #red
-Amministratore --> UC38 #red
-Operatore --> UC1 #purple
-Operatore --> UC14 #purple
-Operatore --> UC20 #purple
-Operatore --> UC38 #purple
+Viewer --> UC1 #blue
+Viewer --> UC18 #blue
+Viewer --> UC38 #blue
+Admin --> UC1 #red
+Admin --> UC2 #red
+Admin --> UC14 #red
+Admin --> UC20 #red
+Admin --> UC38 #red
+Operator --> UC1 #purple
+Operator --> UC14 #purple
+Operator --> UC20 #purple
+Operator --> UC38 #purple
 UC14 --> Gateway
 UC20 --> Network
 @enduml
@@ -112,77 +112,76 @@ UC20 --> Network
 ``` plantuml
 @startuml
 class Utente{
-  - username: string
-  - password: string
-  - tipo: Ruolo
+  - username: \t string
+  - password: \t string
+  - tipo: \t \t Ruolo
 }
 
 enum Ruolo{
-Amministratore
-Operatore
-Visualizzatore
+Admin
+Operator
+Viewer
 }
 
 class Token {
-  - token: string
-  - data_generazione: time
-  - data_scadenza: time
+  - token: \t \t \t string
+  - data_generazione: \t time
 }
 
 note top of Token : il Token viene generato dopo l'autenticazione
 
 class Network {
-  - codice: string
-  - nome: string
-  - descrizione: string
+  - codice: \t \t string
+  - nome: \t \t string
+  - descrizione: \t string
 }
 
 class Gateway {
-  - MAC: string
-  - nome: string
-  - descrizione: string
+  - MAC: \t \t string
+  - nome: \t \t string
+  - descrizione: \t string
 }
 
 class Sensor {
-  - MAC: string
-  - nome: string
-  - descrizione: string
-  - variabile: string
-  - unita: string
+  - MAC: \t \t string
+  - nome: \t \t string
+  - descrizione: \t string
+  - variabile: \t \t string
+  - unita: \t \t string
 }
 
 class Misurazione {
-  - valore: float
-  - tempo: ISO 8601 format time
+  - valore: \t float
+  - tempo: \t ISO 8601 format time
 } 
 
 
 class Analisi{
-  - media : float
-  - varianza : float 
-  - soglia_minima : float
-  - soglia_massima : float
-  - data_inizio : ISO 8601 format time
-  - data_fine : ISO 8601 format time
+  - media : \t \t \t float
+  - varianza : \t \t float 
+  - soglia_minima : \t float
+  - soglia_massima : \t float
+  - data_inizio : \t \t ISO 8601 format time
+  - data_fine : \t \t ISO 8601 format time
 
 }
 
-class Outlier {
-  - outlier : boolean
+class prodotta_da {
+  - outlier : \t boolean
 }
 
 
-note "Gli amministratori e gli operatori possono \ngestire tutti i network senza limitazioni. \nIn questo diagramma viene salvato l'utente \nche ha creato i network per tracciabilità" as N1
+note "Gli Admin e gli Operator possono \ngestire tutti i Network senza limitazioni. \nIn questo diagramma viene salvato l'utente \nche ha creato i Network per tracciabilità" as N1
 
-Token "0..*" -- "1" Utente
-Utente "Amministratore \n1" -- "0..*" Network : creata da <
-Utente "Operatore \n1" -- "0..*" Network : creata da <
+Token "0..*" -- "1" Utente : generato da >
+Utente "Admin \n1" -- "0..*" Network : creata da <
+Utente "Operator \n1" -- "0..*" Network : creata da <
 Network "1" -- "*" Gateway : fa parte di <
 Sensor "*" -- "1" Gateway : manda dati a >
 Misurazione "*" -- "1" Sensor : generata da >
 Ruolo <- Utente
-Misurazione "1..*" -- "0..*" Analisi
-(Analisi, Misurazione) .. Outlier
+Misurazione "1..*" -- "0..*" Analisi : prodotta da <
+(Analisi, Misurazione) .. prodotta_da
 Utente .. N1
 N1 .. Network
 @enduml
@@ -192,37 +191,25 @@ N1 .. Network
 
 ``` plantuml
 @startuml
-' Definizione delle classi 
-class "Server GeoControl" as server
-class "Network" as network
-class "Gateway" as gateway
-class "Sensore" as sensore
-class "Sensore temperatura" as s_temperatura
-class "Sensore inclinazione" as s_inclinazione
-class "Sensore illuminazione" as s_illuminazione
-class "Sensore umidità" as s_umidità
-class "Sensore pressione" as s_pressione
+class GeoControl_System
+class GeoControl_Server
+class Software
+class Network
+class Gateway
 
+GeoControl_System -- GeoControl_Server
+GeoControl_Server -- Software
 
-' Relazioni tra le classi
-
-server o-- network : gestisce
-network o-- gateway : contiene
-gateway o-- sensore : colleziona dati da
-sensore *-- s_temperatura : usa
-sensore *-- s_inclinazione : usa
-sensore *-- s_illuminazione : usa
-sensore *-- s_umidità : usa
-sensore *-- s_pressione : usa
-
-
+GeoControl_System o-- "*" Network
+Network o-- "*" Gateway
 @enduml
 ```
 
 
 ## Deployment Diagram
 
-``` @startuml
+``` plantuml
+@startuml
 
 node "Server_GeoControl" {
   component "GeoControl Application" {
