@@ -101,6 +101,7 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 | Admin | GUI | PC |
 | Tecnico | GUI | PC |
 | Ambiente |  Temperatura e illuminazione e varie | Modulo di misurazione del sensore |
+| Sensori | Variabili Fisiche e Ambientali | Connessione Internet |
 
 
 # Stories and personas
@@ -182,25 +183,20 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 
 
 ## Non Functional Requirements
-
 |   ID    | Type (efficiency, reliability, ..) | Description | Refers to |
 | :-----: | :--------------------------------: | :---------: | :-------: |
 |  NFR1   |      Efficienza                    | Le misurazioni devono essere realizzate ogni 10 minuti | FR3.1.2 |
 |  NFR2   |      Privacy                       | I dati devono essere trattati in accordo con le normative del GDPR | FR2 |
 |  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
 |  NFR4   |      Affidabilità                  | Non più di 6 misurazioni all'anno, per sensore, devono essere perse | FR3 |
-|  NFR3   |      Sicurezza                     | Il sistema deve impedire agli utenti di eseguire operazioni per le quali non sono autorizzati e deve impedire accessi malevoli| FR1, FR2 |
-|  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
-|  NFR4 |       Usabilità                    |     /   | Tutti |
-|  NFR4.1 |       Usabilità                    |    L'utente di tipo Viewer non deve aver bisogno di training per utilizzare il software    |  |
-|  NFR4.1 |       Usabilità                    |    Gli utenti di tipo Operator e Admin devono aver bisogno di un training di al massimo 2 ore    |  |
-| NFR5 |  Efficienza |  Le operazione CRUD sui dati (misurazione e utenze) devono completarsi in un tempo < 0.3s  | FR2, FR3 |
-| NFR6 |  Efficienza | Le misurazioni effettuate dai sensori devono presentare un'accuratezza di almeno 97% | FR3.1 |
+|  NFR5  |      Sicurezza                     | Il sistema deve impedire agli utenti di eseguire operazioni per le quali non sono autorizzati e deve impedire accessi malevoli| FR1, FR2 |
+|  NFR5   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
+|  NFR6 |       Usabilità                    |     /   | Tutti |
+|  NFR6.1 |       Usabilità                    |    L'utente di tipo Viewer non deve aver bisogno di training per utilizzare il software    |  |
+|  NFR6.2 |       Usabilità                    |    Gli utenti di tipo Operator e Amministratore devono aver bisogno di un training di al massimo 2 ore    |  |
 | NFR7 | Portabilità | Il software dev'essere accessibile su diversi sistemi operativi <br/> • Windows <br/> •Linux<br/> • MacOS<br/> | Tutti |
 | NFR8 | Efficienza |  Ogni utente deve individuare non più di 5 bug all'anno | Tutti |
-| NFR9 | Dominio | Le misurazioni devono essere espresse utilizzando le unità di misura previste dal SISTEMA INTERNAZIONALE DELLE UNITA' DI MISURA |
-
-
+| NFR9 | Dominio | Le misurazioni devono essere espresse utilizzando le unità di misura previste dal SISTEMA INTERNAZIONALE DELLE UNITA' DI MISURA | Tutti |
 
 
 
