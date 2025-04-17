@@ -14,12 +14,12 @@ Consider the GeoControl project as described in the swagger, assume that you are
 
 |                                                                                                         | Estimate |
 | ------------------------------------------------------------------------------------------------------- | -------- |
-| NC = Estimated number of classes to be developed                                                        |     12     | 
-| A = Estimated average size per class, in LOC                                                            |       350   |
-| S = Estimated size of project, in LOC (= NC \* A)                                                       |    4200      |
-| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)                    |     420     |
-| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro)                                     |     12.600     |
-| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |     2,6     |
+| NC = Estimated number of classes to be developed                                                        |     15     | 
+| A = Estimated average size per class, in LOC                                                            |       160   |
+| S = Estimated size of project, in LOC (= NC \* A)                                                       |    2400      |
+| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)                    |     240     |
+| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro)                                     |     7200     |
+| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |     0,75     |
 
 # Estimate by product decomposition
 
@@ -29,9 +29,9 @@ Consider the GeoControl project as described in the swagger, assume that you are
 | -------------------- | ------------------------------- |
 | requirement document |               50                |
 | design document      |               40                |
-| code                 |              420                |
-| unit tests           |              50                 |
-| api tests            |              50                 |
+| code                 |              240                |
+| unit tests           |              40                 |
+| api tests            |              25                 |
 | management documents |              10                 |
 
 # Estimate by activity decomposition
@@ -40,7 +40,13 @@ Consider the GeoControl project as described in the swagger, assume that you are
 
 | Activity name | Estimated effort (person hours) |
 | ------------- | ------------------------------- |
-|               |                                 |
+| Business Model & Stakeholders & Context Diagram & Interfaces |    6ph      |
+| Stories and Personas & Functional Requirements & Non-Functional Requirements  |    18ph         |
+| Use Cases Diagram and Use Cases & Glossary & System Design & Deployment Diagram |    25ph       |
+| Design |    40ph    |
+| Implementation |    240ph    |
+| Testing |    65ph    |
+| Dockerization |    15ph    |
 
 ###
 
@@ -93,6 +99,8 @@ Report here the results of the three estimation approaches. The estimates may di
 
 |                                    | Estimated effort | Estimated duration |
 | ---------------------------------- | ---------------- | ------------------ |
-| estimate by size                   |        420       | 2,6 weeks
-| estimate by product decomposition  |                  |
-| estimate by activity decomposition |                  |
+| estimate by size                   |        240ph       | 0,75 weeks|
+| estimate by product decomposition  |      405ph            | 2,53 weeks |
+| estimate by activity decomposition |      409ph            | 2,55 weeks |
+
+Nota: nel calcolo dell'estimate by size abbiamo tenuto conto unicamente delle linee di codice, dal momento che ci siamo attenuti alle formule fornite (considerando quindi le classi).

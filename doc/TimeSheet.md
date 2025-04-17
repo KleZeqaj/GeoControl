@@ -13,7 +13,7 @@ These figures will not be used to evaluate neither the project nor the team, the
 |  Mar 24 - 30   |                         |        |        |              |                     |                    |                  |            |
 | Mar 31 - Apr 6 |          9ph            |        |        |              |                     |                    |                  |            |
 |   Apr 7 - 13   |           22ph              |        |        |              |                     |                    |                  |            |
-|  Apr 14 - 20   |      14ph                   |        |        |              |                     |                    |                  |            |
+|  Apr 14 - 20   |      17ph                   |        |        |              |                     |                    |                  |            |
 |  Apr 21 - 27   |                         |        |        |              |                     |                    |                  |            |
 | Apr 28 - May 4 |                         |        |        |              |                     |                    |                  |            |
 |   May 5 - 11   |                         |        |        |              |                     |                    |                  |            |
