@@ -71,7 +71,7 @@ Inizialmente sono previsti piani a pagamento aventi costo differente a seconda d
 | Mensile  | 1 mese | 0%  |
 | Annuale  | 12 mesi | 10% |
 
-E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. Il tecnico avrà un accesso limitato come admin per eseguire l'intallazione e per il collegamento dei sensori. L'applicativo deve poter supportare sensori di tipo COTS reperibili sul mercato.
+E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. Il tecnico avrà un accesso limitato per eseguire l'installazione e per il collegamento dei sensori. L'applicativo deve poter supportare sensori di tipo COTS reperibili sul mercato.
 Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
 
 | User |  Funzionalità disponibili |
