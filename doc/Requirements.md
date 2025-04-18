@@ -61,9 +61,9 @@ GeoControl is a software system designed for monitoring physical and environment
 
 # Business Model
 L'azienda sviluppatrice viene incaricata di realizzare un sistema software (**GeoControl**) per il monitoraggio di parametri interni, quali temperatura e illuminazione, e l'analisi idrogeologica di aree montuose.
-La realizzazione del software viene richiesta e finanziata parzialmente dall'unione delle comunità montane della regione Piemonte, ma prevede, a seguito di trattative con la comunità, di poter avere come **target di mercato** anche entità pubbliche o private che necessitano di monitoraggio costante per parametri come quelli sopra citati.\
-La principale strategia di marketing è quella di generare **revenues** mediante la vendita di lincenze.\
-Inzialmente sono previsti piani a pagamento aventi costo differente a seconda della durata della licenza, in particolare:
+Lo sviluppo del software è stato parzialmente commissionato e finanziato dall'Unione delle Comunità Montane della Regione Piemonte. Tuttavia, a seguito di accordi con quest’ultima, il progetto è stato concepito per poter essere rivolto anche ad altri potenziali utenti, pubblici o privati, che abbiano l’esigenza di monitorare costantemente parametri analoghi a quelli sopra menzionati.\
+La principale strategia di marketing è quella di generare **revenues** mediante la vendita di licenze.\
+Inizialmente sono previsti piani a pagamento aventi costo differente a seconda della durata della licenza, in particolare:
 
 
 | Licenza |  Durata | Risparmio |
@@ -79,6 +79,7 @@ Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
 | Viewer | operazione di sola lettura su dati, sensori e gateway|
 | Operator |  inserimento manuale delle misurazioni, gestione dei dispositivi come sensori, gateways etc.|
 | Admin | ha accesso a tutte le risorse, quindi può eseguire operazioni su utenti e reti |
+| Tecnico | funzionalità per gestire e impostare correttamente i parametri del sistema durante la prima installazione |
 
 Visto quindi la possibile diversità di utenti, bisognerà offrire un sistema di autenticazione con diverse interfacce.
 
@@ -94,7 +95,7 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 
 | Stakeholder name | Description |
 | :--------------: | :---------: |
-| Unità delle comunità montane  |  Analisi del territorio e dei relativi parametri|
+| Unione delle Comunità Montane della Regione Piemonte  |  Analisi del territorio e dei relativi parametri|
 | Ambiente (Zone montuose e Edifici storici)| Mantenimento sotto controllo e in salute |
 | Viewer | Possibilità di accesso a una grande quantità di misurazioni da poter consultare|
 | Operator | Gestione e mantenimento di una grande quantità di misurazioni |
@@ -136,9 +137,9 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 | 5 | M | Anziano | Pensionato | Bassa | Bassa |
 | 6 | M | Giovane | Admin | Alta | Media |
 
-- **Storia persona 1**: Ha bisogno di capire se è necessario investire in un nuovo sistema di regolazione della temperature e/o di illuminazione, necessita di dati molto precisi e affidabili per prendere una decisione.
-- **Storia persona 2**: Sta effettuando un progetto di ricerca in collaborazione con un ente che si occupa del monitoraggio e depurazione della rete fognaria di una grande città. Ha bisogno di fare analisi su una grandi moli di dati relativi ad un ampio intervallo temporale.
-- **Storia persona 3**: Deve installare il sistema GeoControl presso aziende/strutture/località montane. Deve aver la possibilità di interagire con il sistema temporaneamente con il ruolo di Admin e necessità di un sistema fortemente integrato.
+- **Storia persona 1**: Ha bisogno di capire se è necessario investire in un nuovo sistema di regolazione della temperatura e/o di illuminazione, necessita di dati molto precisi e affidabili per prendere una decisione.
+- **Storia persona 2**: Sta effettuando un progetto di ricerca in collaborazione con un ente che si occupa del monitoraggio e depurazione della rete fognaria di una grande città. Ha bisogno di fare analisi su una grande mole di dati relativi ad un ampio intervallo temporale.
+- **Storia persona 3**: Deve installare il sistema GeoControl presso aziende/strutture/località montane. Deve aver la possibilità di interagire con il sistema temporaneamente e necessita di un sistema fortemente integrato.
 - **Storia persona 4**: Ha uno studio fotografico e deve poter tenere sotto controllo il livello dell'illuminazione per poter offrire un servizio di qualità.
 - **Storia persona 5**: L'Istituto Nazionale di Geofisica e Vulcanologia mette a disposizione i dati delle misurazioni dell'attività sismica di alcune zone d'Italia per gli utenti, attraverso il ruolo Viewer dell'applicativo. L'interfaccia deve essere estremamente user friendly, garantendo la fruizione di dati semplici e dettagliati.
 - **Storia persona 6**: È l'admin di sistema di un'azienda privata che vuole tenere sotto controllo la temperatura dell'ambiente di lavoro. Deve poter gestire le reti e i ruoli del sistema in maniera intuitiva e affidabile.
@@ -208,14 +209,13 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 | :-----: | :--------------------------------: | :---------: | :-------: |
 |  NFR1   |      Efficienza                    | Le misurazioni devono essere realizzate ogni 10 minuti | FR3.1.2 |
 |  NFR2   |      Privacy                       | I dati devono essere trattati in accordo con le normative del GDPR | FR2 |
-|  NFR3   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
+|  NFR3   |      Dominio                       | I timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
 |  NFR4   |      Affidabilità                  | Non più di 6 misurazioni all'anno, per sensore, devono essere perse | FR3 |
 |  NFR5  |      Sicurezza                     | Il sistema deve impedire agli utenti di eseguire operazioni per le quali non sono autorizzati e deve impedire accessi malevoli| FR1, FR2 |
-|  NFR5   |      Dominio                       | Il timestamp delle misurazioni devono essere convertite secondo il formato ISO8601 | FR3.1.1 |
 |  NFR6 |       Usabilità                    |     /   | Tutti |
 |  NFR6.1 |       Usabilità                    |    L'utente di tipo Viewer non deve aver bisogno di training per utilizzare il software    |  |
 |  NFR6.2 |       Usabilità                    |    Gli utenti di tipo Operator e Amministratore devono aver bisogno di un training di al massimo 2 ore    |  |
-| NFR7 | Portabilità | Il software dev'essere accessibile su diversi sistemi operativi <br/> • Windows <br/> •Linux<br/> • MacOS<br/> | Tutti |
+| NFR7 | Portabilità | Il software deve essere utilizzabile su diversi sistemi operativi <br/> • Windows <br/> •Linux<br/> • MacOS<br/> | Tutti |
 | NFR8 | Efficienza |  Ogni utente deve individuare non più di 5 bug all'anno | Tutti |
 | NFR9 | Dominio | Le misurazioni devono essere espresse utilizzando le unità di misura previste dal SISTEMA INTERNAZIONALE DELLE UNITA' DI MISURA | Tutti |
 
@@ -268,14 +268,14 @@ Tentativo di Autenticazione con Credenziali Invalide
 | Post condition |  L'utente non è autenticato. Viene visualizzato un messaggio di errore.   |
 |     Step#      |                                Descrizione                                 |
 |       1        |    L'utente naviga alla pagina di login.                                                                        |
-|       2        |      L'utente inserisce un username non valido o inesistente.                                                                      |
-|      3       |       L'utente inserisce una password errata.                                                                     |
-|      4       |       L'utente clicca sul pulsante "Accedi". errata.                                                                     |
-|      5       |      Il sistema riceve le credenziali.errata.                                                                     |
-|      6       |      Il sistema confronta le credenziali inserite con quelle memorizzate nel database.errata.                                                                     |
-|      7       |       Le credenziali non corrispondono. errata.                                                                     |
-|      8       |       Il sistema visualizza un messaggio di errore all'utente (es. "Username o password errati").errata.                                                                     |
-|      9       |       L'utente rimane sulla pagina di login e può tentare nuovamente l'accesso. errata.                                                                     |
+|       2        |      L'utente inserisce uno username.                                                                      |
+|      3       |       L'utente inserisce una password.                                                                     |
+|      4       |       L'utente clicca sul pulsante "Accedi".                                                                     |
+|      5       |      Il sistema riceve le credenziali.                                                                     |
+|      6       |      Il sistema confronta le credenziali inserite con quelle memorizzate nel database.                                                                     |
+|      7       |       Le credenziali non corrispondono.                                                                     |
+|      8       |       Il sistema visualizza un messaggio di errore all'utente (es. "Username o password errati").                                                                    |
+|      9       |       L'utente rimane sulla pagina di login e può tentare nuovamente l'accesso.                                                    |
 
 
 
