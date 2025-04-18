@@ -1,12 +1,12 @@
 # Requirements Document - GeoControl
 
-Date:
+Date: 19/04/2025
 
 Version: V1 - description of Geocontrol as described in the swagger
 
 | Version number | Change |
 | :------------: | :----: |
-|                |        |
+|      1.0          |    Requirements    |
 
 # Contents
 
@@ -71,7 +71,7 @@ Inzialmente sono previsti piani a pagamento aventi costo differente a seconda de
 | Mensile  | 1 mese | 0%  |
 | Annuale  | 12 mesi | 10% |
 
-E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. L'applicativo deve poter supportare sensori di tipo COTS reperibili sul mercato.
+E' prevista la possibilità di avere un servizio aggiuntivo a pagamento per l'installazione e la configurazione del sistema mediante l'intervento di un tecnico. Il tecnico avrà un accesso limitato come admin per eseguire l'intallazione e per il collegamento dei sensori. L'applicativo deve poter supportare sensori di tipo COTS reperibili sul mercato.
 Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
 
 | User |  Funzionalità disponibili |
@@ -120,7 +120,7 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 | Viewer |  GUI | PC |
 | Operator | GUI | PC |
 | Admin | GUI | PC |
-| Tecnico | GUI | PC |
+| Tecnico | GUI | PC, Sensore |
 | Ambiente |  Temperatura e illuminazione e varie | Modulo di misurazione del sensore |
 | Sensori | Variabili Fisiche e Ambientali | Connessione Seriale |
 
@@ -423,7 +423,7 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Admin
 
 ### Use case 4: Gestione Topologia
 
-| Actors Involved  |             Sistema(Network), Utente(Admin, Operator, Tecnico)                                                         |
+| Actors Involved  |             Sistema(Network), Utente(Admin, Operator)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'Admin è autenticato e ha accesso alle funzionalità di gestione della topologia. |
 |  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |
