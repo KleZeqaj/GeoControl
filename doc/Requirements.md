@@ -423,7 +423,7 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Admin
 
 ### Use case 4: Gestione Topologia
 
-| Actors Involved  |             Sistema(Network), Utente(Admin, Operator)                                                         |
+| Actors Involved  |             Sistema(Network), Utente(Admin, Operator, Tecnico)                                                         |
 | :--------------: | :------------------------------------------------------------------: |
 |   Precondition   | L'Admin è autenticato e ha accesso alle funzionalità di gestione della topologia. |
 |  Post condition  |  La topologia del sistema (reti, gateway, sensori) è stata modificata come richiesto. Gli ID univoci sono generati secondo le specifiche.   |

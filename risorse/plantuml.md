@@ -7,6 +7,7 @@
 left to right direction
 
 rectangle Utente {
+actor Tecnico #green
 actor Admin #red
 actor Operator #purple
 actor Viewer #blue
@@ -102,6 +103,7 @@ Operator --> UC1 #purple
 Operator --> UC14 #purple
 Operator --> UC20 #purple
 Operator --> UC38 #purple
+Tecnico --> UC20 #green
 UC14 --> Gateway
 UC20 --> Network
 @enduml
