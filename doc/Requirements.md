@@ -37,6 +37,7 @@ Version: V1 - description of Geocontrol as described in the swagger
     - [Use case 3: Gestione Misurazioni](#use-case-3-gestione-misurazioni)
       - [Scenario 3.1](#scenario-31)
       - [Scenario 3.2](#scenario-32)
+      - [Scenario 3.3](#scenario-33)
 
     - [Use case 4: Gestione Topologia](#use-case-4-gestione-topologia)
       - [Scenario 4.1](#scenario-41)
@@ -79,7 +80,6 @@ Inoltre, l'applicativo dovrà gestire i seguenti ruoli:
 | Viewer | operazione di sola lettura su dati, sensori e gateway|
 | Operator |  inserimento manuale delle misurazioni, gestione dei dispositivi come sensori, gateways etc.|
 | Admin | ha accesso a tutte le risorse, quindi può eseguire operazioni su utenti e reti |
-| Tecnico | funzionalità per gestire e impostare correttamente i parametri del sistema durante la prima installazione |
 
 Visto quindi la possibile diversità di utenti, bisognerà offrire un sistema di autenticazione con diverse interfacce.
 
@@ -117,7 +117,7 @@ Perciò le caratteristiche principali del software, che costituiscono un valore,
 
 |   Actor   | Logical Interface | Physical Interface |
 | :-------: | :---------------: | :----------------: |
-| Servizio pagamenti |   API Paypal, BancaSella, IntesaSanpaolo, Unicredit     |       Connessione Internet          |
+| Servizio pagamenti |   API Paypal, BancaSella, IntesaSanpaolo, Unicredit, etc.    |       Connessione Internet          |
 | Viewer |  GUI | PC |
 | Operator | GUI | PC |
 | Admin | GUI | PC |
@@ -291,23 +291,22 @@ Tentativo di Autenticazione con Credenziali Invalide
 
 #### Scenario 2.1
 
-Visualizzazione Dati di un Sensore Specifico in Formato Tabellare
-
+Visualizzazione Dati di un Sensore Specifico in Formato Tabellare o Grafico
 
 
 |  Scenario 2.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
 |  Precondition  | L'utente è autenticato e possiede un token valido. Sono presenti misurazioni per il sensore selezionato. |
-| Post condition |  Le misurazioni del sensore selezionato vengono visualizzate in una tabella con timestamp e valori.   |
+| Post condition |  Le misurazioni del sensore selezionato vengono visualizzate in una tabella o grafico con timestamp e valori.   |
 |     Step#      |                                Descrizione                                 |
 |       1        |  L'utente naviga alla sezione di visualizzazione dati.                                                                          |
 |       2        |     	L'utente seleziona un sensore specifico da un elenco o tramite una mappa.                                                                       |
-|      3       |      L'utente seleziona l'opzione di visualizzazione "Tabella".                                                                      |
+|      3       |      L'utente seleziona l'opzione di visualizzazione "Tabella" o "Grafico".                                                                      |
 |      4       |         Il sistema riceve la richiesta del sensore.                                                                   |
 |      5       |       Il sistema interroga il database per recuperare tutte le misurazioni associate a quel sensore.                                                                     |
 |      6       |     Il database restituisce le misurazioni trovate.                                                                       |
-|      7       |     Il sistema formatta i dati in una tabella con colonne per timestamp e valore della misurazione.                                                                       |
-|      8       |    	Il sistema visualizza la tabella all'utente.                                                                        |
+|      7       |     Il sistema formatta i dati in una tabella con colonne per timestamp e valore della misurazione o in formato grafico.                                                                       |
+|      8       |    	Il sistema visualizza la tabella o il grafico all'utente.                                                                        |
 
 #### Scenario 2.2
 Nessun Dato Disponibile per il Sensore Selezionato
@@ -421,6 +420,28 @@ Inserimento Manuale di una Misurazione Valida da Parte dell'Admin
 |      10       |          Il sistema visualizza un messaggio di conferma dell'inserimento.                                                                  |
 
 
+#### Scenario 3.3
+
+Inserimento fallito di una misurazione da parte dell'Admin
+
+|  Scenario 3.3  |                                                                            |
+| :------------: | :------------------------------------------------------------------------: |
+|  Precondition | Il sistema GeoControl è attivo. L'Admin è autenticato e ha accesso alla funzionalità di inserimento manuale. |
+|  Postcondition | La misurazione non è inserita e viene visualizzato un messaggio di errore |
+|     Step#      |                                Descrizione                                 |
+|       1        |      L'Admin naviga alla sezione di inserimento manuale misurazioni.                                                                      |
+|       2        |        L'Admin seleziona un sensore dalla lista.                                                                    |
+|      3       |          L'Admin inserisce il valore della misurazione.                                                                  |
+|      4       |             L'Admin inserisce il timestamp della misurazione.                                                               |
+|      5       |           L'Admin clicca sul pulsante "Salva".                                                                 |
+|      6       |                   	Il sistema riceve i dati inseriti.                                                         |
+|      7       |               Il sistema non riesce a convertire il timestamp inserito nel formato ISO8601 o non riesce a validare il formato delle misurazioni.                                                           |
+|      8       |                	Il sistema non memorizza la misurazione nel database.                                                      |
+|      9       |          Il sistema visualizza un messaggio di errore nell'inserimento.                                                                  |
+
+
+
+
 ### Use case 4: Gestione Topologia
 
 | Actors Involved  |             Sistema(Network), Utente(Admin, Operator)                                                         |
@@ -472,7 +493,7 @@ Tentativo di Inserire un Sensore con un ID Univoco Già Esistente (se permesso l
 
 #### Scenario 4.3
 
-Modifica del Nome Descrittivo di un Sensore
+Modifica del Nome di un Sensore
 
 
 
@@ -484,7 +505,7 @@ Modifica del Nome Descrittivo di un Sensore
 |       1        |        L'Admin naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                    |
 |       2        |           L'Admin seleziona il sensore desiderato da un elenco.                                                                 |
 |      3       |            	Il sistema visualizza i dettagli del sensore (ID, nome attuale, tipo, gateway associato, ecc.).                                                                |
-|      4       |          L'Admin modifica il valore del campo "Nome Descrittivo".                                                                  |
+|      4       |          L'Admin modifica il valore del campo "Nome".                                                                  |
 |      5       |             L'Admin clicca sul pulsante "Salva Modifiche" o simile.                                                               |
 |      6       |              Il sistema convalida che il nuovo nome non sia vuoto (se richiesto).                                                              |
 |      7       |              Il sistema aggiorna il campo "Nome" del sensore nel database.                                                              |
@@ -498,15 +519,15 @@ Tentativo di Modificare l'ID Univoco di un Sensore
 
 |  Scenario 4.4  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Admin è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. L'ID univoco del sensore non è modificabile. |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione della topologia. Il sensore da modificare esiste. |
 | Post condition | L'ID univoco del sensore rimane invariato. Viene visualizzato un messaggio di errore.  |
 |     Step#      |                                Descrizione                                 |
 |       1        |      L'Admin naviga alla sezione di gestione della topologia e seleziona "Modifica Dispositivo".                                                                      |
 |       2        |        L'Admin seleziona il sensore desiderato da un elenco.                                                                    |
-|      3       |       Il sistema visualizza i dettagli del sensore, incluso l'ID univoco (che appare non editabile o disabilitato).                                                                     |
-|      4       |          L'Admin (ipoteticamente tenta di) modificare il valore del campo "ID Univoco".                                                                  |
-|      5       |         Il sistema impedisce la modifica del campo "ID Univoco".                                                                   |
-|      6       |              Il sistema visualizza un messaggio (es. "L'ID univoco del sensore non può essere modificato.").                                                              |
+|      3       |       Il sistema visualizza i dettagli del sensore, incluso l'ID univoco.                                                         |
+|      4       |          L'Admin tenta di modificare il valore del campo "ID Univoco".                                                                  |
+|      5       |         Il sistema impedisce la modifica del campo "ID Univoco" siccome l'ID specificato è già presente.                                                                   |
+|      6       |              Il sistema visualizza un messaggio (es. "L'ID inserito è già esistente").                                                              |
 |      7       |             L'Admin prende atto del messaggio.                                                                             |
 
 
@@ -517,46 +538,46 @@ Tentativo di Modificare l'ID Univoco di un Sensore
 |   Precondition   | L'Admin è autenticato e ha accesso alle funzionalità di gestione dei ruoli utente. |
 |  Post condition  |  I ruoli utente e i relativi permessi sono stati creati, modificati o visualizzati come richiesto.   |
 | Nominal Scenario |     1. L'Admin accede alla gestione dei ruoli. 2. L'Admin seleziona l'operazione (crea, modifica, visualizza). 3. L'Admin fornisce i dati necessari (nome ruolo, permessi). 4. Il sistema convalida i dati. 5. Il sistema esegue l'operazione e aggiorna il sistema. 6. Il sistema fornisce un feedback all'Admin.       |
-|     Variants     |       V1: Creazione di un nuovo ruolo. V2: Modifica dei permessi di un ruolo esistente. V3: Visualizzazione dei dettagli di un ruolo.             |
-|    Exceptions    |     E1: Inserimento di un nome ruolo già esistente (durante la creazione). E2: Tentativo di modificare un ruolo di sistema protetto. E3: Errore durante l'aggiornamento del database dei ruoli e permessi.              |
+|     Variants     |       V1: Creazione di un nuovo utente. V2: Modifica dei permessi di un utente esistente. V3: Visualizzazione dei dettagli di un utente.             |
+|    Exceptions    |     E1: Inserimento di uno username già esistente (durante la creazione). E2: Tentativo di modificare un utente avente privilegi pari o maggiori. E3: Errore durante l'aggiornamento del database degli utenti.              |
 
 #### Scenario 5.1
 
-Inserimento di un Nuovo Sensore
-Creazione di un Nuovo Ruolo Utente con Permessi Specifici
+Creazione di un Nuovo Utente con ruolo specifico
 
 |  Scenario 5.1  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Admin è autenticato e ha accesso alla gestione dei ruoli. Il nome "Tecnico di Campo" non esiste ancora nel sistema. |
-| Post condition |  Un nuovo ruolo utente denominato "Tecnico di Campo" è stato creato con i permessi selezionati.   |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione degli utenti. L'utente non esiste ancora nel sistema. |
+| Post condition |  Un nuovo utente è stato creato con il ruolo selezionato.   |
 |     Step#      |                                Descrizione                                 |
-|       1        |   	L'Admin naviga alla sezione di gestione dei ruoli utente.                                                                   |
-|       2        |     L'Admin seleziona l'opzione "Crea Nuovo Ruolo".                                                              |
-|      3       |       L'Admin seleziona il gateway a cui associare il sensore da un elenco.                                                                     |
-|      4       |       Viene visualizzata una lista di permessi disponibili (es. "Visualizza Dati", "Inserisci Misurazioni Limitate"). L'Admin seleziona i permessi desiderati.                                     |
-|      5       |     L'Admin clicca sul pulsante "Salva Ruolo".                                                          |
-|      6       |       	Il sistema verifica che il nome del ruolo non sia già presente.                                                              |
-|      7       |    Il sistema memorizza il nuovo ruolo e i permessi associati nel database.                                                          |
-|      8       |    Il sistema visualizza un messaggio di conferma (es. "Ruolo 'Tecnico di Campo' creato con successo.").                                                    |
+|       1        |   	L'Admin naviga alla sezione di gestione degli utenti.                                                                   |
+|       2        |     L'Admin seleziona l'opzione "Inserimento nuovo utente".                                                              |
+|      3       |       L'Admin inserisce i dati dell'utente.                                                                   |
+| 4 | L'Admin seleziona il ruolo per l'utente |
+|      5       |     L'Admin clicca sul pulsante "Salva Utente".                                                          |
+|      6       |       	Il sistema verifica che l'utente non sia già presente.                                                              |
+|      7       |    Il sistema memorizza il nuovo utente.                                                          |
+|      8       |    Il sistema visualizza un messaggio di conferma (es. "Nuovo Utente creato con successo.").                                                    |
 
 #### Scenario 5.2
 
- Tentativo di Modificare i Permessi del Ruolo "Admin" 
+ Tentativo di Inserimento di un utente già esistente
 
 
 
 |  Scenario 5.2  |                                                                            |
 | :------------: | :------------------------------------------------------------------------: |
-|  Precondition  | L'Admin è autenticato e ha accesso alla gestione dei ruoli. Il ruolo "Admin" è un ruolo di sistema protetto. |
-| Post condition | I permessi del ruolo "Admin" rimangono invariati. Viene visualizzato un messaggio di errore.   |
+|  Precondition  | L'Admin è autenticato e ha accesso alla gestione degli utenti.  |
+| Post condition | L'inserimento fallisce e viene visualizzato un messaggio di errore   |
 |     Step#      |                                Descrizione                                 |
-|       1        |     L'Admin naviga alla sezione di gestione dei ruoli utente.|
-|       2        |    	L'Admin seleziona il ruolo "Admin" dalla lista dei ruoli esistenti per visualizzarne o modificarne i permessi.                                                   |
-|      3       |          	Il sistema visualizza i permessi correnti del ruolo "Admin".                                               |
-|      4       |           L'Admin tenta di deselezionare o aggiungere un permesso al ruolo "Admin" e clicca su "Salva Modifiche".                                          |
-|      5       |           Il sistema verifica se il ruolo selezionato è un ruolo di sistema protetto.                                               |
-|      6       |        Il sistema identifica "Admin" come ruolo protetto.                                               |
-|      7       |         Il sistema impedisce la modifica dei permessi per questo ruolo e visualizza un messaggio di errore (es. "Il ruolo 'Admin' non può essere modificato.").                                                             |
+|       1        |   	L'Admin naviga alla sezione di gestione degli utenti.                                                                   |
+|       2        |     L'Admin seleziona l'opzione "Inserimento nuovo utente".                                                              |
+|      3       |       L'Admin inserisce i dati dell'utente.                                                                   |
+| 4 | L'Admin seleziona il ruolo per l'utente |
+|      5       |     L'Admin clicca sul pulsante "Salva Utente".                                                          |
+|      6       |       	L'inserimento fallisce siccome l'utente è già presente nel database                                                             |
+|      7       |    Il sistema non memorizza il nuovo utente.                                                          |
+|      8       |    Il sistema visualizza un messaggio di errore (es. "E' già presente un utente con lo username specificato.").                                                    |
 
 
 
