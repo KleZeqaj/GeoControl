@@ -1,0 +1,13 @@
+node_modules
+test
+data
+logs
+coverage
+docker
+.git
+.env
+.vscode
+*.log
+*.sqlite
+*.db
+*.tsbuildinfo

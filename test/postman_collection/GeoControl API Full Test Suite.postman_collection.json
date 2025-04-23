@@ -1,0 +1,943 @@
+{
+	"info": {
+		"_postman_id": "7a10afb1-7337-4d3f-b050-75f0716d14c6",
+		"name": "GeoControl API Full Test Suite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13379955"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Autenticate User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"viewer\",\r\n    \"password\": \"viewer\",\r\n    \"type\": \"viewer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Networks",
+			"item": [
+				{
+					"name": "Get All Networks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Network",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"{{networkCode}}\",\n  \"name\": \"Alp Monitor\",\n  \"description\": \"Alpine Weather Monitoring Network\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Network",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Network",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\":\"NET04\",\n  \"name\": \"Updated name\",\n  \"description\": \"Updated description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Network",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gateways",
+			"item": [
+				{
+					"name": "Get All Gateways",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Gateway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"macAddress\": \"{{gatewayMac}}\",\n  \"name\": \"Gateway 01\",\n  \"description\": \"Main field gateway\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gateway",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gateway",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"macAddress\": \"11:22:33:44:EE:BB\",\n  \"name\": \"Updated Gateway\",\n  \"description\": \"Updated gateway description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Gateway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sensors",
+			"item": [
+				{
+					"name": "Get All Sensors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sensor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"macAddress\": \"{{sensorMac}}\",\n  \"name\": \"Temperature Sensor\",\n  \"description\": \"Outdoor temperature sensor\",\n  \"variable\": \"temperature\",\n  \"unit\": \"C\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sensor",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Sensor",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"macAddress\": \"AA:BB:CC:DD:44:77\",\n  \"name\": \"Updated Sensor\",\n  \"description\": \"Updated sensor description\",\n  \"variable\": \"Updated variable\",\n  \"unit\": \"Updated unit\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Sensor",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Measurements",
+			"item": [
+				{
+					"name": "Store Measurements",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"createdAt\": \"2025-01-18T16:00:00+01:00\",\n    \"value\": 3.8\n  },\n  {\n    \"createdAt\": \"2025-01-18T16:10:00+01:00\",\n    \"value\": 24.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T16:20:00+01:00\",\n    \"value\": 4.0\n  },\n  {\n    \"createdAt\": \"2025-01-18T16:30:00+01:00\",\n    \"value\": 4.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T16:40:00+01:00\",\n    \"value\": 4.3\n  },\n  {\n    \"createdAt\": \"2025-01-18T16:50:00+01:00\",\n    \"value\": 4.4\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:00:00+01:00\",\n    \"value\": 4.5\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:10:00+01:00\",\n    \"value\": 4.6\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:20:00+01:00\",\n    \"value\": 4.7\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:30:00+01:00\",\n    \"value\": 4.8\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:40:00+01:00\",\n    \"value\": 4.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T17:50:00+01:00\",\n    \"value\": 5.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:00:00+01:00\",\n    \"value\": 5.2\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:10:00+01:00\",\n    \"value\": 5.3\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:20:00+01:00\",\n    \"value\": 5.4\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:30:00+01:00\",\n    \"value\": 5.5\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:40:00+01:00\",\n    \"value\": 5.6\n  },\n  {\n    \"createdAt\": \"2025-01-18T18:50:00+01:00\",\n    \"value\": 5.7\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:00:00+01:00\",\n    \"value\": 5.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:10:00+01:00\",\n    \"value\": 6.0\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:20:00+01:00\",\n    \"value\": 6.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:30:00+01:00\",\n    \"value\": 6.2\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:40:00+01:00\",\n    \"value\": 6.3\n  },\n  {\n    \"createdAt\": \"2025-01-18T19:50:00+01:00\",\n    \"value\": 6.4\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:00:00+01:00\",\n    \"value\": 6.5\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:10:00+01:00\",\n    \"value\": 6.7\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:20:00+01:00\",\n    \"value\": 6.8\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:30:00+01:00\",\n    \"value\": 6.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:40:00+01:00\",\n    \"value\": 7.0\n  },\n  {\n    \"createdAt\": \"2025-01-18T20:50:00+01:00\",\n    \"value\": 7.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:00:00+01:00\",\n    \"value\": 7.2\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:10:00+01:00\",\n    \"value\": 7.3\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:20:00+01:00\",\n    \"value\": 7.5\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:30:00+01:00\",\n    \"value\": 7.6\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:40:00+01:00\",\n    \"value\": 7.7\n  },\n  {\n    \"createdAt\": \"2025-01-18T21:50:00+01:00\",\n    \"value\": 7.8\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:00:00+01:00\",\n    \"value\": 7.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:10:00+01:00\",\n    \"value\": 8.0\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:20:00+01:00\",\n    \"value\": 8.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:30:00+01:00\",\n    \"value\": 8.3\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:40:00+01:00\",\n    \"value\": 8.4\n  },\n  {\n    \"createdAt\": \"2025-01-18T22:50:00+01:00\",\n    \"value\": 8.5\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:00:00+01:00\",\n    \"value\": 8.6\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:10:00+01:00\",\n    \"value\": 8.7\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:20:00+01:00\",\n    \"value\": 8.8\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:30:00+01:00\",\n    \"value\": 8.9\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:40:00+01:00\",\n    \"value\": 9.1\n  },\n  {\n    \"createdAt\": \"2025-01-18T23:50:00+01:00\",\n    \"value\": 9.2\n  },\n  {\n    \"createdAt\": \"2025-01-19T00:00:00+01:00\",\n    \"value\": 9.3\n  },\n  {\n    \"createdAt\": \"2025-01-19T00:10:00+01:00\",\n    \"value\": 9.4\n  }\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}/measurements",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}",
+								"measurements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Network Measurements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/measurements",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"measurements"
+							],
+							"query": [
+								{
+									"key": "sensorMacs",
+									"value": "{{sensorMacs}}",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sensor Measurements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}/measurements",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}",
+								"measurements"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Network Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "sensorMacs",
+									"value": "{{sensorMacs}}",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sensor Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Network Outliers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/outliers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"outliers"
+							],
+							"query": [
+								{
+									"key": "sensorMacs",
+									"value": "{{sensorMacs}}",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sensor Outliers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/networks/{{networkCode}}/gateways/{{gatewayMac}}/sensors/{{sensorMac}}/outliers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"networks",
+								"{{networkCode}}",
+								"gateways",
+								"{{gatewayMac}}",
+								"sensors",
+								"{{sensorMac}}",
+								"outliers"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "{{startDate}}",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "{{endDate}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpZXdlciIsInR5cGUiOiJ2aWV3ZXIiLCJwYXNzd29yZCI6InZpZXdlciIsImlhdCI6MTc0MDMzODMzNSwiZXhwIjoxNzQwNDI0NzM1fQ.i9sAHB_w8RGnBqjIVPGji6Vd5p9FLq83X6DlNCLINUg",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"let resolvedUrl = pm.variables.replaceIn(pm.request.url.toString());\r",
+					"let [baseUrl, queryString] = resolvedUrl.split(\"?\");\r",
+					"if (!queryString) {\r",
+					"    return;\r",
+					"}\r",
+					"let encodedQueryString = queryString\r",
+					"    .split(\"&\")\r",
+					"    .map(param => {\r",
+					"        let [key, value] = param.split(\"=\");\r",
+					"        if (value !== undefined) {\r",
+					"            value = encodeURIComponent(decodeURIComponent(value)); \r",
+					"        }\r",
+					"        return `${key}=${value}`;\r",
+					"    })\r",
+					"    .join(\"&\");\r",
+					"pm.request.url = `${baseUrl}?${encodedQueryString}`;"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api/v1"
+		},
+		{
+			"key": "networkCode",
+			"value": "NET01"
+		},
+		{
+			"key": "gatewayMac",
+			"value": "94:3F:BE:4C:4A:79"
+		},
+		{
+			"key": "sensorMac",
+			"value": "71:B1:CE:01:C6:A9"
+		},
+		{
+			"key": "username",
+			"value": "root",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "rootpassword",
+			"type": "string"
+		},
+		{
+			"key": "userType",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "startDate",
+			"value": "2025-02-18T17:15:00+01:00",
+			"type": "string"
+		},
+		{
+			"key": "endDate",
+			"value": "2025-02-18T17:25:00+01:00",
+			"type": "string"
+		},
+		{
+			"key": "sensorMacs",
+			"value": "71:B1:CE:01:C6:A9,71:B1:CE:01:C6:A8",
+			"type": "string"
+		}
+	]
+}

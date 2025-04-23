@@ -124,7 +124,7 @@ paths:
                 name: "BadRequest"
                 message: "/body/xxx' must have required property 'xxx'"
         "401":
-          description: Invalid username or password
+          description: Invalid password
           content:
             application/json:
               schema:
@@ -1269,7 +1269,7 @@ paths:
       summary: Update a Sensor
       description: |
         This endpoint can be used only by Admin and Operator users
-        The request must allow the update of all the Gateway fields, including the Gateway mac address.
+        The request must allow the update of all the Sensor fields, including the Sensor mac address.
       tags:
         - Sensors
       security:

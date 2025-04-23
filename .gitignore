@@ -2,5 +2,8 @@ wwwroot/*.js
 node_modules
 typings
 dist
+data
 database.sqlite
+openapitools.json
 logs
+coverage

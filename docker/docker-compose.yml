@@ -1,0 +1,16 @@
+x-constants:
+  backend_host: &backend_host localhost
+  backend_port: &backend_port 5000
+  frontend_port: &frontend_port 5173
+
+services:
+  frontend:
+    image: smpolito/geocontrolui:latest
+    container_name: geocontrol-frontend
+    environment:
+      SERVER_HOST: *backend_host
+      SERVER_PORT: *backend_port
+      APP_PORT: *frontend_port
+    ports:
+      - "5173:5173" # Anchored variables defined above (e.g., &frontend_port) cannot be used within quoted strings.
+        # Values like port numbers must be written explicitly as literals, but they should remain consistent with the defined variables.

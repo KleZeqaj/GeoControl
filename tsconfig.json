@@ -3,18 +3,31 @@
     "target": "ES2022",
     "module": "CommonJS",
     "lib": ["ES2022", "DOM"],
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "baseUrl": "./src",
     "paths": {
-      "@config": ["config/config.ts"],
+      "@models/*": ["models/*"],
+      "@errors/*": ["models/errors/*"],
+      "@dao/*": ["models/dao/*"],
+      "@dto/*": ["models/dto/*"],
+      "@repositories/*": ["repositories/*"],
       "@services/*": ["services/*"],
-      "@app": ["app.ts"]
+      "@routes/*": ["routes/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@database": ["database/connection.ts"],
+      "@config": ["config/config.ts"],
+      "@utils": ["utils.ts"],
+      "@app": ["app.ts"],
+      "@test/*": ["../test/*"]
     }
-  }
+  },
+  "include": ["src", "test", "scripts"]
 }
