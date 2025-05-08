@@ -7,10 +7,10 @@ export class MeasurementDAO {
   @PrimaryColumn({ nullable: false })
   sensorMacAddress: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   createdAt: Date; 
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   value: string;
 
   @Column({ nullable: true })
