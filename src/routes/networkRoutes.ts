@@ -1,6 +1,7 @@
 import AppError from "@models/errors/AppError";
 import { Router } from "express";
 
+
 const router = Router();
 
 // Get all networks (Any authenticated user)
