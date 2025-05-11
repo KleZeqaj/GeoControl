@@ -18,7 +18,11 @@ router.get(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/measurements",
   async (req, res, next) => {
     try {
-      res.status(200).json(await getAllMeasurementsOfSensor(req.params.sensorMac));
+      /*res.status(200).json(await getAllMeasurementsOfSensor(req.params.networCode, 
+        req.params.gatewayMacAddress,
+         req.params.sensorMac,
+        req.query.startDate,
+        req.query.endDate));*/
     }
     catch (error) {
       next(error);
