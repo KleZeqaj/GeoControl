@@ -1480,6 +1480,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Measurements"
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -1570,6 +1580,16 @@ paths:
                     variance: 7.56
                     upperThreshold: 28.95
                     lowerThreshold: 17.95
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -1667,6 +1687,16 @@ paths:
                     - createdAt: "2025-02-18T16:00:00Z"
                       value: 12.34
                       isOutlier: true
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -1851,6 +1881,16 @@ paths:
                   - createdAt: "2025-02-18T16:00:00Z"
                     value: 25.34
                     isOutlier: false
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -1939,6 +1979,16 @@ paths:
                 variance: 7.56
                 upperThreshold: 28.95
                 lowerThreshold: 17.95
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -2036,6 +2086,16 @@ paths:
                   - createdAt: "2025-02-18T16:00:00Z"
                     value: 12.34
                     isOutlier: true
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+              example:
+                code: "400"
+                name: "BadRequest"
+                message: "request/query/startDate must match format 'date-time'"
         "401":
           description: Unauthorized
           content:
@@ -2196,11 +2256,11 @@ components:
           type: string
           format: date-time
           description: Timestamp of the measurement in **ISO 8601 format** with timezone
-          example: "2025-02-18T17:00:00+01:00"
+          example: "2025-02-18T16:00:00Z"
         value:
           type: number
           description: Value of the measurement
-          example: 1.8567
+          example: 21.8567
         isOutlier:
           type: boolean
           description: Value outside the range defined by the thresholds
@@ -2217,12 +2277,12 @@ components:
           type: string
           format: date-time
           description: Start date (in **ISO 8601 format** with timezone) for the calculation interval
-          example: "2025-02-18T16:00:00+01:00"
+          example: "2025-02-18T15:00:00Z"
         endDate:
           type: string
           format: date-time
           description: End date (in **ISO 8601 format** with timezone) for the calculation interval
-          example: "2025-02-18T18:00:00+01:00"
+          example: "2025-02-18T17:00:00Z"
         mean:
           type: number
           description: Mean (μ) of the measurements in the specified time interval
