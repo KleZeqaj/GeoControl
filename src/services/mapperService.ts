@@ -1,18 +1,18 @@
+import { Measurements as MeasurementsDTO } from "@dto/Measurements";
 import { Network as NetworkDTO } from "@dto/Network";
+import { Stats as StatsDTO } from "@dto/Stats";
 import { Token as TokenDTO } from "@dto/Token";
 import { User as UserDTO } from "@dto/User";
-import { Measurements as MeasurementsDTO } from "@dto/Measurements";
-import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
-import { Stats as StatsDTO } from "@dto/Stats";
-import { MeasurementsDAO } from "@models/dao/MeasurementsDAO";
-import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { StatsDAO } from "@models/dao/StatsDAO";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { MeasurementsDAO } from "@models/dao/MeasurementsDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { SensorDAO } from "@models/dao/SensorDAO";
+import { StatsDAO } from "@models/dao/StatsDAO";
 import { UserDAO } from "@models/dao/UserDAO";
 import { ErrorDTO } from "@models/dto/ErrorDTO";
 import { Gateway as GatewayDTO } from "@models/dto/Gateway";
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
 import { Sensor as SensorDTO } from "@models/dto/Sensor";
 import { UserType } from "@models/UserType";
 
@@ -81,9 +81,12 @@ export function mapSensorDAOToDTO(sensor: SensorDAO) : SensorDTO{
 export function createGatewayDTO(macAddress: string, name?: string, description?: string, sensors?: Array<SensorDAO>) : GatewayDTO {
   let sensorsDTO : Array<SensorDTO>;
 
-  for (let i = 0; i < sensors.length; i++){
-    sensorsDTO.push(mapSensorDAOToDTO(sensors[i]));
+  if (sensors !== undefined){
+    for (let i = 0; i < sensors?.length; i++){
+      sensorsDTO.push(mapSensorDAOToDTO(sensors[i]));
+    }
   }
+  
 
   return removeNullAttributes({
     macAddress,
@@ -104,9 +107,12 @@ export function createNetworkDTO(code: string, name?: string, description?: stri
   
   let gatewaysDTO : Array<GatewayDTO>;
 
-  for (let i = 0; i < gateways.length; i++){
-    gatewaysDTO.push(mapGatewayDAOToDTO(gateways[i])); 
+  if (gateways !== undefined){
+    for (let i = 0; i < gateways?.length; i++){
+      gatewaysDTO.push(mapGatewayDAOToDTO(gateways[i])); 
+    }
   }
+  
 
   return removeNullAttributes({
     code, 

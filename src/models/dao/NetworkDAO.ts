@@ -4,6 +4,11 @@ import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity("networks")
 export class NetworkDAO {
+  /*
+  @PrimaryGeneratedColumn()
+  id: number;
+  */
+
   @PrimaryColumn({ nullable: false })
   code: string;
 
