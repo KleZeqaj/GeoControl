@@ -1,4 +1,5 @@
 import { CONFIG } from "@config";
+import { getAllMeasurementsOfSensor } from "@controllers/measurementController";
 import AppError from "@models/errors/AppError";
 import { Router } from "express";
 
@@ -15,8 +16,13 @@ router.post(
 // Retrieve measurements for a specific sensor
 router.get(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/measurements",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  async (req, res, next) => {
+    try {
+      res.status(200).json(await getAllMeasurementsOfSensor(req.params.sensorMac));
+    }
+    catch (error) {
+      next(error);
+    }
   }
 );
 

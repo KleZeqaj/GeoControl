@@ -6,7 +6,7 @@ import { MeasurementsDAO } from "./MeasurementsDAO";
 export class StatsDAO {
 
   @PrimaryColumn({ nullable: false })
-  sensorMacAddress: string;
+  id: number;
 
   @Column({ nullable: true })
   startDate: Date;
@@ -27,6 +27,6 @@ export class StatsDAO {
   lowerTreshold: number;
 
   @OneToOne(() => MeasurementsDAO, (measurements) => measurements.stats)
-  @JoinColumn({ name: "sensorMacAddress", referencedColumnName: "sensorMacAddress" })
+  @JoinColumn({ name: "id", referencedColumnName: "id" })
   measurements: MeasurementsDAO;
 }

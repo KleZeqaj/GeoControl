@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn, ManyToOne, JoinColumn, OneToOne} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn, ManyToOne, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { MeasurementDAO } from "./MeasurementDAO";
 import { StatsDAO } from "./StatsDAO";
 import { SensorDAO } from "./SensorDAO";
@@ -6,7 +6,10 @@ import { SensorDAO } from "./SensorDAO";
 @Entity("measurements")
 export class MeasurementsDAO {
 
-  @PrimaryColumn({ nullable: false })
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ nullable: false })
   sensorMacAddress: string;
 
   @OneToOne(() => StatsDAO, (stats) => stats.measurements)
