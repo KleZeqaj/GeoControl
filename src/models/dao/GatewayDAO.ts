@@ -1,11 +1,14 @@
 import { NetworkDAO } from "@dao/NetworkDAO";
 import { SensorDAO } from "@dao/SensorDAO";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity("gateways")
 export class GatewayDAO {
-  @PrimaryColumn({ nullable: false })
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ nullable: false, unique: true })
   macAddress: string;
 
   @Column({ nullable: true })
