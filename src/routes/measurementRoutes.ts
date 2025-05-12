@@ -1,7 +1,16 @@
 import { CONFIG } from "@config";
-import { getAllMeasurementsOfSensor } from "@controllers/measurementController";
+import { authenticateUser } from "@middlewares/authMiddleware";
+import { getAllMeasurementsOfSensor, 
+  getAllStatsOfSensor, 
+  getAllOutliersOfSensor,
+  getAllMeasurementsOfNetwork,
+  getAllStatsOfNetwork,
+  getAllOutliersOfNetwork } from "@controllers/measurementController";
+import { parseISODateParamToUTC, parseStringArrayParam} from "@utils";
+import { UserType } from "@models/UserType";
 import AppError from "@models/errors/AppError";
 import { Router } from "express";
+import { BadRequestError } from "@models/errors/BadRequestError";
 
 const router = Router();
 
@@ -16,13 +25,26 @@ router.post(
 // Retrieve measurements for a specific sensor
 router.get(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/measurements",
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
   async (req, res, next) => {
     try {
-      /*res.status(200).json(await getAllMeasurementsOfSensor(req.params.networCode, 
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+      const measurements = await getAllMeasurementsOfSensor(
+        req.params.networCode, 
         req.params.gatewayMacAddress,
-         req.params.sensorMac,
-        req.query.startDate,
-        req.query.endDate));*/
+        req.params.sensorMac,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(measurements);
     }
     catch (error) {
       next(error);
@@ -31,39 +53,152 @@ router.get(
 );
 
 // Retrieve statistics for a specific sensor
-router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats", (req, res, next) => {
-  throw new AppError("Method not implemented", 500);
+router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats", 
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
+  async (req, res, next) => {
+  try {
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+      const stats = await getAllStatsOfSensor(
+        req.params.networCode, 
+        req.params.gatewayMacAddress,
+        req.params.sensorMac,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(stats);
+    }
+    catch (error) {
+      next(error);
+    }
 });
 
 // Retrieve only outliers for a specific sensor
 router.get(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/outliers",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  async (req, res, next) => {
+     try {
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+      const measurements = await getAllOutliersOfSensor(
+        req.params.networCode, 
+        req.params.gatewayMacAddress,
+        req.params.sensorMac,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(measurements);
+    }
+    catch (error) {
+      next(error);
+    }
   }
 );
 
 // Retrieve measurements for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/measurements",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  async (req, res, next) => {
+    try {
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+
+      const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
+
+      const measurements = await getAllMeasurementsOfNetwork(
+        req.params.networCode, 
+        sensorMacs,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(measurements);
+    }
+    catch (error) {
+      next(error);
+    }
   }
 );
 
 // Retrieve statistics for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/stats",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  async (req, res, next) => {
+    try {
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+
+      const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
+
+      const stats = await getAllStatsOfNetwork(
+        req.params.networCode, 
+        sensorMacs,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(stats);
+    }
+    catch (error) {
+      next(error);
+    }
   }
 );
 
 // Retrieve only outliers for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/outliers",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  async (req, res, next) => {
+    try {
+      const { startDate, endDate } = req.query;
+      // Converte da stringa ISO a oggetto Date, solo se presenti
+      const parsedStartDate = parseISODateParamToUTC(startDate);
+      const parsedEndDate = parseISODateParamToUTC(endDate);
+
+      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
+      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
+        throw new BadRequestError(
+          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+        )
+      }
+
+      const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
+
+      const measurements = await getAllOutliersOfNetwork(
+        req.params.networCode, 
+        sensorMacs,
+        parsedStartDate, parsedEndDate);
+      res.status(200).json(measurements);
+    }
+    catch (error) {
+      next(error);
+    }
   }
 );
 

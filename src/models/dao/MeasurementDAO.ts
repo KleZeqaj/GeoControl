@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, JoinColumn} from "typeorm";
-import { MeasurementsDAO } from "./MeasurementsDAO";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn} from "typeorm";
+import { SensorDAO } from "./SensorDAO";
 
 @Entity("measurement")
 export class MeasurementDAO {
 
-  @PrimaryColumn({ nullable: false })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ nullable: false })
@@ -13,10 +13,7 @@ export class MeasurementDAO {
   @Column({ nullable: false })
   value: number;
 
-  @Column({ nullable: true })
-  isOutlier: boolean;
-
-  @ManyToOne(()=> MeasurementsDAO, (measurements) => measurements.measurement)
-  @JoinColumn({ name: "id", referencedColumnName: "id" })
-  measurements: MeasurementsDAO;
+  @ManyToOne(() => SensorDAO, (sensor) => sensor.measurement)
+  @JoinColumn({ name: "sensorMacAddress", referencedColumnName: "macAddress" })
+  sensor: SensorDAO;
 }

@@ -5,10 +5,8 @@ import { Token as TokenDTO } from "@dto/Token";
 import { User as UserDTO } from "@dto/User";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { MeasurementsDAO } from "@models/dao/MeasurementsDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { SensorDAO } from "@models/dao/SensorDAO";
-import { StatsDAO } from "@models/dao/StatsDAO";
 import { UserDAO } from "@models/dao/UserDAO";
 import { ErrorDTO } from "@models/dto/ErrorDTO";
 import { Gateway as GatewayDTO } from "@models/dto/Gateway";
@@ -131,48 +129,25 @@ export function mapNetworkDAOToDTO(networkDAO: NetworkDAO): NetworkDTO{
 /* MEASUREMENTS MAPPING */
 
 export function createMeasurementsDTO(
-  id: number,
   sensorMacAddress: string,
-  stats?: StatsDAO,
-  measurement?: MeasurementDAO[]
+  stats?: StatsDTO,
+  measurement?: MeasurementDTO[]
 ): MeasurementsDTO {
 
-  let measurementDTO: Array<MeasurementDTO>;
-  let statsDTO: StatsDTO;
-  
-  if (stats) {
-    statsDTO = mapStatsDAOToDTO(stats);
-  }
-
-  for (let i = 0; i < measurement.length; i++){
-    measurementDTO.push(mapMeasurementDAOToDTO(measurement[i]));
-  }
-
   return removeNullAttributes({
-    id,
     sensorMacAddress,
-    statsDTO,
-    measurementDTO
+    stats,
+    measurement
   }) as MeasurementsDTO;
 }
 
-export function mapMeasurementsDAOToDTO(measurementsDAO: MeasurementsDAO): MeasurementsDTO {
-  return createMeasurementsDTO(
-    measurementsDAO.id,
-    measurementsDAO.sensorMacAddress,
-    measurementsDAO.stats,
-    measurementsDAO.measurement
-  );
-}
 
 export function createMeasurementDTO(
-  id: number,
   createdAt: Date,
   value: number,
   isOutlier?: boolean
 ): MeasurementDTO {
   return removeNullAttributes({
-    id,
     createdAt,
     value,
     isOutlier
@@ -181,15 +156,12 @@ export function createMeasurementDTO(
 
 export function mapMeasurementDAOToDTO(measurementDAO: MeasurementDAO): MeasurementDTO {
   return createMeasurementDTO(
-    measurementDAO.id,
     measurementDAO.createdAt,
-    measurementDAO.value,
-    measurementDAO.isOutlier
+    measurementDAO.value
   );
 }
 
 export function createStatsDTO(
-  id: number,
   startDate: Date,
   endDate: Date,
   mean: number,
@@ -198,7 +170,6 @@ export function createStatsDTO(
   lowerTreshold: number
 ): StatsDTO {
   return removeNullAttributes({
-    id,
     startDate,
     endDate,
     mean,
@@ -206,16 +177,4 @@ export function createStatsDTO(
     upperTreshold,
     lowerTreshold
   }) as StatsDTO;
-}
-
-export function mapStatsDAOToDTO(statsDAO: StatsDAO): StatsDTO {
-  return createStatsDTO(
-    statsDAO.id,
-    statsDAO.startDate,
-    statsDAO.endDate,
-    statsDAO.mean,
-    statsDAO.variance,
-    statsDAO.upperTreshold,
-    statsDAO.lowerTreshold
-  );
 }

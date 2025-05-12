@@ -1,16 +1,19 @@
 import { Measurements as MeasurementsDTO } from "@dto/Measurements";
 import { Stats as StatsDTO } from "@dto/Stats";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
-import { mapMeasurementsDAOToDTO, mapStatsDAOToDTO } from "@services/mapperService";
+import { mapMeasurementDAOToDTO } from "@services/mapperService";
+import { computeStats , getOutliers, groupAndComputeMeasurements } from "@services/measurementService";
 
 export async function getAllMeasurementsOfSensor(
   networkCode: string, 
   gatewayMacAddress: string,
   sensorMacAddress: string,
   startDate?: Date,
-  endDate?: Date): Promise<MeasurementsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllMeasurementsOfSensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapMeasurementsDAOToDTO);
+  endDate?: Date): Promise<MeasurementsDTO> {
+  const measurementRepo = new MeasurementRepository();
+  const measurementArray = (await measurementRepo.getAllMeasurementsOfSensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapMeasurementDAOToDTO);
+  const measurements = await computeStats(measurementArray, sensorMacAddress, startDate, endDate); 
+  return measurements;
 }
 
 export async function getAllStatsOfSensor(
@@ -18,19 +21,24 @@ export async function getAllStatsOfSensor(
   gatewayMacAddress: string,
   sensorMacAddress: string,
   startDate?: Date,
-  endDate?: Date): Promise<StatsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllStatsOfSensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapStatsDAOToDTO);
+  endDate?: Date): Promise<StatsDTO> {
+  const measurementRepo = new MeasurementRepository();
+  const measurementArray = (await measurementRepo.getAllMeasurementsOfSensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapMeasurementDAOToDTO);
+  const measurements = await computeStats(measurementArray, sensorMacAddress, startDate, endDate); 
+  return measurements.stats;
 }
 
-export async function getAllOutliersOfASensor(
+export async function getAllOutliersOfSensor(
   networkCode: string, 
   gatewayMacAddress: string,
   sensorMacAddress: string,
   startDate?: Date,
-  endDate?: Date): Promise<MeasurementsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllOutliersOfASensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapMeasurementsDAOToDTO);
+  endDate?: Date): Promise<MeasurementsDTO> {
+  const measurementRepo = new MeasurementRepository();
+  const measurementArray = (await measurementRepo.getAllMeasurementsOfSensor(networkCode, gatewayMacAddress, sensorMacAddress, startDate, endDate)).map(mapMeasurementDAOToDTO);
+  const measurements = await computeStats(measurementArray, sensorMacAddress, startDate, endDate);
+  const outliers = await getOutliers(measurements); 
+  return outliers;
 }
 
 export async function getAllMeasurementsOfNetwork( 
@@ -38,8 +46,16 @@ export async function getAllMeasurementsOfNetwork(
   sensorMacs?: string[],
   startDate?: Date,
   endDate?: Date): Promise<MeasurementsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllMeasurementsOfNetwork(networkCode, sensorMacs, startDate, endDate)).map(mapMeasurementsDAOToDTO);
+  const measurementRepo = new MeasurementRepository();
+  const measurementDAOArray = await measurementRepo.getAllMeasurementsOfNetwork(
+    networkCode,
+    sensorMacs,
+    startDate,
+    endDate
+  );
+  const groupedMeasurements = await groupAndComputeMeasurements(measurementDAOArray, sensorMacs, startDate, endDate);
+
+  return groupedMeasurements;
 }
 
 export async function getAllStatsOfNetwork(
@@ -47,8 +63,17 @@ export async function getAllStatsOfNetwork(
   sensorMacs?: string[],
   startDate?: Date,
   endDate?: Date): Promise<StatsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllStatsOfNetwork(networkCode, sensorMacs, startDate, endDate)).map(mapStatsDAOToDTO);
+    const measurementRepo = new MeasurementRepository();
+  const measurementDAOArray = await measurementRepo.getAllMeasurementsOfNetwork(
+    networkCode,
+    sensorMacs,
+    startDate,
+    endDate
+  );
+
+    const groupedMeasurements = await groupAndComputeMeasurements(measurementDAOArray, sensorMacs, startDate, endDate);
+
+  return groupedMeasurements.map((measurement) => measurement.stats);
 }
 
 export async function getAllOutliersOfNetwork(
@@ -56,8 +81,20 @@ export async function getAllOutliersOfNetwork(
   sensorMacs?: string[],
   startDate?: Date,
   endDate?: Date): Promise<MeasurementsDTO[]> {
-  const measurementsRepo = new MeasurementRepository();
-    return (await measurementsRepo.getAllOutliersOfNetwork(networkCode, sensorMacs, startDate, endDate)).map(mapMeasurementsDAOToDTO);
+  const measurementRepo = new MeasurementRepository();
+  const measurementDAOArray = await measurementRepo.getAllMeasurementsOfNetwork(
+    networkCode,
+    sensorMacs,
+    startDate,
+    endDate
+  );
+  const groupedMeasurements = await groupAndComputeMeasurements(measurementDAOArray, sensorMacs, startDate, endDate);
+
+  const outliers = await Promise.all(
+    groupedMeasurements.map((measurement) => getOutliers(measurement))
+  );
+  
+  return outliers;
 }
 
 
