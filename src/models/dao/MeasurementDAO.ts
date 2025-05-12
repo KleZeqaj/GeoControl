@@ -13,6 +13,9 @@ export class MeasurementDAO {
   @Column({ nullable: false })
   value: number;
 
+  @Column({ nullable: false })
+  sensorMacAddress: string;
+
   @ManyToOne(() => SensorDAO, (sensor) => sensor.measurement)
   @JoinColumn({ name: "sensorMacAddress", referencedColumnName: "macAddress" })
   sensor: SensorDAO;

@@ -131,13 +131,13 @@ export function mapNetworkDAOToDTO(networkDAO: NetworkDAO): NetworkDTO{
 export function createMeasurementsDTO(
   sensorMacAddress: string,
   stats?: StatsDTO,
-  measurement?: MeasurementDTO[]
+  measurements?: MeasurementDTO[]
 ): MeasurementsDTO {
 
   return removeNullAttributes({
     sensorMacAddress,
     stats,
-    measurement
+    measurements
   }) as MeasurementsDTO;
 }
 
