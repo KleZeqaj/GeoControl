@@ -77,7 +77,7 @@ export function mapSensorDAOToDTO(sensor: SensorDAO) : SensorDTO{
 }
 
 export function createGatewayDTO(macAddress: string, name?: string, description?: string, sensors?: Array<SensorDAO>) : GatewayDTO {
-  let sensorsDTO : Array<SensorDTO>;
+  let sensorsDTO : Array<SensorDTO> = [];
 
   if (sensors !== undefined){
     for (let i = 0; i < sensors?.length; i++){
@@ -103,7 +103,7 @@ export function mapGatewayDAOToDTO(gateway: GatewayDAO) : GatewayDTO{
 
 export function createNetworkDTO(code: string, name?: string, description?: string,  gateways?: Array<GatewayDAO>) : NetworkDTO {
   
-  let gatewaysDTO : Array<GatewayDTO>;
+  let gatewaysDTO : Array<GatewayDTO> = [];
 
   if (gateways !== undefined){
     for (let i = 0; i < gateways?.length; i++){
@@ -116,14 +116,14 @@ export function createNetworkDTO(code: string, name?: string, description?: stri
     code, 
     name, 
     description, 
-    gatewaysDTO
+    gateways: gatewaysDTO
   }) as NetworkDTO;
 }
 
 
 
 export function mapNetworkDAOToDTO(networkDAO: NetworkDAO): NetworkDTO{
-  return createNetworkDTO(networkDAO.code, networkDAO.name, networkDAO.description);
+  return createNetworkDTO(networkDAO.code, networkDAO.name, networkDAO.description, networkDAO.gateways);
 }
 
 /* MEASUREMENTS MAPPING */

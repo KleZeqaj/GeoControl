@@ -54,7 +54,10 @@ export class NetworkRepository {
         }
 
         return findOrThrowNotFound(
-            await this.repo.find({ where: { code } }),
+            await this.repo.find({ 
+                where: { code },
+                relations: ["gateways"],
+            }),
             () => true,
             `Network with code '${code}' not found`
         );
@@ -62,7 +65,15 @@ export class NetworkRepository {
 
 
     async updateNetwork(code: string, newCode?: string ,newName?: string, newDescription?: string) : Promise<void>{
-        await this.getNetworkByCode(code);
+        const network = await this.getNetworkByCode(code);
+
+        if (newCode === undefined)
+            newCode = network.code;
+        if (newName === undefined)
+            newName = network.name;
+        if (newDescription === undefined)
+            newDescription = network.description;
+        
         await this.repo.update(code, {code: newCode, name: newName, description: newDescription});
         return;
     }
