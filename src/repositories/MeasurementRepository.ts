@@ -106,4 +106,47 @@ export class MeasurementRepository {
       });
 
   }
+
+  async storeMeasurements(networkCode: string, 
+    gatewayMacAddress: string, 
+    sensorMacAddress: string, 
+    valori: Map<Date,number>): Promise<MeasurementDAO[]> {
+
+    // Verifica se il network esiste, se non lo trova lancia un NotFoundError
+    findOrThrowNotFound(
+      await this.networkRepo.find({ where: { code : networkCode } }),
+      () => true,
+      `Network with code '${networkCode}' not found`
+    )
+
+    // Verifica se il gateway esiste, se non lo trova lancia un NotFoundError
+    findOrThrowNotFound(
+      await this.gatewayRepo.find({ where: { macAddress: gatewayMacAddress } }),
+      () => true,
+      `Gateway with MAC address '${gatewayMacAddress}' not found`
+    )
+
+    // Verifica se il sensore esiste, se non lo trova lancia un NotFoundError
+    findOrThrowNotFound(
+      await this.sensorRepo.find({ where: { macAddress: sensorMacAddress } }),
+      () => true,
+      `Sensor with MAC address '${sensorMacAddress}' not found`
+    )
+
+    // Costruisci le entità da salvare
+  const measurements: MeasurementDAO[] = [];
+
+  for (const [createdAt, value] of valori.entries()) {
+    const m = new MeasurementDAO();
+    m.createdAt = createdAt;
+    m.value = value;
+    m.sensorMacAddress = sensorMacAddress;
+    measurements.push(m);
+  }
+
+  // Salvataggio batch
+  return this.repo.save(measurements);
+
+  }
+
 }

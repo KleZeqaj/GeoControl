@@ -1,8 +1,23 @@
 import { Measurements as MeasurementsDTO } from "@dto/Measurements";
+import { Measurement as MeasurementDTO } from "@dto/Measurement";
 import { Stats as StatsDTO } from "@dto/Stats";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
 import { mapMeasurementDAOToDTO } from "@services/mapperService";
 import { computeStats , getOutliers, groupAndComputeMeasurements } from "@services/measurementService";
+
+export async function storeMeasurements(
+  networkCode: string, 
+  gatewayMacAddress: string, 
+  sensorMacAddress: string, 
+  measurements: MeasurementDTO[]): Promise<void> {
+  const measurementRepo = new MeasurementRepository();
+  const dateValueMap = new Map<Date, number>();
+  measurements.forEach((m) => {
+  dateValueMap.set(m.createdAt, m.value);
+  });
+  await measurementRepo.storeMeasurements(networkCode, gatewayMacAddress, sensorMacAddress, dateValueMap);
+}
+
 
 export async function getAllMeasurementsOfSensor(
   networkCode: string, 

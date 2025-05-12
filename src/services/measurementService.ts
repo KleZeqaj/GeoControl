@@ -41,12 +41,10 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
 }
 
 export async function getOutliers(measurements: MeasurementsDTO) : Promise<MeasurementsDTO> {
-const outliers = measurements.measurements.filter(m => m.isOutlier);
+const outliers = measurements.measurements?.filter(m => m.isOutlier) || [];
+measurements.measurements = outliers;
 
-  return {
-    ...measurements,
-    measurements: outliers,
-  };
+  return measurements;
 }
 
 export async function groupAndComputeMeasurements(

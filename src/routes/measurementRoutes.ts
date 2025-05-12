@@ -5,20 +5,33 @@ import { getAllMeasurementsOfSensor,
   getAllOutliersOfSensor,
   getAllMeasurementsOfNetwork,
   getAllStatsOfNetwork,
-  getAllOutliersOfNetwork } from "@controllers/measurementController";
+  getAllOutliersOfNetwork,
+  storeMeasurements } from "@controllers/measurementController";
 import { parseISODateParamToUTC, parseStringArrayParam} from "@utils";
 import { UserType } from "@models/UserType";
 import AppError from "@models/errors/AppError";
 import { Router } from "express";
 import { BadRequestError } from "@models/errors/BadRequestError";
+import { MeasurementFromJSON } from "@models/dto/Measurement";
 
 const router = Router();
 
 // Store a measurement for a sensor (Admin & Operator)
 router.post(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/measurements",
-  (req, res, next) => {
-    throw new AppError("Method not implemented", 500);
+  authenticateUser([UserType.Admin, UserType.Operator]),
+  async (req, res, next) => {
+    try {
+      const measurementArray = req.body.map((measurement) => MeasurementFromJSON(measurement));
+      await storeMeasurements(
+        req.params.networkCode,
+         req.params.gatewayMac,
+         req.params.sensorMac, 
+         measurementArray);
+      res.status(201).send();
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
@@ -40,8 +53,8 @@ router.get(
         )
       }
       const measurements = await getAllMeasurementsOfSensor(
-        req.params.networCode, 
-        req.params.gatewayMacAddress,
+        req.params.networkCode, 
+        req.params.gatewayMac,
         req.params.sensorMac,
         parsedStartDate, parsedEndDate);
       res.status(200).json(measurements);
@@ -69,8 +82,8 @@ router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats",
         )
       }
       const stats = await getAllStatsOfSensor(
-        req.params.networCode, 
-        req.params.gatewayMacAddress,
+        req.params.networkCode, 
+        req.params.gatewayMac,
         req.params.sensorMac,
         parsedStartDate, parsedEndDate);
       res.status(200).json(stats);
@@ -97,8 +110,8 @@ router.get(
         )
       }
       const measurements = await getAllOutliersOfSensor(
-        req.params.networCode, 
-        req.params.gatewayMacAddress,
+        req.params.networkCode, 
+        req.params.gatewayMac,
         req.params.sensorMac,
         parsedStartDate, parsedEndDate);
       res.status(200).json(measurements);
@@ -129,7 +142,7 @@ router.get(
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const measurements = await getAllMeasurementsOfNetwork(
-        req.params.networCode, 
+        req.params.networkCode, 
         sensorMacs,
         parsedStartDate, parsedEndDate);
       res.status(200).json(measurements);
@@ -160,7 +173,7 @@ router.get(
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const stats = await getAllStatsOfNetwork(
-        req.params.networCode, 
+        req.params.networkCode, 
         sensorMacs,
         parsedStartDate, parsedEndDate);
       res.status(200).json(stats);
@@ -191,7 +204,7 @@ router.get(
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const measurements = await getAllOutliersOfNetwork(
-        req.params.networCode, 
+        req.params.networkCode, 
         sensorMacs,
         parsedStartDate, parsedEndDate);
       res.status(200).json(measurements);
