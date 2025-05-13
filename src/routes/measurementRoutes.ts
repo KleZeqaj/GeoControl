@@ -9,10 +9,10 @@ import { getAllMeasurementsOfSensor,
   storeMeasurements } from "@controllers/measurementController";
 import { parseISODateParamToUTC, parseStringArrayParam} from "@utils";
 import { UserType } from "@models/UserType";
-import AppError from "@models/errors/AppError";
 import { Router } from "express";
 import { BadRequestError } from "@models/errors/BadRequestError";
 import { MeasurementFromJSON } from "@models/dto/Measurement";
+import { checkMeasurementBodyPost } from "@services/measurementService";
 
 const router = Router();
 
@@ -22,7 +22,12 @@ router.post(
   authenticateUser([UserType.Admin, UserType.Operator]),
   async (req, res, next) => {
     try {
+      // Controllo che il body sia valido
+      for (const meas of req.body) {
+        await checkMeasurementBodyPost(meas);
+      }
       const measurementArray = req.body.map((measurement) => MeasurementFromJSON(measurement));
+
       await storeMeasurements(
         req.params.networkCode,
          req.params.gatewayMac,
@@ -96,6 +101,7 @@ router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats",
 // Retrieve only outliers for a specific sensor
 router.get(
   CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/outliers",
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
   async (req, res, next) => {
      try {
       const { startDate, endDate } = req.query;
@@ -125,6 +131,7 @@ router.get(
 // Retrieve measurements for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/measurements",
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
@@ -156,6 +163,7 @@ router.get(
 // Retrieve statistics for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/stats",
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
@@ -187,6 +195,7 @@ router.get(
 // Retrieve only outliers for a set of sensors of a specific network
 router.get(
   CONFIG.ROUTES.V1_NETWORKS + "/:networkCode/outliers",
+  authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]),
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;

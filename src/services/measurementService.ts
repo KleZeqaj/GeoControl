@@ -1,8 +1,9 @@
-import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
+import { Measurement, Measurement as MeasurementDTO } from "@models/dto/Measurement";
 import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
 import { createMeasurementsDTO , createStatsDTO} from "@services/mapperService";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
 import { mapMeasurementDAOToDTO } from "@services/mapperService";
+import { BadRequestError } from "@models/errors/BadRequestError";
 
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
@@ -41,36 +42,53 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
 }
 
 export async function getOutliers(measurements: MeasurementsDTO) : Promise<MeasurementsDTO> {
-const outliers = measurements.measurements?.filter(m => m.isOutlier) || [];
-measurements.measurements = outliers;
 
+  if (!measurements.measurements) {
+    measurements.measurements = null;
+  } else {
+    const outliers = measurements.measurements?.filter(m => m.isOutlier) || [];
+    measurements.measurements = outliers;
+  }
   return measurements;
 }
 
 export async function groupAndComputeMeasurements(
   measurementDAOArray: MeasurementDAO[],
+  existingMacs: string[],
   sensorMacs?: string[],
   startDate?: Date,
   endDate?: Date
 ): Promise<MeasurementsDTO[]> {
   const groupedBySensor = new Map<string, MeasurementDAO[]>();
 
-  for (const measurement of measurementDAOArray) {
-    const mac = measurement.sensor?.macAddress;
-    if (!mac) continue;
 
+  for (const measurement of measurementDAOArray) {
+    const mac = measurement.sensor.macAddress;
     if (!groupedBySensor.has(mac)) {
       groupedBySensor.set(mac, []);
     }
     groupedBySensor.get(mac)!.push(measurement);
   }
 
-  const selectedMacs = sensorMacs ?? Array.from(groupedBySensor.keys());
+  for (const mac of existingMacs) {
+    if (!groupedBySensor.has(mac)) {
+      groupedBySensor.set(mac, []);
+    }
+  }
+
+  const selectedMacs = (sensorMacs ?? Array.from(groupedBySensor.keys()))
+  .filter(mac => groupedBySensor.has(mac));
   const results: MeasurementsDTO[] = [];
 
   for (const mac of selectedMacs) {
     const daos = groupedBySensor.get(mac) ?? [];
+
     const dtos = daos.map(mapMeasurementDAOToDTO);
+    if (dtos.length === 0) {
+      // Il sensore esiste, ma non ha misurazioni
+      results.push(createMeasurementsDTO(mac, null , []));
+      continue;
+    }
     const stats = await computeStats(dtos, mac, startDate, endDate);
     results.push(stats);
   }
@@ -78,6 +96,17 @@ export async function groupAndComputeMeasurements(
   return results;
 }
 
+export async function checkMeasurementBodyPost(meas: any): Promise<void> {
+  if(meas.createdAt === undefined && meas.value === undefined) {
+    throw new BadRequestError("/body/createdAt' and '/body/value' must have required properties 'createdAt' and 'value'");
+  }
+  else if(meas.createdAt === undefined || meas.createdAt === null) {
+    throw new BadRequestError("/body/createdAt' must have required property 'createdAt'");
+  }
+  else if(meas.value === undefined || meas.value === null) {
+    throw new BadRequestError("/body/value' must have required property 'value''");
+  }
+}
 
 
 

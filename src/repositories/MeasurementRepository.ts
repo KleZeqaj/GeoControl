@@ -149,4 +149,36 @@ export class MeasurementRepository {
 
   }
 
+  async getValidMacs(
+    networkCode: string,
+    sensorMacs?: string[]): Promise<string[]> {
+
+    // Verifica se il network esiste, se non lo trova lancia un NotFoundError
+    findOrThrowNotFound(
+      await this.networkRepo.find({ where: { code : networkCode } }),
+      () => true,
+      `Network with code '${networkCode}' not found`
+    )
+
+    const where: any = {
+      gateway : {
+        network: {
+          code: networkCode,
+        },
+      }
+    };
+
+        // Filtro solo se sensorMacs è definito e non vuoto
+    if (sensorMacs && sensorMacs.length > 0) {
+      where.macAddress = In(sensorMacs);
+    }
+
+    const sensors = await this.sensorRepo.find({
+      where,
+      relations: ["gateway", "gateway.network"],
+    });
+
+    const existingMacs = sensors.map((sensor) => sensor.macAddress);
+    return existingMacs;
+  }
 }
