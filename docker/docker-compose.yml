@@ -1,16 +1,13 @@
 x-constants:
   backend_host: &backend_host localhost
   backend_port: &backend_port 5000
-  frontend_port: &frontend_port 5173
 
 services:
   frontend:
     image: smpolito/geocontrolui:latest
     container_name: geocontrol-frontend
-    environment:
-      SERVER_HOST: *backend_host
-      SERVER_PORT: *backend_port
-      APP_PORT: *frontend_port
     ports:
       - "5173:5173" # Anchored variables defined above (e.g., &frontend_port) cannot be used within quoted strings.
         # Values like port numbers must be written explicitly as literals, but they should remain consistent with the defined variables.
+    volumes: # Environment variables for the front-end must be defined in the frontend/env.vars.json and the file must be
+      - ./frontend/env-vars.json:/app/dist/config.json # explicitly mounted in the container to be effective
