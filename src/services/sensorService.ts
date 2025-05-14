@@ -9,7 +9,7 @@ export async function updateSensorService(networkCode: string, gatewayMac: strin
     const gateway = await gatewayRepo.getGatewayByMacAddress(networkCode, gatewayMac);
     // Recupera i dati attuali del sensore per quel gateway
     const oldSensor = await sensorRepo.getSensorByMacAddress(gateway.macAddress, sensorMac);
-
+//si
     // Riempie i campi mancanti con i valori già presenti
     if (sensor.macAddress === undefined) sensor.macAddress = oldSensor.macAddress;
     if (sensor.name === undefined) sensor.name = oldSensor.name;
