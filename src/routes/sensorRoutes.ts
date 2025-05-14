@@ -78,6 +78,7 @@ router.patch("/:sensorMac", authenticateUser([UserType.Admin, UserType.Operator]
 );
 
 // Delete a sensor (Admin & Operator)
+//ok
 router.delete(
   "/:sensorMac",
   authenticateUser([UserType.Admin, UserType.Operator]),
