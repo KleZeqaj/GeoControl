@@ -10,6 +10,7 @@ import sensorRouter from "@routes/sensorRoutes";
 import measurementRouter from "@routes/measurementRoutes";
 import networkRouter from "@routes/networkRoutes";
 import cors from "cors";
+import { validationHandler } from "@middlewares/validationMiddleware"
 
 export const app = express();
 
@@ -21,6 +22,8 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(YAML.load(CONFIG.SWAGGER_V1_FILE_PATH))
 );
+
+app.use(validationHandler(CONFIG.SWAGGER_V1_FILE_PATH));
 
 app.use(CONFIG.ROUTES.V1_AUTH, authenticationRouter);
 app.use(CONFIG.ROUTES.V1_USERS, userRouter);
