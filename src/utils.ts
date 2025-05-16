@@ -50,3 +50,8 @@ export function parseStringArrayParam(param?: unknown): string[] | undefined {
 
   return undefined;
 }
+
+export function isValidMAC(str: string): boolean {
+  const regex = /([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})/;
+  return regex.test(str);
+}

@@ -32,5 +32,7 @@ export async function deleteGateway(networkCode: string, gatewayMac: string): Pr
 }
 
 export async function updateGateway(networkCode: string, gatewayMac: string, gateway: GatewayDTO): Promise<void> {
+    const networkRepo = new NetworkRepository();
+    await networkRepo.getNetworkByCode(networkCode);
     await updateGatewayService(networkCode, gatewayMac, gateway);
   }

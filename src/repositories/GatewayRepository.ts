@@ -11,12 +11,20 @@ export class GatewayRepository {
     this.repo = AppDataSource.getRepository(GatewayDAO);
   }
 
+  async isMacAlreadyPresent(macAddress: string): Promise<void> {
+    throwConflictIfFound(
+      await this.repo.find({ where: { macAddress } }),
+      () => true,
+      `Gateway with MAC address '${macAddress}' already exists`
+    );
+  }
+
   getAllGateways(networkCode: string): Promise<GatewayDAO[]> {
     return this.repo.find({
         where: {
             network: { code: networkCode}
         },
-        relations: ['network']
+        relations: ['network', 'sensors']
     });
   }
 
@@ -27,7 +35,7 @@ export class GatewayRepository {
             network: { code: networkCode }, 
             macAddress: gatewayMac 
         }, 
-            relations: ['network'] }),
+            relations: ['network', 'sensors'] }),
       () => true,
       `Gateway with MAC address '${gatewayMac}' not found`
     );
@@ -37,14 +45,8 @@ export class GatewayRepository {
     macAddress: string,
     name: string,
     description: string,
-    network: NetworkDAO
-  ): Promise<GatewayDAO> {
-    throwConflictIfFound(
-      await this.repo.find({ where: { macAddress } }),
-      () => true,
-      `Gateway with MAC address '${macAddress}' already exists`
-    );
-
+    network: NetworkDAO): Promise<GatewayDAO> {
+      
     return this.repo.save({
         macAddress: macAddress,
         name: name,
