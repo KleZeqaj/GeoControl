@@ -1,6 +1,6 @@
 import { NetworkDAO } from "@dao/NetworkDAO";
 import { SensorDAO } from "@dao/SensorDAO";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity("gateways")
@@ -17,10 +17,14 @@ export class GatewayDAO {
   @Column({ nullable: true })
   description: string;
 
+  @Column({ nullable: false})
+  netID: string;
+
   @ManyToOne(() => NetworkDAO, (network) => network.gateways, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   })
+  @JoinColumn({ name: "netID", referencedColumnName: "code" })
   network: NetworkDAO
 
   @OneToMany(() => SensorDAO, (sensor) => sensor.gateway)

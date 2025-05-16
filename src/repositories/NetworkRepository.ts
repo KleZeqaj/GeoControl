@@ -16,16 +16,11 @@ export class NetworkRepository {
         return regex.test(str);
     }
 
-
-    getAllNetworks() : Promise<NetworkDAO[]>{
-        return this.repo.find();
-    }
-
-    async createNewNetwork(code: string, name?: string, description?: string) : Promise<NetworkDAO> {
-
+    async checkOnNetID(code: string): Promise<void> {
         if (code.length < 1){
             throw new Error("Code Length must be at least 1!");
         }
+        
         if (!this.isAlphanumeric(code)){
             throw new Error("Code must be alphanumeric!");
         }
@@ -35,6 +30,17 @@ export class NetworkRepository {
             () => true,
             `Network with code '${code}' already exists`
         );
+    }
+
+    getAllNetworks() : Promise<NetworkDAO[]>{
+        return this.repo.find({
+            relations: ['gateways', 'gateways.sensors'],
+        });
+    }
+
+    async createNewNetwork(code: string, name?: string, description?: string) : Promise<NetworkDAO> {
+
+        await this.checkOnNetID(code);
 
         return this.repo.save({
             code: code, 
@@ -45,18 +51,10 @@ export class NetworkRepository {
 
 
     async getNetworkByCode(code: string): Promise<NetworkDAO>{
-
-        if (code.length < 1){
-            throw new Error("Code Length must be at least 1!");
-        }
-        if (!this.isAlphanumeric(code)){
-            throw new Error("Provided Code must be alphanumeric!");   
-        }
-
         return findOrThrowNotFound(
             await this.repo.find({ 
                 where: { code },
-                relations: ["gateways"],
+                relations: ["gateways", "gateways.sensors"],
             }),
             () => true,
             `Network with code '${code}' not found`
@@ -69,6 +67,9 @@ export class NetworkRepository {
 
         if (newCode === undefined)
             newCode = network.code;
+        else {
+            await this.checkOnNetID(newCode);
+        }
         if (newName === undefined)
             newName = network.name;
         if (newDescription === undefined)
@@ -79,13 +80,6 @@ export class NetworkRepository {
     }
 
     async deleteNetwork(code: string) : Promise<void>{
-        if (code.length < 1){
-            throw new Error("Code Length must be at least 1!");
-        }
-        if (!this.isAlphanumeric(code)){
-            throw new Error("Provided Code must be alphanumeric!");   
-        }
-
         await this.repo.remove(await this.getNetworkByCode(code));
     }
 }

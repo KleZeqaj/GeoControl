@@ -1,10 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { GatewayDAO } from "./GatewayDAO";
 import { MeasurementDAO } from "./MeasurementDAO";
 
 @Entity("sensors")
 export class SensorDAO{
-    @PrimaryColumn({ nullable: false })
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ nullable: false, unique: true })
     macAddress: string;
 
     @Column({ nullable: true })
