@@ -1,6 +1,6 @@
 import { Sensor as SensorDTO } from "@dto/Sensor";
-import { SensorRepository } from "@repositories/SensorRepository";
 import { GatewayRepository } from "@repositories/GatewayRepository";
+import { SensorRepository } from "@repositories/SensorRepository";
 import { mapSensorDAOToDTO } from "@services/mapperService";
 import { updateSensorService } from "@services/sensorService";
 
@@ -20,7 +20,7 @@ export async function getSensor(networkCode: string, gatewayMac: string, sensorM
   const sensorRepo = new SensorRepository();
 
   const gateway = await gatewayRepo.getGatewayByMacAddress(networkCode, gatewayMac);
-  const sensor = await sensorRepo.getSensorByMacAddress(gateway.macAddress, sensorMac);
+  const sensor = await sensorRepo.getSensorByMacAddress(sensorMac);
 
   return mapSensorDAOToDTO(sensor);
 }
@@ -32,11 +32,11 @@ export async function createSensor(networkCode: string, gatewayMac: string, sens
   const gateway = await gatewayRepo.getGatewayByMacAddress(networkCode, gatewayMac);
   await sensorRepo.createSensor(
     sensorDto.macAddress,
+    gateway,
     sensorDto.name,
     sensorDto.description,
     sensorDto.variable,
-    sensorDto.unit,
-    gateway.macAddress
+    sensorDto.unit
   );
 }
 
@@ -46,7 +46,7 @@ export async function deleteSensor(networkCode: string, gatewayMac: string, sens
   const sensorRepo = new SensorRepository();
 
   const gateway = await gatewayRepo.getGatewayByMacAddress(networkCode, gatewayMac);
-  await sensorRepo.deleteSensor(gateway.macAddress, sensorMac);
+  await sensorRepo.deleteSensor(sensorMac);
 }
 
 // Aggiorna un sensore dopo aver validato il gateway e il network

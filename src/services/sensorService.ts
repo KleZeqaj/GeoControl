@@ -1,6 +1,6 @@
 import { Sensor as SensorDTO } from "@dto/Sensor";
-import { SensorRepository } from "@repositories/SensorRepository";
 import { GatewayRepository } from "@repositories/GatewayRepository";
+import { SensorRepository } from "@repositories/SensorRepository";
 
 export async function updateSensorService(networkCode: string, gatewayMac: string, sensorMac: string, sensor: SensorDTO): Promise<void> {
     const sensorRepo = new SensorRepository();
@@ -8,7 +8,7 @@ export async function updateSensorService(networkCode: string, gatewayMac: strin
 
     const gateway = await gatewayRepo.getGatewayByMacAddress(networkCode, gatewayMac);
     // Recupera i dati attuali del sensore per quel gateway
-    const oldSensor = await sensorRepo.getSensorByMacAddress(gateway.macAddress, sensorMac);
+    const oldSensor = await sensorRepo.getSensorByMacAddress(sensorMac);
 //si
     // Riempie i campi mancanti con i valori già presenti
     if (sensor.macAddress === undefined) sensor.macAddress = oldSensor.macAddress;

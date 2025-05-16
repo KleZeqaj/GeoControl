@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { GatewayDAO } from "./GatewayDAO";
 import { MeasurementDAO } from "./MeasurementDAO";
 
@@ -19,7 +19,14 @@ export class SensorDAO{
     @Column({ nullable: true })
     unit: string;
 
-    @ManyToOne(() => GatewayDAO, (gateway) => gateway.sensors)
+    @Column({ nullable: false })
+    gatewayMac: string;
+
+    @ManyToOne(() => GatewayDAO, (gateway) => gateway.sensors, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
+    })
+    @JoinColumn({ name: "gatewayMac", referencedColumnName: "macAddress" })
     gateway: GatewayDAO
     
     @OneToMany(() => MeasurementDAO, (measurement) => measurement.sensor)

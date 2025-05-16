@@ -1,8 +1,8 @@
-import { AppDataSource } from "@database";
-import { Repository } from "typeorm";
 import { SensorDAO } from "@dao/SensorDAO";
-import { GatewayDAO } from "@dao/GatewayDAO";
+import { AppDataSource } from "@database";
+import { GatewayDAO } from "@models/dao/GatewayDAO";
 import { findOrThrowNotFound, throwConflictIfFound } from "@utils";
+import { Repository } from "typeorm";
 
 export class SensorRepository {
   private repo: Repository<SensorDAO>;
@@ -12,6 +12,10 @@ export class SensorRepository {
   }
 
   getAllSensors(gatewayMac: string): Promise<SensorDAO[]> {
+
+    if (gatewayMac?.length < 1)
+      throw new Error("Gateway macAddress must have a length >= 1!")
+
     return this.repo.find({
       where: {
         gateway: { macAddress: gatewayMac },
@@ -20,11 +24,13 @@ export class SensorRepository {
     });
   }
 
-  async getSensorByMacAddress(gatewayMac: string, sensorMac: string): Promise<SensorDAO> {
+  async getSensorByMacAddress(sensorMac: string): Promise<SensorDAO> {
+    if (sensorMac?.length < 1)
+      throw new Error("Sensor macAddress must have a length >= 1!")
+
     return findOrThrowNotFound(
       await this.repo.find({ 
         where: { 
-          gateway: { macAddress: gatewayMac },
           macAddress: sensorMac,
         }, 
             relations: ['gateway'] }),
@@ -35,11 +41,11 @@ export class SensorRepository {
 
   async createSensor(
     macAddress: string,
-    name: string,
-    description: string,
-    variable: string,
-    unit: string,
-    gatewayMac: string
+    gateway: GatewayDAO,
+    name?: string,
+    description?: string,
+    variable?: string,
+    unit?: string,
   ): Promise<SensorDAO> {
     throwConflictIfFound(
       await this.repo.find({ where: { macAddress } }),
@@ -55,19 +61,22 @@ export class SensorRepository {
 
     return this.repo.save({
       macAddress: macAddress,
+      gatewayMac: gateway.macAddress,
       name: name,
       description: description,
       variable: variable,
-      unit: unit,
-      gatewayMac: gatewayMac,
+      unit: unit
     });
   }
 
   async deleteSensor(
-    gatewayMac: string, 
     sensorMac: string
   ): Promise<void> {
-    const sensor = await this.getSensorByMacAddress(gatewayMac, sensorMac);
+
+    if (sensorMac?.length < 1)
+        throw new Error("Sensor macAddress must have a length >= 1!")
+
+    const sensor = await this.getSensorByMacAddress(sensorMac);
     await this.repo.remove(sensor);
   }
 

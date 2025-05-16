@@ -79,6 +79,13 @@ export class NetworkRepository {
     }
 
     async deleteNetwork(code: string) : Promise<void>{
+        if (code.length < 1){
+            throw new Error("Code Length must be at least 1!");
+        }
+        if (!this.isAlphanumeric(code)){
+            throw new Error("Provided Code must be alphanumeric!");   
+        }
+
         await this.repo.remove(await this.getNetworkByCode(code));
     }
 }
