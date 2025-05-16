@@ -65,6 +65,16 @@ To create the SQLite database file and add to it an admin user with credentials 
 npm run create-root
 ```
 
+#### Running Tests
+
+To run the test, the command provided is:
+
+```sh
+npm test
+```
+
+which runs the test with coverage using Jest
+
 ### Windows Execution Policy Issue
 
 If you encounter an execution policy error like:
@@ -119,9 +129,7 @@ The project follows a **modular architecture**, ensuring maintainability, separa
 
 - **`/backend`**
 
-  - Contains the `Dockerfile` used to build the backend Node.js application.  
-    When the container starts, it first runs the `create-root` script that waits for the database to become available and creates the **default admin user** if it does not already exist.  
-    After that, it launches the actual backend server.
+  - Contains the `Dockerfile` for building the backend Node.js application. It is intentionally left empty, as completing it is part of task 4. When the container starts, it must first run the `create-root` script, which waits for the database to become available and creates the **default admin user** if it does not exist. Afterwards, it launches the actual backend server.
 
   **Build the backend image manually (from the project root):**
 
@@ -141,6 +149,10 @@ The project follows a **modular architecture**, ensuring maintainability, separa
     The script creates the database, user, and password based on the **environment variables** defined in the `docker-compose.yml` file.  
     This initialization is executed **only on the first startup**, if the database volume is empty.
 
+- **`/frontend`**
+
+  - Contains the `env-vars.json` file, which defines environment variables for the front end such as the server port and server host. The default values can be customized in this file. In order to take effect, it must be mounted inside the front-end container, which is already done in the provided Docker Compose file.
+
 - **`docker-compose.yml`**
 
   - Defines a three-service setup:
@@ -154,25 +166,31 @@ The project follows a **modular architecture**, ensuring maintainability, separa
   **Run the Docker Compose (from `/docker` folder):**
 
   ```bash
-  docker-compose up
+  docker compose up
+  ```
+
+  **Run the Docker Compose updating service images if newer versions exist:**
+
+  ```bash
+  docker compose up --pull always
   ```
 
   **Run the Docker Compose with automatic rebuild of the backend image:**
 
   ```bash
-  docker-compose up --build
+  docker compose up --build
   ```
 
   **Stop and remove containers:**
 
   ```bash
-  docker-compose down
+  docker compose down
   ```
 
   **Stop, remove containers and reset volumes (reset the DB):**
 
   ```bash
-  docker-compose down -v
+  docker compose down -v
   ```
 
 ### `/logs`
