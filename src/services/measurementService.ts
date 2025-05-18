@@ -10,10 +10,10 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
     const mean = measurementArray.reduce((acc, measurement) => acc + measurement.value, 0) / measurementArray.length;
     const variance = measurementArray.reduce((acc, measurement) => acc + Math.pow(measurement.value - mean, 2), 0) / measurementArray.length;
 
-    const upperTreshold = mean + 2 * Math.sqrt(variance);
-    const lowerTreshold = mean - 2 * Math.sqrt(variance);
+    const upperThreshold = mean + 2 * Math.sqrt(variance);
+    const lowerThreshold = mean - 2 * Math.sqrt(variance);
 
-    const isOutlier = (value: number) => value > upperTreshold || value < lowerTreshold;
+    const isOutlier = (value: number) => value > upperThreshold || value < lowerThreshold;
 
     const dates = measurementArray.map(m => m.createdAt);
     const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
@@ -27,8 +27,8 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
         endDateTime,
         mean,
         variance,
-        upperTreshold,
-        lowerTreshold
+        upperThreshold,
+        lowerThreshold
     );
 
     // Aggiorno i valori di isOutlier
