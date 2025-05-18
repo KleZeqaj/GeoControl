@@ -1,9 +1,9 @@
 import { Measurement, Measurement as MeasurementDTO } from "@models/dto/Measurement";
 import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
-import { createMeasurementsDTO , createStatsDTO} from "@services/mapperService";
+import { createMeasurementsDTO , createMeasurementDTO, createStatsDTO} from "@services/mapperService";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
 import { mapMeasurementDAOToDTO } from "@services/mapperService";
-import { BadRequestError } from "@models/errors/BadRequestError";
+
 
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
@@ -32,10 +32,20 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
     );
 
     // Aggiorno i valori di isOutlier
-      const updatedMeasurements: MeasurementDTO[] = measurementArray.map(m => ({
-    ...m,
+    /*
+    const updatedMeasurements: MeasurementDTO[] = measurementArray.map(m => ({
+    value: Number(m.value.toFixed(2)),
+    createdAt: m.createdAt,
     isOutlier: isOutlier(m.value),
-    }));
+    }));*/
+
+    const updatedMeasurements: MeasurementDTO[] = [];
+    for (const measurement of measurementArray) {
+      updatedMeasurements.push(createMeasurementDTO(
+        measurement.createdAt,
+        measurement.value,
+        isOutlier(measurement.value)))
+    }
 
     return createMeasurementsDTO(sensorMac, stats, updatedMeasurements);
 
@@ -95,18 +105,5 @@ export async function groupAndComputeMeasurements(
 
   return results;
 }
-
-export async function checkMeasurementBodyPost(meas: any): Promise<void> {
-  if(meas.createdAt === undefined && meas.value === undefined) {
-    throw new BadRequestError("/body/createdAt' and '/body/value' must have required properties 'createdAt' and 'value'");
-  }
-  else if(meas.createdAt === undefined || meas.createdAt === null) {
-    throw new BadRequestError("/body/createdAt' must have required property 'createdAt'");
-  }
-  else if(meas.value === undefined || meas.value === null) {
-    throw new BadRequestError("/body/value' must have required property 'value''");
-  }
-}
-
 
 

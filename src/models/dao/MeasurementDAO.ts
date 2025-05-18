@@ -17,7 +17,7 @@ export class MeasurementDAO {
 })
   createdAt: Date; 
 
-  @Column({ nullable: false })
+  @Column({ type: "double" ,nullable: false })
   value: number;
 
   @Column({ nullable: false })

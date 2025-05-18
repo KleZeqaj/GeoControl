@@ -12,7 +12,6 @@ import { UserType } from "@models/UserType";
 import { Router } from "express";
 import { BadRequestError } from "@models/errors/BadRequestError";
 import { MeasurementFromJSON } from "@models/dto/Measurement";
-import { checkMeasurementBodyPost } from "@services/measurementService";
 
 const router = Router();
 
@@ -22,12 +21,7 @@ router.post(
   authenticateUser([UserType.Admin, UserType.Operator]),
   async (req, res, next) => {
     try {
-      // Controllo che il body sia valido
-      for (const meas of req.body) {
-        await checkMeasurementBodyPost(meas);
-      }
       const measurementArray = req.body.map((measurement) => MeasurementFromJSON(measurement));
-
       await storeMeasurements(
         req.params.networkCode,
          req.params.gatewayMac,
