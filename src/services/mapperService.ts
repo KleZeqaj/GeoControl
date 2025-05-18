@@ -166,15 +166,15 @@ export function createStatsDTO(
   endDate: Date,
   mean: number,
   variance: number,
-  upperTreshold: number,
-  lowerTreshold: number
+  upperThreshold: number,
+  lowerThreshold: number
 ): StatsDTO {
   return removeNullAttributes({
     startDate,
     endDate,
     mean,
     variance,
-    upperTreshold,
-    lowerTreshold
+    upperThreshold,
+    lowerThreshold
   }) as StatsDTO;
 }

@@ -52,7 +52,10 @@ export class MeasurementRepository {
   };
 
     if (startDate && endDate) {
-      where.createdAt = Between(startDate, endDate);
+      where.createdAt = Between(
+        startDate,
+        endDate
+);
     } else if (startDate) {
       where.createdAt = MoreThanOrEqual(startDate);
     } else if (endDate) {
@@ -93,7 +96,10 @@ export class MeasurementRepository {
     }
 
     if (startDate && endDate) {
-      where.createdAt = Between(startDate, endDate);
+      where.createdAt = Between(
+        startDate,
+        endDate
+);
     } else if (startDate) {
       where.createdAt = MoreThanOrEqual(startDate);
     } else if (endDate) {
@@ -138,7 +144,14 @@ export class MeasurementRepository {
 
   for (const [createdAt, value] of valori.entries()) {
     const m = new MeasurementDAO();
-    m.createdAt = createdAt;
+    m.createdAt = new Date(Date.UTC(
+      createdAt.getUTCFullYear(),
+      createdAt.getUTCMonth(),
+      createdAt.getUTCDate(),
+      createdAt.getUTCHours(),
+      createdAt.getUTCMinutes(),
+      createdAt.getUTCSeconds()
+  ));
     m.value = value;
     m.sensorMacAddress = sensorMacAddress;
     measurements.push(m);
