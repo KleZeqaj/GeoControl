@@ -7,7 +7,14 @@ export class MeasurementDAO {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({
+  type: 'text',
+  nullable: false,
+  transformer: {
+    to: (value: Date) => value.toISOString(),
+    from: (value: string) => new Date(value),
+  }
+})
   createdAt: Date; 
 
   @Column({ nullable: false })

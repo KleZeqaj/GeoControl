@@ -25,10 +25,10 @@ export async function computeStats(measurementArray: MeasurementDTO[], sensorMac
     const stats = createStatsDTO(
         startDateTime,
         endDateTime,
-        mean,
-        variance,
-        upperThreshold,
-        lowerThreshold
+        Number(mean.toFixed(2)),
+        Number(variance.toFixed(2)),
+        Number(upperThreshold.toFixed(2)),
+        Number(lowerThreshold.toFixed(2)),
     );
 
     // Aggiorno i valori di isOutlier
