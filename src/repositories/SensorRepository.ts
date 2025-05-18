@@ -13,9 +13,6 @@ export class SensorRepository {
 
   getAllSensors(gatewayMac: string): Promise<SensorDAO[]> {
 
-    if (gatewayMac?.length < 1)
-      throw new Error("Gateway macAddress must have a length >= 1!")
-
     return this.repo.find({
       where: {
         gateway: { macAddress: gatewayMac },
@@ -25,8 +22,6 @@ export class SensorRepository {
   }
 
   async getSensorByMacAddress(sensorMac: string): Promise<SensorDAO> {
-    if (sensorMac?.length < 1)
-      throw new Error("Sensor macAddress must have a length >= 1!")
 
     return findOrThrowNotFound(
       await this.repo.find({ 
@@ -58,6 +53,9 @@ export class SensorRepository {
     where: { macAddress: gatewayMac },
   });
   */
+
+   if (macAddress?.length < 1)
+      throw new Error("Sensor macAddress must have a length >= 1!")
 
     return this.repo.save({
       macAddress: macAddress,
