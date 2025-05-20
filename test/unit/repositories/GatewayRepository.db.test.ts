@@ -55,7 +55,7 @@ describe("GatewayRepository: SQLite in-memory ", () => {
 
         await repoG.createGateway("94:3F:BE:4C:4A:79", "GW01", "on-field aggregation node", network);
         await expect(
-            repoG.isMacAlreadyPresent("94:3F:BE:4C:4A:79")
+            repoG.createGateway("94:3F:BE:4C:4A:79", "GW02", "on-field aggregation node", network)
         ).rejects.toThrow(ConflictError);
     })
 

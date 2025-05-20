@@ -75,7 +75,7 @@ export class NetworkRepository {
         if (newDescription === undefined)
             newDescription = network.description;
         
-        await this.repo.update(code, {code: newCode, name: newName, description: newDescription});
+        await this.repo.update({code}, {code: newCode, name: newName, description: newDescription});
         return;
     }
 
