@@ -55,7 +55,7 @@ export class SensorRepository {
       await this.repo.find({ where: { macAddress } }),
       () => true,
       `Sensor with MAC address '${macAddress}' already exists`
-    );*/
+    );
 /*
     const gatewayRepo = AppDataSource.getRepository(GatewayDAO);
   const gateway = await gatewayRepo.findOneOrFail({
@@ -64,7 +64,7 @@ export class SensorRepository {
   */
 
     await this.isMacAlreadyPresent(macAddress);
-
+    
    if (macAddress?.length < 1)
       throw new Error("Sensor macAddress must have a length >= 1!")
 
