@@ -21,6 +21,14 @@ export class SensorRepository {
     });
   }
 
+   async isMacAlreadyPresent(macAddress: string): Promise<void> {
+    throwConflictIfFound(
+      await this.repo.find({ where: { macAddress } }),
+      () => true,
+      `Gateway with MAC address '${macAddress}' already exists`
+    );
+  }
+
   async getSensorByMacAddress(sensorMac: string): Promise<SensorDAO> {
 
     return findOrThrowNotFound(
@@ -42,6 +50,7 @@ export class SensorRepository {
     variable?: string,
     unit?: string,
   ): Promise<SensorDAO> {
+    /*
     throwConflictIfFound(
       await this.repo.find({ where: { macAddress } }),
       () => true,
@@ -54,6 +63,8 @@ export class SensorRepository {
   });
   */
 
+    await this.isMacAlreadyPresent(macAddress);
+    
    if (macAddress?.length < 1)
       throw new Error("Sensor macAddress must have a length >= 1!")
 
@@ -87,6 +98,7 @@ export class SensorRepository {
     newVariable: string,
     newUnit: string
   ): Promise<void> {
+    await this.isMacAlreadyPresent(newMac);
     await this.repo.update({macAddress: oldMac}, {macAddress: newMac, name: newName, description: newDescription,  variable: newVariable, unit: newUnit});
     return;
   }

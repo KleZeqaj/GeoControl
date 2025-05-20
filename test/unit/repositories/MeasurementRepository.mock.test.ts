@@ -64,6 +64,41 @@ describe("MeasurementRepository (mocked DB)", () => {
     expect(result[0].value).toBe(42);
   });
 
+  it("getAllMeasurementsOfSensor - only startDate", async () => {
+    
+    mockFind.mockResolvedValueOnce([{ code: "NET1" }])
+    mockFind.mockResolvedValueOnce([{ macAddress: "GW-MAC" }])
+    mockFind.mockResolvedValueOnce([{ macAddress: "SENSOR-MAC" }])
+    mockFind.mockResolvedValueOnce([{ value: 20 }]);
+
+    const res = await repo.getAllMeasurementsOfSensor(
+      "NET1",
+      "GW-MAC",
+      "SENSOR-MAC",
+      new Date("2024-01-02")
+    );
+
+    expect(res[0].value).toBe(20);
+  });
+
+  it("getAllMeasurementsOfSensor - only endDate", async () => {
+    
+    mockFind.mockResolvedValueOnce([{ code: "NET1" }])
+    mockFind.mockResolvedValueOnce([{ macAddress: "GW-MAC" }])
+    mockFind.mockResolvedValueOnce([{ macAddress: "SENSOR-MAC" }])
+    mockFind.mockResolvedValueOnce([{ value: 30 }]);
+
+    const res = await repo.getAllMeasurementsOfSensor(
+      "NET1",
+      "GW-MAC",
+      "SENSOR-MAC",
+      undefined,
+      new Date("2024-01-01")
+    );
+
+    expect(res[0].value).toBe(30);
+  });
+
   it("getAllMeasurementsOfNetwork filters by sensorMacs", async () => {
     
     mockFind.mockResolvedValueOnce([{ code: "NET2" }]) // network check
@@ -74,6 +109,57 @@ describe("MeasurementRepository (mocked DB)", () => {
     const result = await repo.getAllMeasurementsOfNetwork("NET2", ["99:88:77"]);
     expect(result.length).toBe(1);
     expect(result[0].sensor.macAddress).toBe("99:88:77");
+  });
+
+it("getAllMeasurementsOfNetwork - only startDate", async () => {
+    mockFind
+      .mockResolvedValueOnce([{ code: "NET-X" }]) // network check
+      .mockResolvedValueOnce([{ value: 10 }]);    // result
+
+    const result = await repo.getAllMeasurementsOfNetwork(
+      "NET-X",
+      undefined,
+      new Date("2024-01-01")
+    );
+
+    expect(mockFind).toHaveBeenLastCalledWith(expect.objectContaining({
+      where: expect.objectContaining({
+        createdAt: expect.anything(),
+      }),
+      relations: expect.anything()
+    }));
+
+    expect(result[0].value).toBe(10);
+  });
+
+  it("getAllMeasurementsOfNetwork - only endDate", async () => {
+    mockFind
+      .mockResolvedValueOnce([{ code: "NET-Y" }])
+      .mockResolvedValueOnce([{ value: 20 }]);
+
+    const result = await repo.getAllMeasurementsOfNetwork(
+      "NET-Y",
+      undefined,
+      undefined,
+      new Date("2024-01-02")
+    );
+
+    expect(result[0].value).toBe(20);
+  });
+
+ it("getAllMeasurementsOfNetwork - start and endDate", async () => {
+    
+    mockFind.mockResolvedValueOnce([{ code: "NET-Z" }])
+    mockFind.mockResolvedValueOnce([{ value: 30 }]);
+
+    const result = await repo.getAllMeasurementsOfNetwork(
+      "NET-Z",
+      undefined,
+      new Date("2024-01-01"),
+      new Date("2024-01-03")
+    );
+
+    expect(result[0].value).toBe(30);
   });
 
   it("getValidMacs returns existing MACs", async () => {

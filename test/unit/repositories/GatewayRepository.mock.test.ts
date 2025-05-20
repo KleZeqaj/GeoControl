@@ -5,6 +5,7 @@ import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { ConflictError } from "@models/errors/ConflictError";
 import { NotFoundError } from "@models/errors/NotFoundError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
+import e from "express";
 
 const mockFind = jest.fn();
 const mockSave = jest.fn();
@@ -94,6 +95,7 @@ describe("GatewayRepository (mocked DB)", () => {
     savedGateway.description = "Test gateway";
     savedGateway.network = network;
 
+    mockFind.mockResolvedValue([]);
     mockSave.mockResolvedValue(savedGateway);
 
     const result = await repo.createGateway(
@@ -124,7 +126,15 @@ describe("GatewayRepository (mocked DB)", () => {
   });
 
   it("should update a gateway", async () => {
-    mockUpdate.mockResolvedValue(undefined);
+
+    const existingGateway = {
+      macAddress: "OLD:MAC:ADDR",
+      name: "Old Gateway",
+      description: "Old description"
+    }
+    mockFind.mockResolvedValueOnce([existingGateway]);
+    mockFind.mockResolvedValueOnce([]);
+    mockUpdate.mockResolvedValue([]);
 
     await repo.updateGateway(
       "NET01",
@@ -133,6 +143,11 @@ describe("GatewayRepository (mocked DB)", () => {
       "New Gateway",
       "Updated description"
     );
+
+    expect(mockFind).toHaveBeenCalledWith({
+      where: { network: { code: "NET01" }, macAddress: "OLD:MAC:ADDR" },
+      relations: ["network", "sensors"]
+    });
 
     expect(mockUpdate).toHaveBeenCalledWith(
       { macAddress: "OLD:MAC:ADDR" },
