@@ -73,5 +73,50 @@ describe("NetworkRepository: SQLite in-memory ", () => {
         await expect(
             repo.getNetworkByCode("NET01")
         ).rejects.toThrow(NotFoundError);
-    })
+    });
+
+    it("updates a network", async () => {
+        await repo.createNewNetwork("NET01", "Test Network", "Test Description");
+
+        await repo.updateNetwork("NET01", "NET02", "Updated Network", "Updated Description");
+
+        // Verifica che la vecchia network non esista più
+        await expect(repo.getNetworkByCode("NET01")).rejects.toThrow(NotFoundError);
+
+        // Verifica che la nuova network aggiornata esista e abbia i dati giusti
+        const updated = await repo.getNetworkByCode("NET02");
+        expect(updated).toMatchObject({
+            code: "NET02",
+            name: "Updated Network",
+            description: "Updated Description"
+        });
+    });
+
+    it("create network throws if code is empty", async () => {
+        await expect(
+            repo.createNewNetwork("", "Test Network", "Test Description")
+        ).rejects.toThrow();
+    });
+
+    it("delete network throws if code is empty", async () => {
+        await expect(
+            repo.deleteNetwork("")
+        ).rejects.toThrow();
+    });
+
+    it("update network throws if code is empty", async () => {
+        await expect(
+            repo.updateNetwork("", "NET02", "Updated Network", "Updated Description")
+        ).rejects.toThrow();
+    });
+
+    it("update network throws if new code already exists", async () => {
+        await repo.createNewNetwork("NET01", "Test Network", "Test Description");
+        await repo.createNewNetwork("NET02", "Another Network", "Another Description");
+
+        await expect(
+            repo.updateNetwork("NET01", "NET02", "Updated Network", "Updated Description")
+        ).rejects.toThrow(ConflictError);
+    });
+
 })

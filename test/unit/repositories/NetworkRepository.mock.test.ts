@@ -23,7 +23,7 @@ describe("NetworkRepository (mocked DB)", () => {
   const repo = new NetworkRepository();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it("should throw ConflictError if Network code already exists", async () => {
@@ -84,6 +84,7 @@ describe("NetworkRepository (mocked DB)", () => {
     savedNetwork.name = "Test Network";
     savedNetwork.description = "Test description";
 
+    mockFind.mockResolvedValueOnce([]);
     mockSave.mockResolvedValue(savedNetwork);
 
     const result = await repo.createNewNetwork(
@@ -138,7 +139,7 @@ describe("NetworkRepository (mocked DB)", () => {
       relations: ["gateways", "gateways.sensors"]
     });
     expect(mockUpdate).toHaveBeenCalledWith(
-      "NET001",
+      {code: "NET001" },
       {
         code: "NET002",
         name: "New Network",

@@ -22,7 +22,7 @@ describe("SensorRepository - Mocked", () => {
   const repo = new SensorRepository();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it("createSensor should call save with correct data", async () => {
@@ -92,6 +92,8 @@ describe("SensorRepository - Mocked", () => {
   });
 
   it("updateSensor should call update with new values", async () => {
+
+    mockFind.mockResolvedValueOnce([]);
     await repo.updateSensor("GW", "OLD", "NEW", "name", "desc", "var", "unit");
 
     expect(mockUpdate).toHaveBeenCalledWith(
