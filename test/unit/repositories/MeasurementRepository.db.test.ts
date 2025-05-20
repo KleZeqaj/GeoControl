@@ -95,12 +95,56 @@ describe("MeasurementRepository: SQLite in-memory", () => {
       gateway.macAddress,
       sensor.macAddress,
       new Date("2024-01-01T12:00:00Z"),
-      new Date("2024-01-03T00:00:00Z")
+      new Date("2024-01-02T12:00:00Z")
     );
 
     expect(results.length).toBe(1);
     expect(results[0].value).toBe(20);
   });
+
+  it("getAllMeasurementsOfSensor filters by startDate only", async () => {
+    const { network, gateway, sensor } = await createSensor("NET5", "AA:BB:55", "33:22:11");
+
+    const values = new Map<Date, number>([
+      [new Date("2024-01-01T00:00:00Z"), 10],
+      [new Date("2024-01-02T00:00:00Z"), 20]
+    ]);
+
+    await repo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
+
+    const result = await repo.getAllMeasurementsOfSensor(
+      network.code,
+      gateway.macAddress,
+      sensor.macAddress,
+      new Date("2024-01-02T00:00:00Z")
+    );
+
+    expect(result.length).toBe(1);
+    expect(result[0].value).toBe(20);
+  });
+
+  it("getAllMeasurementsOfSensor filters by endDate only", async () => {
+    const { network, gateway, sensor } = await createSensor("NET6", "CC:DD:EE", "77:66:55");
+
+    const values = new Map<Date, number>([
+      [new Date("2024-01-01T00:00:00Z"), 10],
+      [new Date("2024-01-02T00:00:00Z"), 20]
+    ]);
+
+    await repo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
+
+    const result = await repo.getAllMeasurementsOfSensor(
+      network.code,
+      gateway.macAddress,
+      sensor.macAddress,
+      undefined,
+      new Date("2024-01-01T23:59:59Z")
+    );
+
+    expect(result.length).toBe(1);
+    expect(result[0].value).toBe(10);
+  });
+
 
   it("getAllMeasurementsOfNetwork should retrieve all sensors' data", async () => {
     const { network, gateway, sensor } = await createSensor("NET2", "AA:AA:AA", "33:44:55");
@@ -116,6 +160,70 @@ describe("MeasurementRepository: SQLite in-memory", () => {
     expect(results.length).toBe(1);
     expect(results[0].value).toBe(50);
   });
+
+it("getAllMeasurementsOfNetwork filters by startDate only", async () => {
+    const { network, gateway, sensor } = await createSensor("NET7", "11:22:33", "SENS-MAC-1");
+
+    const values = new Map<Date, number>([
+      [new Date("2024-01-01T00:00:00Z"), 10],
+      [new Date("2024-01-02T00:00:00Z"), 20]
+    ]);
+
+    await repo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
+
+    const results = await repo.getAllMeasurementsOfNetwork(
+      network.code,
+      undefined,
+      new Date("2024-01-02T00:00:00Z")
+    );
+
+    expect(results.length).toBe(1);
+    expect(results[0].value).toBe(20);
+  });
+
+  it("getAllMeasurementsOfNetwork filters by endDate only", async () => {
+    const { network, gateway, sensor } = await createSensor("NET8", "AA:00:00", "SENS-MAC-2");
+
+    const values = new Map<Date, number>([
+      [new Date("2024-01-01T00:00:00Z"), 10],
+      [new Date("2024-01-03T00:00:00Z"), 30]
+    ]);
+
+    await repo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
+
+    const results = await repo.getAllMeasurementsOfNetwork(
+      network.code,
+      undefined,
+      undefined,
+      new Date("2024-01-01T23:59:59Z")
+    );
+
+    expect(results.length).toBe(1);
+    expect(results[0].value).toBe(10);
+  });
+
+    it("getAllMeasurementsOfNetwork filters by startDate and endDate", async () => {
+    const { network, gateway, sensor } = await createSensor("NET9", "BB:CC:DD", "SENS-MAC-3");
+
+    const values = new Map<Date, number>([
+      [new Date("2024-01-01T00:00:00Z"), 5],
+      [new Date("2024-01-02T00:00:00Z"), 15],
+      [new Date("2024-01-03T00:00:00Z"), 25]
+    ]);
+
+    await repo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
+
+    const results = await repo.getAllMeasurementsOfNetwork(
+      network.code,
+      undefined,
+      new Date("2024-01-01T12:00:00Z"),
+      new Date("2024-01-02T23:59:59Z")
+    );
+
+    expect(results.length).toBe(1);
+    expect(results[0].value).toBe(15);
+  });
+
 
   it("getValidMacs should return existing sensor macs", async () => {
     const { network } = await createSensor("NET3", "FF:FF:FF", "66:77:88");
