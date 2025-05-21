@@ -1,5 +1,3 @@
-// tests/unit/repositories/GatewayRepository.mock.test.ts
-
 import { GatewayDAO } from "@dao/GatewayDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { ConflictError } from "@models/errors/ConflictError";
@@ -48,6 +46,16 @@ describe("GatewayRepository (mocked DB)", () => {
       .resolves
       .toBeUndefined();
   });
+
+  it("must throw if MAC already exist", async () => {
+      const gateway = new GatewayDAO();
+      gateway.macAddress = "AA:BB:CC:DD:EE:FF";
+
+      mockFind.mockResolvedValue([gateway]);
+
+      await expect(repo.isMacAlreadyPresent("AA:BB:CC:DD:EE:FF"))
+            .rejects.toThrow(ConflictError);
+  })
 
   it("should get all gateways for a network", async () => {
     const gateway = new GatewayDAO();
@@ -138,8 +146,8 @@ describe("GatewayRepository (mocked DB)", () => {
 
     await repo.updateGateway(
       "NET01",
-      "OLD:MAC:ADDR",
-      "NEW:MAC:ADDR",
+      "NET01",
+      "NET02",
       "New Gateway",
       "Updated description"
     );
@@ -150,9 +158,9 @@ describe("GatewayRepository (mocked DB)", () => {
     });
 
     expect(mockUpdate).toHaveBeenCalledWith(
-      { macAddress: "OLD:MAC:ADDR" },
+      { macAddress: "NET01" },
       {
-        macAddress: "NEW:MAC:ADDR",
+        macAddress: "NET02",
         name: "New Gateway",
         description: "Updated description"
       }
