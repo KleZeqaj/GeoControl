@@ -12,7 +12,7 @@ export async function createGatewayService(macAddress: string, name: string, des
         throw new Error("MAC Address format is not valid");
     }
     */
-    gatewayRepo.isMacAlreadyPresent(macAddress);
+    await gatewayRepo.isMacAlreadyPresent(macAddress);
 
     return gatewayRepo.createGateway(macAddress, name, description, network);
 }
@@ -29,7 +29,7 @@ export async function updateGatewayService(networkCode: string, gatewayMac: stri
         throw new Error("MAC Address format is not valid");
         }
         */
-        gatewayRepo.isMacAlreadyPresent(gateway.macAddress);
+        await gatewayRepo.isMacAlreadyPresent(gateway.macAddress);
     }
     if (gateway.name === undefined) gateway.name = oldGateway.name;
     if (gateway.description === undefined) gateway.description = oldGateway.description;

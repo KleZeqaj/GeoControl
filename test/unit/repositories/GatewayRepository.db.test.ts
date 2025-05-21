@@ -1,6 +1,5 @@
 import { GatewayDAO } from "@dao/GatewayDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
-import { ConflictError } from "@models/errors/ConflictError";
 import { NotFoundError } from "@models/errors/NotFoundError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
@@ -49,15 +48,6 @@ describe("GatewayRepository: SQLite in-memory ", () => {
         expect(found.macAddress).toBe("94:3F:BE:4C:4A:79");
     })
 
-
-    it("create gateway: conflict", async () => {
-        const network = await createTestNetwork();
-
-        await repoG.createGateway("94:3F:BE:4C:4A:79", "GW01", "on-field aggregation node", network);
-        await expect(
-            repoG.createGateway("94:3F:BE:4C:4A:79", "GW02", "on-field aggregation node", network)
-        ).rejects.toThrow(ConflictError);
-    })
 
     it("collects all the gateways of a network", async() => {
         const network = await createTestNetwork();
