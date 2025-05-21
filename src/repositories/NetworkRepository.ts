@@ -10,13 +10,14 @@ export class NetworkRepository {
     constructor() {
         this.repo = AppDataSource.getRepository(NetworkDAO);
     }
-
+    /*
     isAlphanumeric(str: string): boolean {
         const regex = /^[a-zA-Z0-9]*$/;
         return regex.test(str);
     }
-
+    */
     async checkOnNetID(code: string): Promise<void> {
+        /*
         if (code.length < 1){
             throw new Error("Code Length must be at least 1!");
         }
@@ -24,7 +25,7 @@ export class NetworkRepository {
         if (!this.isAlphanumeric(code)){
             throw new Error("Code must be alphanumeric!");
         }
-
+        */
         throwConflictIfFound(
             await this.repo.find({ where: { code } }),
             () => true,

@@ -1,8 +1,6 @@
 import { Sensor as SensorDTO } from "@dto/Sensor";
-import { BadRequestError } from "@models/errors/BadRequestError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
-import { isValidMAC } from "@utils";
 
 export async function updateSensorService(networkCode: string, gatewayMac: string, sensorMac: string, sensor: SensorDTO): Promise<void> {
     const sensorRepo = new SensorRepository();
@@ -13,8 +11,11 @@ export async function updateSensorService(networkCode: string, gatewayMac: strin
     const oldSensor = await sensorRepo.getSensorByMacAddress(sensorMac);
 //si
     // Riempie i campi mancanti con i valori già presenti
+    /*
     if (sensor.macAddress !== undefined && !isValidMAC(sensor.macAddress))
         throw new BadRequestError("Sensor macAddress must have a length >= 1!")
+
+    */
 
     if (sensor.macAddress === undefined) sensor.macAddress = oldSensor.macAddress;
     if (sensor.name === undefined) sensor.name = oldSensor.name;

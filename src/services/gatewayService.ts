@@ -1,18 +1,18 @@
-import { Gateway as GatewayDTO } from "@dto/Gateway";
-import { GatewayRepository } from "@repositories/GatewayRepository";
-import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { GatewayDAO } from "@dao/GatewayDAO";
-import { isValidMAC, throwConflictIfFound } from "@utils"
-import { BadRequestError } from "@models/errors/BadRequestError";
+import { Gateway as GatewayDTO } from "@dto/Gateway";
+import { NetworkDAO } from "@models/dao/NetworkDAO";
+import { GatewayRepository } from "@repositories/GatewayRepository";
+//import { isValidMAC, throwConflictIfFound } from "@utils"
 
 export async function createGatewayService(macAddress: string, name: string, description: string, network: NetworkDAO): Promise<GatewayDAO> {
     const gatewayRepo = new GatewayRepository();
 
+    /*
     if(!isValidMAC(macAddress)){
-        throw new BadRequestError("MAC Address should be at least of lenght 1");
+        throw new Error("MAC Address format is not valid");
     }
-
-    await gatewayRepo.isMacAlreadyPresent(macAddress);
+    */
+    gatewayRepo.isMacAlreadyPresent(macAddress);
 
     return gatewayRepo.createGateway(macAddress, name, description, network);
 }
@@ -24,11 +24,12 @@ export async function updateGatewayService(networkCode: string, gatewayMac: stri
     if (gateway.macAddress === undefined) 
         gateway.macAddress = oldGateway.macAddress;
     else {
+        /*
         if(!isValidMAC(gateway.macAddress)){
-        throw new BadRequestError("MAC Address should be at least of lenght 1");
-    }
-
-    await gatewayRepo.isMacAlreadyPresent(gateway.macAddress);
+        throw new Error("MAC Address format is not valid");
+        }
+        */
+        gatewayRepo.isMacAlreadyPresent(gateway.macAddress);
     }
     if (gateway.name === undefined) gateway.name = oldGateway.name;
     if (gateway.description === undefined) gateway.description = oldGateway.description;

@@ -62,7 +62,7 @@ describe("GatewayRepository: SQLite in-memory ", () => {
     it("collects all the gateways of a network", async() => {
         const network = await createTestNetwork();
         await repoG.createGateway("AA:BB:CC:DD:EE:FF", "GW01", "prova 1", network);
-        await repoG.createGateway("DD:EE:FF:GG:HH:II", "GW02", "prova 2", network);
+        await repoG.createGateway("DD:EE:FF:GG:99:II", "GW02", "prova 2", network);
 
         const result = await repoG.getAllGateways("NET01");
 

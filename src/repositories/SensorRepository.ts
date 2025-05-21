@@ -1,7 +1,6 @@
 import { SensorDAO } from "@dao/SensorDAO";
 import { AppDataSource } from "@database";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
-import { BadRequestError } from "@models/errors/BadRequestError";
 import { findOrThrowNotFound, throwConflictIfFound } from "@utils";
 import { Repository } from "typeorm";
 
@@ -65,9 +64,6 @@ export class SensorRepository {
   */
 
     await this.isMacAlreadyPresent(macAddress);
-    
-   if (macAddress?.length < 1)
-      throw new BadRequestError("Sensor macAddress must have a length >= 1!")
 
     return this.repo.save({
       macAddress: macAddress,
@@ -82,9 +78,6 @@ export class SensorRepository {
   async deleteSensor(
     sensorMac: string
   ): Promise<void> {
-
-    if (sensorMac?.length < 1)
-        throw new Error("Sensor macAddress must have a length >= 1!")
 
     const sensor = await this.getSensorByMacAddress(sensorMac);
     await this.repo.remove(sensor);
