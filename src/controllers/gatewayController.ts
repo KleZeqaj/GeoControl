@@ -1,4 +1,5 @@
 import { Gateway as GatewayDTO } from "@dto/Gateway";
+import { createGatewayService } from "@services/gatewayService";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository"
 import { mapGatewayDAOToDTO } from "@services/mapperService";
@@ -20,8 +21,7 @@ export async function getGateway(networkCode: string, gatewayMac: string): Promi
 
 export async function createGateway(networkCode: string, gatewayDto: GatewayDTO): Promise<void> {
   const networkRepo = new NetworkRepository();
-  const gatewayRepo = new GatewayRepository();
-  await gatewayRepo.createGateway(gatewayDto.macAddress, gatewayDto.name, gatewayDto.description, await networkRepo.getNetworkByCode(networkCode));
+  await createGatewayService(gatewayDto.macAddress, gatewayDto.name, gatewayDto.description, await networkRepo.getNetworkByCode(networkCode));
 }
 
 export async function deleteGateway(networkCode: string, gatewayMac: string): Promise<void> {
