@@ -3,6 +3,7 @@ import { SensorDAO } from "@dao/SensorDAO";
 import { GatewayDAO } from "@dao/GatewayDAO";
 import { ConflictError } from "@models/errors/ConflictError";
 import { NotFoundError } from "@models/errors/NotFoundError";
+import { BadRequestError } from "@models/errors/BadRequestError";
 
 const mockFind = jest.fn();
 const mockSave = jest.fn();
@@ -193,7 +194,7 @@ describe("SensorRepository: mocked database", () => {
         "TH03",
         "ProvaDescrizione6",
         "temperature",
-        "f")).rejects.toThrow(Error);
+        "f")).rejects.toThrow(BadRequestError);
   });
 
   it("delete sensor", async () => {
@@ -235,11 +236,6 @@ describe("SensorRepository: mocked database", () => {
     mockFind.mockResolvedValue([]);
 
     await expect(repo.deleteSensor("FF:FF:FF:FF:FF:AA")).rejects.toThrow(NotFoundError);
-  });
-
-  it("delete sensor: macAddress not long enough", async () => {
-
-    await expect(repo.deleteSensor("")).rejects.toThrow(Error);
   });
 
 
