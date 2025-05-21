@@ -12,6 +12,7 @@ import { UserType } from "@models/UserType";
 import { Router } from "express";
 import { BadRequestError } from "@models/errors/BadRequestError";
 import { MeasurementFromJSON } from "@models/dto/Measurement";
+import { start } from "repl";
 
 const router = Router();
 
@@ -41,21 +42,11 @@ router.get(
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
       const measurements = await getAllMeasurementsOfSensor(
         req.params.networkCode, 
         req.params.gatewayMac,
         req.params.sensorMac,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(measurements);
     }
     catch (error) {
@@ -70,21 +61,11 @@ router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats",
   async (req, res, next) => {
   try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
       const stats = await getAllStatsOfSensor(
         req.params.networkCode, 
         req.params.gatewayMac,
         req.params.sensorMac,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(stats);
     }
     catch (error) {
@@ -99,21 +80,11 @@ router.get(
   async (req, res, next) => {
      try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
       const measurements = await getAllOutliersOfSensor(
         req.params.networkCode, 
         req.params.gatewayMac,
         req.params.sensorMac,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(measurements);
     }
     catch (error) {
@@ -129,23 +100,12 @@ router.get(
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
-
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const measurements = await getAllMeasurementsOfNetwork(
         req.params.networkCode, 
         sensorMacs,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(measurements);
     }
     catch (error) {
@@ -161,23 +121,12 @@ router.get(
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
-
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const stats = await getAllStatsOfNetwork(
         req.params.networkCode, 
         sensorMacs,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(stats);
     }
     catch (error) {
@@ -193,23 +142,13 @@ router.get(
   async (req, res, next) => {
     try {
       const { startDate, endDate } = req.query;
-      // Converte da stringa ISO a oggetto Date, solo se presenti
-      const parsedStartDate = parseISODateParamToUTC(startDate);
-      const parsedEndDate = parseISODateParamToUTC(endDate);
-
-      // Se sono presenti, controllo che siano validi, restuisco errore 400 se non lo sono
-      if ((startDate && !parsedStartDate) || (endDate && !parsedEndDate)) {
-        throw new BadRequestError(
-          "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
-        )
-      }
-
+    
       const sensorMacs = parseStringArrayParam(req.query.sensorMacs);
 
       const measurements = await getAllOutliersOfNetwork(
         req.params.networkCode, 
         sensorMacs,
-        parsedStartDate, parsedEndDate);
+        startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
       res.status(200).json(measurements);
     }
     catch (error) {
