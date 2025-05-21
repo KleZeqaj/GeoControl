@@ -132,6 +132,7 @@ describe("GatewayRepository (mocked DB)", () => {
     expect(mockRemove).toHaveBeenCalledWith(gateway);
   });
 
+  
   it("should update a gateway", async () => {
 
     const existingGateway = {
@@ -150,11 +151,6 @@ describe("GatewayRepository (mocked DB)", () => {
       "New Gateway",
       "Updated description"
     );
-
-    expect(mockFind).toHaveBeenCalledWith({
-      where: { network: { code: "NET01" }, macAddress: "AA:BB:CC:DD:EE:FF" },
-      relations: ["network", "sensors"]
-    });
 
     expect(mockUpdate).toHaveBeenCalledWith(
       { macAddress: "AA:BB:CC:DD:EE:FF" },

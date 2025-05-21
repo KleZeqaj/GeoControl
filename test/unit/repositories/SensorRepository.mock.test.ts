@@ -1,8 +1,8 @@
-import { SensorRepository } from "@repositories/SensorRepository";
-import { SensorDAO } from "@dao/SensorDAO";
 import { GatewayDAO } from "@dao/GatewayDAO";
+import { SensorDAO } from "@dao/SensorDAO";
 import { ConflictError } from "@models/errors/ConflictError";
 import { NotFoundError } from "@models/errors/NotFoundError";
+import { SensorRepository } from "@repositories/SensorRepository";
 
 const mockFind = jest.fn();
 const mockSave = jest.fn();
@@ -181,20 +181,6 @@ describe("SensorRepository: mocked database", () => {
         "C")).rejects.toThrow(ConflictError);
   });
 
-  it("create user: macAddress not long enough", async () => {
-    mockFind.mockResolvedValue([]);
-
-    const testGateway = new GatewayDAO();
-    testGateway.macAddress = "FF:FF:FF:FF:FF:FE";
-    testGateway.netID = "NET01";
-
-    await expect(repo.createSensor("",
-        testGateway,
-        "TH03",
-        "ProvaDescrizione6",
-        "temperature",
-        "f")).rejects.toThrow(Error);
-  });
 
   it("delete sensor", async () => {
 

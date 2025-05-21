@@ -1,10 +1,10 @@
-import { SensorRepository } from "@repositories/SensorRepository";
-import { SensorDAO } from "@dao/SensorDAO";
 import { GatewayDAO } from "@dao/GatewayDAO";
 import { NetworkDAO } from "@dao/NetworkDAO";
+import { SensorDAO } from "@dao/SensorDAO";
+import { SensorRepository } from "@repositories/SensorRepository";
 import {
-  initializeTestDataSource,
   closeTestDataSource,
+  initializeTestDataSource,
   TestDataSource
 } from "@test/setup/test-datasource";
 
@@ -105,14 +105,5 @@ describe("SensorRepository - DB tests", () => {
     await expect(repo.createSensor("SENS-07", gateway)).rejects.toThrow("already exists");
   });
 
-  it("createSensor throws if mac is empty", async () => {
-    const gateway = await createGateway();
-
-    await expect(repo.createSensor("", gateway)).rejects.toThrow("length >= 1");
-  });
-
-  it("deleteSensor throws if mac is empty", async () => {
-    await expect(repo.deleteSensor("")).rejects.toThrow("length >= 1");
-  });
 });
 

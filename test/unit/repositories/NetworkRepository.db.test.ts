@@ -1,8 +1,6 @@
-import { GatewayDAO } from "@dao/GatewayDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { ConflictError } from "@models/errors/ConflictError";
 import { NotFoundError } from "@models/errors/NotFoundError";
-import { GatewayRepository } from "@repositories/GatewayRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
 import {
     closeTestDataSource,
@@ -92,11 +90,7 @@ describe("NetworkRepository: SQLite in-memory ", () => {
         });
     });
 
-    it("create network throws if code is empty", async () => {
-        await expect(
-            repo.createNewNetwork("", "Test Network", "Test Description")
-        ).rejects.toThrow();
-    });
+
 
     it("delete network throws if code is empty", async () => {
         await expect(

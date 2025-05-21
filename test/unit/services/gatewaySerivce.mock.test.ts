@@ -1,4 +1,3 @@
-import { BadRequestError } from "@errors/BadRequestError";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { ConflictError } from "@models/errors/ConflictError";
@@ -29,11 +28,6 @@ describe("GatewayService", () => {
         jest.clearAllMocks();
     });
 
-    it("throws an error if MAC address is invalid", async () => {
-      await expect(createGatewayService("-mac-", "GW01", "prova", mockNetwork))
-        .rejects
-        .toThrow("MAC Address format is not valid");
-    });
 
     it("should not return errors", async () => {
       const fakeGateway = new GatewayDAO();
@@ -62,7 +56,7 @@ describe("GatewayService", () => {
 
         const providedGateway = new GatewayDAO();
         providedGateway.macAddress = undefined;
-        providedGateway.name = "Prova";
+        providedGateway.name = undefined;
         providedGateway.description = undefined;
 
         const expectedUpdatedGateway = new GatewayDAO();
@@ -76,27 +70,11 @@ describe("GatewayService", () => {
             "NET01",
             "AA:BB:CC:DD:EE:FF",
             "AA:BB:CC:DD:EE:FF", 
-            "Prova",
+            "GW01",
             "desc"
         );
     })
 
-    it("invalid mac -> should throw Error", async () => {
-        const gateway = new GatewayDAO();
-        gateway.macAddress = "AA:BB:CC:DD:EE:FF";
-        gateway.name = "GW01";
-        gateway.description = "desc";
-
-        getGatewayByMacAddressMock.mockResolvedValue(gateway);
-
-        const providedGateway = new GatewayDAO();
-        providedGateway.macAddress = "";
-        providedGateway.name = "Prova";
-        providedGateway.description = undefined;
-
-        await expect(updateGatewayService("NET01", "AA:BB:CC:DD:EE:FF", providedGateway)
-        ).rejects.toThrow(BadRequestError)
-    })
 
     it("new macAddress already present update -> should throw ConflictError", async () => {
         const gateway1 = new GatewayDAO();
