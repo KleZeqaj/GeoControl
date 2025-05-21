@@ -256,24 +256,64 @@ describe("SensorRepository: mocked database", () => {
     });
     });
 
-    it("update sensor not found", async () => {
-        const oldMac = "FF:FF:FF:FF:FF:FF";
-        const newMac = "11:22:33:44:55:66";
-        const gatewayMac = "FF:FF:FF:FF:FF:FE";
-        const newName = "TH10";
-        const newDescription = "ProvaDescrizioneAgg";
-        const newVariable = "temperature";
-        const newUnit = "C";
+  it("update sensor not found", async () => {
+    const oldMac = "FF:FF:FF:FF:FF:FF";
+    const newMac = "11:22:33:44:55:66";
+    const gatewayMac = "FF:FF:FF:FF:FF:FE";
+    const newName = "TH10";
+    const newDescription = "ProvaDescrizioneAgg";
+    const newVariable = "temperature";
+    const newUnit = "C";
 
-        mockUpdate.mockResolvedValue({ affected: 0 });
-        await expect(repo.updateSensor(
-            gatewayMac, 
-            oldMac, 
-            newMac, 
-            newName, 
-            newDescription, 
-            newVariable, 
-            newUnit)).resolves.toBeUndefined();
-            expect(mockUpdate).toHaveBeenCalled();
-    });
+    mockUpdate.mockResolvedValue({ affected: 0 });
+    await expect(repo.updateSensor(
+      gatewayMac, 
+      oldMac, 
+      newMac, 
+      newName, 
+      newDescription, 
+      newVariable, 
+      newUnit)).resolves.toBeUndefined();
+      expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it("update sensor: conflict", async () => {
+    const testGateway = new GatewayDAO();
+    testGateway.macAddress = "FF:FF:FF:FF:FF:FE";
+    testGateway.netID = "NET01";
+
+    const testSensor = new SensorDAO();
+    testSensor.macAddress = "FF:FF:FF:FF:FF:FF";
+    testSensor.gatewayMac = "FF:FF:FF:FF:FF:FE";
+    testSensor.gateway = testGateway;
+    testSensor.description = "ProvaDescrizione";
+    testSensor.name = "TH03";
+    testSensor.unit = "F";
+    testSensor.variable = "temperature";
+
+    const gatewayMac = "FF:FF:FF:FF:FF:AA";
+    const oldMac = "FF:FF:FF:FF:FF:AB";
+    const newMac = "AA:BB:CC:DD:EE:FF";
+    const newName = "TH04";
+    const newDescription = "Updated description";
+    const newVariable = "temperature";
+    const newUnit = "C";
+
+    mockFind.mockResolvedValue([testSensor]);
+
+    await expect(
+      repo.updateSensor(
+        gatewayMac,
+        oldMac,
+        newMac,
+        newName,
+        newDescription,
+        newVariable,
+        newUnit
+      )
+    ).rejects.toThrow(ConflictError);
+
+    expect(mockFind).toHaveBeenCalled();
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
 });
