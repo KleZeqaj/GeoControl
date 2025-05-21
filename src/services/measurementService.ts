@@ -3,6 +3,8 @@ import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
 import { createMeasurementsDTO , createMeasurementDTO, createStatsDTO} from "@services/mapperService";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
 import { mapMeasurementDAOToDTO } from "@services/mapperService";
+import { parseISODateParamToUTC } from "@utils";
+import { BadRequestError } from "@models/errors/BadRequestError";
 
 
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
@@ -104,6 +106,18 @@ export async function groupAndComputeMeasurements(
   }
 
   return results;
+}
+
+export async function parseDate(
+  dateString: string
+): Promise<Date> {
+  const parsedDate = parseISODateParamToUTC(dateString);
+  if (!parsedDate) {
+    throw new BadRequestError(
+      "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+    );
+  }
+  return parsedDate;
 }
 
 
