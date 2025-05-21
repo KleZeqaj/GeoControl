@@ -1,6 +1,7 @@
 import { SensorDAO } from "@dao/SensorDAO";
 import { AppDataSource } from "@database";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { BadRequestError } from "@models/errors/BadRequestError";
 import { findOrThrowNotFound, throwConflictIfFound } from "@utils";
 import { Repository } from "typeorm";
 
@@ -25,7 +26,7 @@ export class SensorRepository {
     throwConflictIfFound(
       await this.repo.find({ where: { macAddress } }),
       () => true,
-      `Gateway with MAC address '${macAddress}' already exists`
+      `Sensor with MAC address '${macAddress}' already exists`
     );
   }
 
@@ -66,7 +67,7 @@ export class SensorRepository {
     await this.isMacAlreadyPresent(macAddress);
     
    if (macAddress?.length < 1)
-      throw new Error("Sensor macAddress must have a length >= 1!")
+      throw new BadRequestError("Sensor macAddress must have a length >= 1!")
 
     return this.repo.save({
       macAddress: macAddress,

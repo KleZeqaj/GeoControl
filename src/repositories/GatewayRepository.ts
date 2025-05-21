@@ -46,8 +46,6 @@ export class GatewayRepository {
     name: string,
     description: string,
     network: NetworkDAO): Promise<GatewayDAO> {
-
-    await this.isMacAlreadyPresent(macAddress);
       
     return this.repo.save({
         macAddress: macAddress,
@@ -62,8 +60,6 @@ export class GatewayRepository {
   }
 
   async updateGateway(networkCode: string, oldMac: string, newMac: string, newName: string, newDescription: string) : Promise<void>{
-    await this.getGatewayByMacAddress(networkCode, oldMac);
-    await this.isMacAlreadyPresent(newMac);
     await this.repo.update({macAddress: oldMac}, {macAddress: newMac, name: newName, description: newDescription});
     return;
 }
