@@ -146,6 +146,88 @@ describe("NetworkRepository (mocked DB)", () => {
         description: "New description"
       }
     );
- 
   });
+
+  it("should throw NotFoundError if network not found for update", async () => {
+    mockFind.mockResolvedValueOnce([]);
+    await expect(repo.updateNetwork("NET01"))
+      .rejects
+      .toThrow(NotFoundError);
+  });
+
+  it("should throw ConflictError if new network code already exists", async () => {
+   const existingNetwork = {
+      code: "NET001",
+      name: "Old Network",
+      description: "Old description"
+    };
+
+    mockFind.mockResolvedValueOnce([existingNetwork]);
+    mockFind.mockResolvedValueOnce([existingNetwork]);
+    mockUpdate.mockResolvedValue([]);
+    
+    await expect(repo.updateNetwork(
+      "NET001",
+      "NET001",
+      "New Network",
+      "New description"
+    )).rejects.toThrow(ConflictError);
+  });
+
+  it("should use the existing name if newName is undefined in updateNetwork", async () => {
+    const existingNetwork = {
+      code: "NET001",
+      name: "Old Network",
+      description: "Old description"
+    };
+
+    mockFind.mockResolvedValueOnce([existingNetwork]); 
+    mockFind.mockResolvedValueOnce([]); 
+    mockUpdate.mockResolvedValue([]);
+
+    await repo.updateNetwork(
+      "NET001",    
+      "NET002",    
+      undefined,   
+      "New description"
+    );
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      { code: "NET001" },
+      {
+        code: "NET002",
+        name: "Old Network", 
+        description: "New description"
+      }
+    );
+  });
+
+  it("should use the existing description if newDescription is undefined in updateNetwork", async () => {
+  const existingNetwork = {
+    code: "NET001",
+    name: "Old Network",
+    description: "Old description"
+  };
+
+  mockFind.mockResolvedValueOnce([existingNetwork]); 
+  mockFind.mockResolvedValueOnce([]); 
+  mockUpdate.mockResolvedValue([]);
+
+  await repo.updateNetwork(
+    "NET001",    
+    "NET002",    
+    "New Network", 
+    undefined     
+  );
+
+  expect(mockUpdate).toHaveBeenCalledWith(
+    { code: "NET001" },
+    {
+      code: "NET002",
+      name: "New Network",
+      description: "Old description" 
+    }
+  );
+});
+
 });

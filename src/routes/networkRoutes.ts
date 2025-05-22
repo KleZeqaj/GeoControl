@@ -56,7 +56,8 @@ async (req, res, next) => {
 });
 
 // Delete a network (Admin & Operator)
-router.delete("/:networkCode", 
+router.delete("/:networkCode",
+  authenticateUser([UserType.Admin, UserType.Operator]),
   async (req, res, next) => {
   try{
     await deleteNetwork(req.params.networkCode);
