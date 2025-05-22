@@ -17,7 +17,10 @@ export async function updateSensorService(networkCode: string, gatewayMac: strin
 
     */
 
-    if (sensor.macAddress === undefined) sensor.macAddress = oldSensor.macAddress;
+    if (sensor.macAddress === undefined) sensor.macAddress = oldSensor.macAddress
+    else {
+        await sensorRepo.isMacAlreadyPresent(sensor.macAddress);
+    };
     if (sensor.name === undefined) sensor.name = oldSensor.name;
     if (sensor.description === undefined) sensor.description = oldSensor.description;
     if (sensor.variable === undefined) sensor.variable = oldSensor.variable;

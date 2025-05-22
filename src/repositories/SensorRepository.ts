@@ -92,7 +92,6 @@ export class SensorRepository {
     newVariable: string,
     newUnit: string
   ): Promise<void> {
-    await this.isMacAlreadyPresent(newMac);
     await this.repo.update({macAddress: oldMac}, {macAddress: newMac, name: newName, description: newDescription,  variable: newVariable, unit: newUnit});
     return;
   }

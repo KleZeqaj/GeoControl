@@ -105,6 +105,37 @@ describe("SensorService: SQLite in-memory", () => {
         unit: sensorDAO2.unit,
         variable: sensorDAO2.variable
     })
+
+    const sensorDAO3 = new SensorDAO();
+    sensorDAO3.macAddress = "CC:CC:CC:CC:CC:CC";
+
+    await updateSensorService(netDAO.code, gatewayDAO.macAddress, "BB:BB:BB:BB:BB:FF", sensorDAO3);
+
+    const result2 = await SensorRepo.getSensorByMacAddress(sensorDAO3.macAddress);
+    expect(result2).toMatchObject({
+        macAddress: sensorDAO3.macAddress,
+        name: sensorDAO2.name,
+        description: sensorDAO2.description,
+        unit: sensorDAO2.unit,
+        variable: sensorDAO2.variable
+    })
+
+    sensorDAO3.macAddress = undefined;
+    sensorDAO3.name = "updated SENS02";
+    sensorDAO3.description = "Descrizione SENS02 agg";
+    sensorDAO3.unit = "F";
+    sensorDAO3.variable = "temperature new";
+
+    await updateSensorService(netDAO.code, gatewayDAO.macAddress, "CC:CC:CC:CC:CC:CC", sensorDAO3);
+
+    const result3 = await SensorRepo.getSensorByMacAddress("CC:CC:CC:CC:CC:CC");
+    expect(result3).toMatchObject({
+        macAddress: sensorDAO3.macAddress,
+        name: sensorDAO3.name,
+        description: sensorDAO3.description,
+        unit: sensorDAO3.unit,
+        variable: sensorDAO3.variable
+    })
   });
 
   it("update sensor: every not found error", async () => {
