@@ -108,9 +108,9 @@ export async function groupAndComputeMeasurements(
   return results;
 }
 
-export async function parseDate(
+export function parseDate(
   dateString: string
-): Promise<Date> {
+): Date {
   const parsedDate = parseISODateParamToUTC(dateString);
   if (!parsedDate) {
     throw new BadRequestError(
