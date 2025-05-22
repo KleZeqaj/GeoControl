@@ -39,7 +39,8 @@ const config: Config = {
   }),
   transform: {
     "^.+\\.tsx?$": "ts-jest"
-  }
+  },
+  maxWorkers: 1
 };
 
 export default config;

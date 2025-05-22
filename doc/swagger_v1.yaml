@@ -212,11 +212,19 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/User"
-                - type: object
-                  required: [username, password, type]
-
+              type: object
+              required: [username, password, type]
+              properties:
+                username:
+                  type: string
+                  description: Unique username
+                  example: s0123465
+                password:
+                  type: string
+                  description: Password for the user account
+                  example: "FR90!5g@+ni"
+                type:
+                  $ref: "#/components/schemas/UserType"
       responses:
         "201":
           description: User created
@@ -441,10 +449,26 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/Network"
-                - type: object
-                  required: [code]
+              type: object
+              required: [code]
+              properties:
+                code:
+                  type: string
+                  minLength: 1
+                  description: Alphanumeric unique identifier for the network
+                  example: NET01
+                name:
+                  type: string
+                  description: Name of the network
+                  example: Alp Monitor
+                description:
+                  type: string
+                  description: Description of the network
+                  example: Alpine Weather Monitoring Network
+                gateways:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Gateway"
             example:
               code: "NET01"
               name: "Alp Monitor"
@@ -772,10 +796,26 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/Gateway"
-                - type: object
-                  required: [macAddress]
+              type: object
+              required: [macAddress]
+              properties:
+                macAddress:
+                  type: string
+                  minLength: 1
+                  description: MAC address of the gateway
+                  example: 00:11:22:33:44:55
+                name:
+                  type: string
+                  description: Name of the gateway
+                  example: Main Gateway
+                description:
+                  type: string
+                  description: Description of the gateway
+                  example: Gateway at main site
+                sensors:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Sensor"
             example:
               macAddress: "94:3F:BE:4C:4A:79"
               name: "GW01"
@@ -1136,10 +1176,30 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/Sensor"
-                - type: object
-                  required: [macAddress]
+              type: object
+              required: [macAddress]
+              properties:
+                macAddress:
+                  type: string
+                  minLength: 1
+                  description: MAC address of the sensor
+                  example: 00:11:22:33:44:66
+                name:
+                  type: string
+                  description: Name of the sensor
+                  example: TH01
+                description:
+                  type: string
+                  description: Description of the sensor
+                  example: External thermometer
+                variable:
+                  type: string
+                  description: Variable measured by the sensor
+                  example: temperature
+                unit:
+                  type: string
+                  description: Measurement unit
+                  example: C
       responses:
         "201":
           description: Sensor created
