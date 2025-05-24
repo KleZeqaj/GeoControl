@@ -23,7 +23,7 @@ export async function updateGatewayService(networkCode: string, gatewayMac: stri
 
     if (gateway.macAddress === undefined) 
         gateway.macAddress = oldGateway.macAddress;
-    else {
+    else if (gateway.macAddress != oldGateway.macAddress) {
         /*
         if(!isValidMAC(gateway.macAddress)){
         throw new Error("MAC Address format is not valid");

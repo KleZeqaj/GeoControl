@@ -90,7 +90,7 @@ export function createGatewayDTO(macAddress: string, name?: string, description?
     macAddress,
     name,
     description,
-    sensorsDTO
+    sensors: sensorsDTO
   }) as GatewayDTO;
 }
 

@@ -1,15 +1,14 @@
-import AppError from "@models/errors/AppError";
+import {
+  createGateway,
+  deleteGateway,
+  getAllGateways,
+  getGateway,
+  updateGateway
+} from "@controllers/gatewayController";
+import { GatewayFromJSON } from "@dto/Gateway";
 import { authenticateUser } from "@middlewares/authMiddleware";
 import { UserType } from "@models/UserType";
 import { Router } from "express";
-import { GatewayFromJSON } from "@dto/Gateway";
-import { 
-  getAllGateways,
-  getGateway,
-  createGateway,
-  deleteGateway,
-  updateGateway
- } from "@controllers/gatewayController";
 
 const router = Router({ mergeParams: true });
 
@@ -35,7 +34,7 @@ router.post("", authenticateUser([UserType.Admin, UserType.Operator]), async (re
 // Get a specific gateway (Any authenticated user)
 router.get("/:gatewayMac", authenticateUser([UserType.Admin, UserType.Operator, UserType.Viewer]), async (req, res, next) => {
   try {
-    res.status(200).json(await getGateway(req.params.networkCode, req.params.macAddress));
+    res.status(200).json(await getGateway(req.params.networkCode, req.params.gatewayMac));
   } catch (error) {
     next(error);
   }
