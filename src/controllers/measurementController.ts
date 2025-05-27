@@ -71,14 +71,17 @@ export async function getAllMeasurementsOfNetwork(
   const measurementRepo = new MeasurementRepository();
   const parsedStartDate = startDate ? parseDate(startDate) : undefined;
   const parsedEndDate = endDate ? parseDate(endDate) : undefined;
+
+  const sensorMacsParam = (sensorMacs && sensorMacs.length > 0) ? sensorMacs : undefined;
+
   const measurementDAOArray = await measurementRepo.getAllMeasurementsOfNetwork(
     networkCode,
-    sensorMacs,
+    sensorMacsParam,
     parsedStartDate,
     parsedEndDate
   );
     const existingMacs = await measurementRepo.getValidMacs(networkCode, sensorMacs);
-    const groupedMeasurements = await groupAndComputeMeasurements(measurementDAOArray, existingMacs, sensorMacs, parsedStartDate, parsedEndDate);
+    const groupedMeasurements = await groupAndComputeMeasurements(measurementDAOArray, existingMacs, sensorMacsParam, parsedStartDate, parsedEndDate);
 
   return groupedMeasurements;
 }

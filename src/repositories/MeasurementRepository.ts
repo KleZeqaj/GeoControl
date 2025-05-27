@@ -94,7 +94,7 @@ export class MeasurementRepository {
     if (sensorMacs && sensorMacs.length > 0) {
       where.sensor.macAddress = In(sensorMacs);
     }
-
+    
     if (startDate && endDate) {
       where.createdAt = Between(
         startDate,

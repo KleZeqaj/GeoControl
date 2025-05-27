@@ -19,7 +19,7 @@ These figures will not be used to evaluate neither the project nor the team, the
 |   May 5 - 11   |                         |        |    25ph    |              |                     |                    |                  |            |
 |  May 12 - 18   |                         |        |   36ph     |              |                     |                    |                  |            |
 |  May 19 - 25   |                         |        |   14ph     |       35ph       |                     |                    |                  |            |
-| May 26 - Jun 1 |                         |        |        |              |                     |                    |                  |            |
+| May 26 - Jun 1 |                         |        |        |   12ph           |                     |                    |                  |            |
 |   Jun 2 - 8    |                         |        |        |              |                     |                    |                  |            |
 |   Jun 9 - 15   |                         |        |        |              |                     |                    |                  |            |
 |  Jun 16 - 22   |                         |        |        |              |                     |                    |                  |            |
