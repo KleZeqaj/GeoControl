@@ -10,6 +10,11 @@ import {
 import { NetworkDAO } from "@models/dao/NetworkDAO";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
 import { SensorDAO } from "@models/dao/SensorDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { getOutliers } from "@services/measurementService";
+import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
+import { parseDate } from "@services/measurementService";
+import { BadRequestError } from "@models/errors/BadRequestError";
 
 describe("Measurement Service integration", () => {
   const networkRepo = new NetworkRepository();
@@ -26,9 +31,11 @@ describe("Measurement Service integration", () => {
   });
 
   beforeEach(async () => {
-    await TestDataSource.getRepository(NetworkDAO).clear();
-    await TestDataSource.getRepository(GatewayDAO).clear();
+    await TestDataSource.getRepository(MeasurementDAO).clear();
     await TestDataSource.getRepository(SensorDAO).clear();
+    await TestDataSource.getRepository(GatewayDAO).clear();
+    await TestDataSource.getRepository(NetworkDAO).clear();
+    
   });
 
   it("store and retrieve measurements", async () => {
@@ -69,4 +76,31 @@ describe("Measurement Service integration", () => {
     const result = await measurementRepo.getAllMeasurementsOfSensor(network.code, gateway.macAddress, sensor.macAddress);
     expect(result.length).toBe(0);
   });
+
+    it("getOutliers: se measurements undefined/null imposta measurements a null", async () => {
+    const empty: MeasurementsDTO = {
+      sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
+      stats: null,
+      measurements: undefined as any
+    };
+
+    const result = await getOutliers(empty);
+    expect(result.measurements).toBeNull();
+  });
+
+  it("throw BadRequestError on invalid ISO string", () => {
+    const bad = "not-a-valid-date";
+
+    expect(() => parseDate(bad)).toThrow(BadRequestError);
+    expect(() => parseDate(bad)).toThrow(
+      "Invalid date format. Expected ISO 8601 format (e.g., 2023-10-01T00:00:00Z)"
+    );
+  });
+
+  it("returns a Date for a valid ISO string", () => {
+    const iso = "2023-10-01T12:34:56.000Z";
+    const dt = parseDate(iso);
+    expect(dt.toISOString()).toBe(iso);
+  });
+
 });

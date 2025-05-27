@@ -6,7 +6,6 @@ import { mapMeasurementDAOToDTO } from "@services/mapperService";
 import { parseISODateParamToUTC } from "@utils";
 import { BadRequestError } from "@models/errors/BadRequestError";
 
-
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
     const mean = measurementArray.reduce((acc, measurement) => acc + measurement.value, 0) / measurementArray.length;
