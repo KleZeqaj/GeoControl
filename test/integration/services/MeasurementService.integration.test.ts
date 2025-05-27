@@ -13,8 +13,10 @@ import { SensorDAO } from "@models/dao/SensorDAO";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
 import { getOutliers } from "@services/measurementService";
 import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
 import { parseDate } from "@services/measurementService";
 import { BadRequestError } from "@models/errors/BadRequestError";
+import { groupAndComputeMeasurements } from "@services/measurementService";
 
 describe("Measurement Service integration", () => {
   const networkRepo = new NetworkRepository();
@@ -77,7 +79,7 @@ describe("Measurement Service integration", () => {
     expect(result.length).toBe(0);
   });
 
-    it("getOutliers: se measurements undefined/null imposta measurements a null", async () => {
+    it("getOutliers: if measurements undefined/null set measurements on null", async () => {
     const empty: MeasurementsDTO = {
       sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
       stats: null,
@@ -102,5 +104,47 @@ describe("Measurement Service integration", () => {
     const dt = parseDate(iso);
     expect(dt.toISOString()).toBe(iso);
   });
+
+    it("getOutliers:filters only the measurements marked as outliers when measurements array is non-empty", async () => {
+      const good: MeasurementDTO = {
+      createdAt: new Date(),
+      value: 10,
+      isOutlier: false
+    };
+    const bad: MeasurementDTO = {
+      createdAt: new Date(),
+      value: 99,
+      isOutlier: true
+    };
+
+    const dto: MeasurementsDTO = {
+      sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
+      stats: null,
+      measurements: [good, bad]  
+    };
+
+    const result = await getOutliers(dto);
+    expect(result.measurements).toEqual([bad]);
+  });
+
+it("groupAndComputeMeasurements: returns a MeasurementsDTO with null stats and an empty measurements array for sensors that exist but have no data ", async () => {
+
+  const net = await networkRepo.createNewNetwork("NET02", "Net2", "Desc2");
+  const gat = await gatewayRepo.createGateway("CC:CC:CC:CC:CC:CC", "GW2", "Desc", net);
+  const sen = await sensorRepo.createSensor("DD:DD:DD:DD:DD:DD", gat, "S2", "Desc", "temp", "C");
+
+  const result = await groupAndComputeMeasurements(
+    [],                        
+    [sen.macAddress],          
+    [sen.macAddress]            
+  );
+
+  expect(result).toHaveLength(1);
+  const one = result[0];
+  expect(one.sensorMacAddress).toBe(sen.macAddress);
+  expect(one.stats == null).toBe(true);
+  expect(one.measurements).toBeUndefined();
+});
+
 
 });

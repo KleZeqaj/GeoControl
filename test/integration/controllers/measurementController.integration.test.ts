@@ -242,15 +242,19 @@ it("getAllOutliersOfSensor with startDate and endDate", async () => {
     await setupEntities();
     const now = new Date();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const past = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const day_2 = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const day_3 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const day_4 = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+    const day_5 = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+    const past = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
     await storeMeasurements(networkCode, gatewayMac, sensorMac, [
         { createdAt: yesterday, value: 11 },
-        { createdAt: yesterday, value: 11 },
-        { createdAt: yesterday, value: 11 },
-        { createdAt: now, value: 11 },
-        { createdAt: now, value: 11 },
+        { createdAt: day_2, value: 11 },
+        { createdAt: day_3, value: 11 },
+        { createdAt: day_4, value: 11 },
+        { createdAt: day_5, value: 11 },
         { createdAt: now, value: 50 } // outlier
     ]);
 
@@ -327,19 +331,29 @@ it("getAllOutliersOfNetwork with specific sensorMacs", async () => {
         "%"
     );
 
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const day_2 = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const day_3 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const day_4 = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+    const day_5 = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+
     const measurements = [
-        { createdAt: new Date(), value: 20 },
-        { createdAt: new Date(), value: 100 } // outlier
+        { createdAt: yesterday, value: 11 },
+        { createdAt: day_2, value: 11 },
+        { createdAt: day_3, value: 11 },
+        { createdAt: day_4, value: 11 },
+        { createdAt: day_5, value: 11 },
+        { createdAt: now, value: 50 } // outlier
     ];
 
-    //await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
     await storeMeasurements(networkCode, gatewayMac, otherSensorMac, measurements);
 
     const outliers = await getAllOutliersOfNetwork(networkCode, [otherSensorMac]);
     expect(outliers.length).toBeGreaterThan(0);
     expect(outliers).toHaveLength(1);
-    const outlierValues = outliers[0].measurements.map(m => m.value) || [];
-    expect(outlierValues).toContain(100);
+    const outlierValues = outliers[0].measurements.map(m => m.value);
+    expect(outlierValues).toContain(50);
 });
 
 it("getAllMeasurementsOfNetwork with empty sensorMacs array", async () => {
@@ -474,30 +488,49 @@ it("getAllStatsOfNetwork with only endDate", async () => {
 it("getAllOutliersOfNetwork with only startDate", async () => {
     await setupEntities();
     const now = new Date();
+    const past = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
+    const day_2 = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const day_3 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const day_4 = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+    const day_5 = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+   
     await storeMeasurements(networkCode, gatewayMac, sensorMac, [
-        { createdAt: yesterday, value: 10 },
-        { createdAt: now, value: 100 } // outlier
+        { createdAt: yesterday, value: 11 },
+        { createdAt: day_2, value: 11 },
+        { createdAt: day_3, value: 11 },
+        { createdAt: day_4, value: 11 },
+        { createdAt: day_5, value: 11 },
+        { createdAt: now, value: 50 } // outlier
     ]);
 
-    const result = await getAllOutliersOfNetwork(networkCode, undefined, yesterday.toISOString());
+    const result = await getAllOutliersOfNetwork(networkCode, undefined, past.toISOString());
     const outlierValues = result[0].measurements.map(m => m.value);
-    expect(outlierValues).toContain(100);
+    expect(outlierValues).toContain(50);
 });
 
 it("getAllOutliersOfNetwork with only endDate", async () => {
     await setupEntities();
     const now = new Date();
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const day_2 = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+    const day_3 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const day_4 = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000);
+    const day_5 = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
 
     await storeMeasurements(networkCode, gatewayMac, sensorMac, [
-        { createdAt: now, value: 100 } // outlier
+        { createdAt: yesterday, value: 11 },
+        { createdAt: day_2, value: 11 },
+        { createdAt: day_3, value: 11 },
+        { createdAt: day_4, value: 11 },
+        { createdAt: day_5, value: 11 },
+        { createdAt: now, value: 50 } // outlier
     ]);
 
     const result = await getAllOutliersOfNetwork(networkCode, undefined, undefined, tomorrow.toISOString());
     const outlierValues = result[0].measurements.map(m => m.value);
-    expect(outlierValues).toContain(100);
+    expect(outlierValues).toContain(50);
 });
 
 
