@@ -515,7 +515,7 @@ describe("PATCH /networks/{NET}/gateways/{GAT}/sensors/{SENS} (e2e)", () => {
     expect(res.status).toBe(403);
 
     const res2 = await request(app)
-      .post("/api/v1/networks/NET01/gateways/AA:AA:AA:AA:AA:AA/sensors/DD:DD:DD:DD:DD:DD")
+      .patch("/api/v1/networks/NET01/gateways/AA:AA:AA:AA:AA:AA/sensors/DD:DD:DD:DD:DD:DD")
       .set("Authorization", `Bearer prova`)
       .send({
         macAddress: "00:11:22:33:44:55"

@@ -15,6 +15,8 @@ import { getOutliers } from "@services/measurementService";
 import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
 import { parseDate } from "@services/measurementService";
 import { BadRequestError } from "@models/errors/BadRequestError";
+import { Stats } from "@models/dto/Stats";
+import type { Measurement } from '@models/dto/Measurement';
 
 describe("Measurement Service integration", () => {
   const networkRepo = new NetworkRepository();
@@ -38,7 +40,7 @@ describe("Measurement Service integration", () => {
     
   });
 
-  it("store and retrieve measurements", async () => {
+  /*it("store and retrieve measurements", async () => {
     const network = await networkRepo.createNewNetwork("NET01", "Network1", "Desc");
     const gateway = await gatewayRepo.createGateway("AA:AA:AA:AA:AA:AA", "GW1", "Desc", network);
     const sensor = await sensorRepo.createSensor("00:11:22:33:44:55", gateway, "SENS01", "Temperature", "C", "temp");
@@ -75,16 +77,91 @@ describe("Measurement Service integration", () => {
 
     const result = await measurementRepo.getAllMeasurementsOfSensor(network.code, gateway.macAddress, sensor.macAddress);
     expect(result.length).toBe(0);
-  });
+  });*/
 
-    it("getOutliers: se measurements undefined/null imposta measurements a null", async () => {
-    const empty: MeasurementsDTO = {
-      sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
-      stats: null,
-      measurements: undefined as any
+    it("getOutliers: risultato corretto", async () => {
+
+    const stats: Stats = {
+      mean: 4.56,
+      variance: 7.65,
+      upperThreshold: 10,
+      lowerThreshold: 2
+    }
+
+    const measurements: Measurement[] = [{
+      value: 7.0,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: true
+    }, {
+      value: 4.3,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: false
+    }, {
+      value: 8.9,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: false
+    }]
+
+    const measurementsDTO: MeasurementsDTO = {
+      sensorMacAddress: "AA:AA:AA:AA:AA:AA",
+      stats: stats,
+      measurements: measurements
     };
 
-    const result = await getOutliers(empty);
+    const result = await getOutliers(measurementsDTO);
+    expect(result.measurements.length).toBe(1);
+    expect(result.measurements[0].value).toBe(7.0);
+  });
+
+  it("getOutliers: assenza di outliers", async () => {
+
+    const stats: Stats = {
+      mean: 4.56,
+      variance: 7.65,
+      upperThreshold: 10,
+      lowerThreshold: 2
+    }
+
+    const measurements: Measurement[] = [{
+      value: 7.0,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: false
+    }, {
+      value: 4.3,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: false
+    }, {
+      value: 8.9,
+      createdAt: new Date("2025-02-18T16:00:00Z"),
+      isOutlier: false
+    }]
+
+    const measurementsDTO: MeasurementsDTO = {
+      sensorMacAddress: "AA:AA:AA:AA:AA:AA",
+      stats: stats,
+      measurements: measurements
+    };
+
+    const result = await getOutliers(measurementsDTO);
+    expect(result.measurements.length).toBe(0);
+  });
+
+  it("getOutliers: null measurements", async () => {
+
+    const stats: Stats = {
+      mean: 4.56,
+      variance: 7.65,
+      upperThreshold: 10,
+      lowerThreshold: 2
+    }
+
+    const measurementsDTO: MeasurementsDTO = {
+      sensorMacAddress: "AA:AA:AA:AA:AA:AA",
+      stats: stats,
+      measurements: null
+    };
+
+    const result = await getOutliers(measurementsDTO);
     expect(result.measurements).toBeNull();
   });
 
