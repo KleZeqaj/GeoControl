@@ -51,8 +51,6 @@ describe("MeasurementRoutes integration", () => {
     await TestDataSource.getRepository(SensorDAO).clear();
     await TestDataSource.getRepository(GatewayDAO).clear();
     await TestDataSource.getRepository(NetworkDAO).clear();
-    await TestDataSource.getRepository(GatewayDAO).clear();
-    
     jest.clearAllMocks();
   });
 
@@ -186,6 +184,46 @@ describe("MeasurementRoutes integration", () => {
       spy.mockRestore();
       authorizeSpy.mockRestore();
     });
+
+it("filtra correttamente le misure usando startDate e endDate (copre la linea 49)", async () => {
+
+  const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+
+  const now = new Date();
+  const start = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+  const end = new Date(now.getTime() + 36 * 60 * 60 * 1000);
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  await measurementRepo.storeMeasurements(
+    network.code,
+    gateway.macAddress,
+    sensor.macAddress,
+    new Map([
+      [yesterday, 10],
+      [now,       20],
+      [tomorrow,  30],
+    ])
+  );
+
+  const token = "Bearer faketoken";
+  jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+
+  const res = await request(app)
+    .get(
+      `/api/v1/networks/${network.code}` +
+      `/gateways/${gateway.macAddress}` +
+      `/sensors/${sensor.macAddress}/measurements` +
+      `?startDate=${encodeURIComponent(start.toISOString())}` +
+      `&endDate=${encodeURIComponent(end.toISOString())}`
+    )
+    .set("Authorization", token);
+
+  expect(res.status).toBe(200);
+  const values = res.body.measurements.map((m: any) => m.value).sort();
+  expect(values).toEqual([20, 30]);
+});
+
+
   });
 
   describe("GET /stats for a sensor", () => {
@@ -247,16 +285,57 @@ describe("MeasurementRoutes integration", () => {
       spy.mockRestore();
       authorizeSpy.mockRestore();
     });
+
+    it("forward startDate and endDate as raw ISO strings to getAllStatsOfSensor controller", async () => {
+      const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+      const start = new Date(Date.now() - 7200 * 1000).toISOString();
+      const end   = new Date(Date.now() + 7200 * 1000).toISOString();
+      const fakeStats = { sensorMacAddress: sensor.macAddress, stats: { /* ... */ }, measurements: null };
+      const ctrlSpy = jest
+        .spyOn(measurementController, "getAllStatsOfSensor")
+        .mockResolvedValue(fakeStats as any);
+
+      jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+      const res = await request(app)
+        .get(
+          `/api/v1/networks/${network.code}` +
+          `/gateways/${gateway.macAddress}` +
+          `/sensors/${sensor.macAddress}/stats` +
+          `?startDate=${encodeURIComponent(start)}` +
+          `&endDate=${encodeURIComponent(end)}`
+        )
+        .set("Authorization", token);
+
+      expect(res.status).toBe(200);
+      expect(ctrlSpy).toHaveBeenCalledWith(
+        network.code,
+        gateway.macAddress,
+        sensor.macAddress,
+        start,
+        end
+      );
+
+      ctrlSpy.mockRestore();
+    });
   });
 
   describe("GET /outliers for a sensor", () => {
     it("returns 200 OK with outliers", async () => {
       const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+    
+      const now = Date.now();
+      const map = new Map<Date, number>();
+      for (let i = 0; i < 20; i++) {
+        map.set(new Date(now + i), 20);
+      }
+      // outlier
+      map.set(new Date(now + 1000), 1000);
+
       await measurementRepo.storeMeasurements(
         network.code,
         gateway.macAddress,
         sensor.macAddress,
-        new Map([[new Date(), 20], [new Date(Date.now()+1), 999]])
+        map 
       );
 
       const authorizeSpy = jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
@@ -265,7 +344,9 @@ describe("MeasurementRoutes integration", () => {
         .set("Authorization", token);
 
       expect(res.status).toBe(200);
-      expect(res.body.measurements.find((m: any) => m.value === 999)).toBeTruthy();
+      expect(Array.isArray(res.body.measurements)).toBe(true);
+      expect(res.body.measurements.length).toBe(1);
+      expect(res.body.measurements[0].value).toBe(1000);
       authorizeSpy.mockRestore();
     });
 
@@ -308,6 +389,39 @@ describe("MeasurementRoutes integration", () => {
       spy.mockRestore();
       authorizeSpy.mockRestore();
     });
+
+    it("forward startDate and endDate as raw ISO strings to getAllOutliersOfSensor controller", async () => {
+      const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+      const start = new Date(Date.now() - 5000 * 1000).toISOString();
+      const end   = new Date(Date.now() + 5000 * 1000).toISOString();
+      const fakeOut = { sensorMacAddress: sensor.macAddress, stats: null, measurements: [] };
+      const ctrlSpy = jest
+        .spyOn(measurementController, "getAllOutliersOfSensor")
+        .mockResolvedValue(fakeOut as any);
+
+      jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+      const res = await request(app)
+        .get(
+          `/api/v1/networks/${network.code}` +
+          `/gateways/${gateway.macAddress}` +
+          `/sensors/${sensor.macAddress}/outliers` +
+          `?startDate=${encodeURIComponent(start)}` +
+          `&endDate=${encodeURIComponent(end)}`
+        )
+        .set("Authorization", token);
+
+      expect(res.status).toBe(200);
+      expect(ctrlSpy).toHaveBeenCalledWith(
+        network.code,
+        gateway.macAddress,
+        sensor.macAddress,
+        start,
+        end
+      );
+
+      ctrlSpy.mockRestore();
+    });
+
   });
 
   describe("GET /networks/:networkCode/measurements", () => {
@@ -369,6 +483,35 @@ describe("MeasurementRoutes integration", () => {
       spy.mockRestore();
       authorizeSpy.mockRestore();
     });
+
+    it("forward startDate and endDate as raw ISO strings to getAllMeasurementsOfNetwork controller", async () => {
+      const { network } = await setupNetworkGatewaySensor();
+      const start = new Date(Date.now() - 10000 * 1000).toISOString();
+      const end   = new Date(Date.now() + 10000 * 1000).toISOString();
+      const fakeList = [];
+      const ctrlSpy = jest
+        .spyOn(measurementController, "getAllMeasurementsOfNetwork")
+        .mockResolvedValue(fakeList as any);
+
+      jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+      const res = await request(app)
+        .get(
+          `/api/v1/networks/${network.code}/measurements` +
+          `?startDate=${encodeURIComponent(start)}` +
+          `&endDate=${encodeURIComponent(end)}`
+        )
+        .set("Authorization", token);
+
+      expect(res.status).toBe(200);
+      expect(ctrlSpy).toHaveBeenCalledWith(
+        network.code,
+        undefined,
+        start,
+        end
+      );
+
+      ctrlSpy.mockRestore();
+    });
   });
 
   describe("GET /networks/:networkCode/stats", () => {
@@ -408,6 +551,35 @@ describe("MeasurementRoutes integration", () => {
       spy.mockRestore();
       authorizeSpy.mockRestore();
     });
+
+    it("forward startDate and endDate as raw ISO strings to getAllStatsOfNetwork controller", async () => {
+      const { network } = await setupNetworkGatewaySensor();
+      const start = new Date(Date.now() - 15000 * 1000).toISOString();
+      const end   = new Date(Date.now() + 15000 * 1000).toISOString();
+      const fakeList = [];
+      const ctrlSpy = jest
+        .spyOn(measurementController, "getAllStatsOfNetwork")
+        .mockResolvedValue(fakeList as any);
+
+      jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+      const res = await request(app)
+        .get(
+          `/api/v1/networks/${network.code}/stats` +
+          `?startDate=${encodeURIComponent(start)}` +
+          `&endDate=${encodeURIComponent(end)}`
+        )
+        .set("Authorization", token);
+
+      expect(res.status).toBe(200);
+      expect(ctrlSpy).toHaveBeenCalledWith(
+        network.code,
+        undefined,
+        start,
+        end
+      );
+
+      ctrlSpy.mockRestore();
+    });
   });
 
   describe("GET /networks/:networkCode/outliers", () => {
@@ -446,6 +618,35 @@ describe("MeasurementRoutes integration", () => {
       expect(res.body.message).toMatch(/Outliers controller error/);
       spy.mockRestore();
       authorizeSpy.mockRestore();
+    });
+
+    it("forward startDate and endDate as raw ISO strings to getAllOutliersOfNetwork controller", async () => {
+      const { network } = await setupNetworkGatewaySensor();
+      const start = new Date(Date.now() - 20000 * 1000).toISOString();
+      const end   = new Date(Date.now() + 20000 * 1000).toISOString();
+      const fakeList = [];
+      const ctrlSpy = jest
+        .spyOn(measurementController, "getAllOutliersOfNetwork")
+        .mockResolvedValue(fakeList as any);
+
+      jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+      const res = await request(app)
+        .get(
+          `/api/v1/networks/${network.code}/outliers` +
+          `?startDate=${encodeURIComponent(start)}` +
+          `&endDate=${encodeURIComponent(end)}`
+        )
+        .set("Authorization", token);
+
+      expect(res.status).toBe(200);
+      expect(ctrlSpy).toHaveBeenCalledWith(
+        network.code,
+        undefined,
+        start,
+        end
+      );
+
+      ctrlSpy.mockRestore();
     });
   });
 });
