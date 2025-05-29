@@ -78,7 +78,6 @@ export class MeasurementRepository {
       () => true,
       `Network with code '${networkCode}' not found`
     )
-
     // Costruzione del filtro
     const where: any = {  
       sensor: {
@@ -89,6 +88,7 @@ export class MeasurementRepository {
         },
       },
     };
+
 
     // Filtro solo se sensorMacs è definito e non vuoto
     if (sensorMacs && sensorMacs.length > 0) {
@@ -105,7 +105,6 @@ export class MeasurementRepository {
     } else if (endDate) {
       where.createdAt = LessThanOrEqual(endDate);
     }
-
 
       return this.repo.find({
         where,

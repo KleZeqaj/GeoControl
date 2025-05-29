@@ -1,11 +1,11 @@
 import {
-    getAllMeasurementsOfNetwork,
-    getAllMeasurementsOfSensor,
-    getAllOutliersOfNetwork,
-    getAllOutliersOfSensor,
-    getAllStatsOfNetwork,
-    getAllStatsOfSensor,
-    storeMeasurements
+  getAllMeasurementsOfNetwork,
+  getAllMeasurementsOfSensor,
+  getAllOutliersOfNetwork,
+  getAllOutliersOfSensor,
+  getAllStatsOfNetwork,
+  getAllStatsOfSensor,
+  storeMeasurements
 } from "@controllers/measurementController";
 import { GatewayDAO } from "@dao/GatewayDAO";
 import { MeasurementDAO } from "@dao/MeasurementDAO";
@@ -16,9 +16,9 @@ import { GatewayRepository } from "@repositories/GatewayRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
 import {
-    closeTestDataSource,
-    initializeTestDataSource,
-    TestDataSource
+  closeTestDataSource,
+  initializeTestDataSource,
+  TestDataSource
 } from "@test/setup/test-datasource";
 
 beforeAll(async () => {
@@ -123,7 +123,7 @@ describe("MeasurementController: SQLite in-memory", () => {
     ];
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
     const result = await getAllOutliersOfSensor(networkCode, gatewayMac, sensorMac);
-    expect(result.measurements.length).toBe(0);
+    expect(result).not.toHaveProperty("measurements");
   });
   
   it("get outliers of sensor: case where there's at least 1 outlier", async() => {
