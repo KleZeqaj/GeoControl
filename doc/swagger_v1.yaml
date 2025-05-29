@@ -217,10 +217,12 @@ paths:
               properties:
                 username:
                   type: string
+                  minLength: 1
                   description: Unique username
                   example: s0123465
                 password:
                   type: string
+                  minLength: 5
                   description: Password for the user account
                   example: "FR90!5g@+ni"
                 type:
@@ -1632,7 +1634,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Measurements"
               example:
-                - sensorMac: "71:B1:CE:01:C6:A9"
+                - sensorMacAddress: "71:B1:CE:01:C6:A9"
                   stats:
                     startDate: "2025-02-18T15:00:00Z"
                     endDate: "2025-02-18T17:00:00Z"
@@ -1732,7 +1734,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Measurements"
               example:
-                - sensorMac: "71:B1:CE:01:C6:A9"
+                - sensorMacAddress: "71:B1:CE:01:C6:A9"
                   stats:
                     startDate: "2025-02-18T15:00:00Z"
                     endDate: "2025-02-18T17:00:00Z"
@@ -1926,7 +1928,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Measurements"
               example:
-                sensorMac: "71:B1:CE:01:C6:A9"
+                sensorMacAddress: "71:B1:CE:01:C6:A9"
                 stats:
                   startDate: "2025-02-18T15:00:00Z"
                   endDate: "2025-02-18T17:00:00Z"
@@ -2131,7 +2133,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Measurements"
               example:
-                sensorMac: "71:B1:CE:01:C6:A9"
+                sensorMacAddress: "71:B1:CE:01:C6:A9"
                 stats:
                   startDate: "2025-02-18T15:00:00Z"
                   endDate: "2025-02-18T17:00:00Z"
