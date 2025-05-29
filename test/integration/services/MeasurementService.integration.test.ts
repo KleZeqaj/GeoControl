@@ -1,17 +1,7 @@
-import { GatewayDAO } from "@models/dao/GatewayDAO";
-import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { NetworkDAO } from "@models/dao/NetworkDAO";
-import { SensorDAO } from "@models/dao/SensorDAO";
-import type { Measurement } from '@models/dto/Measurement';
-import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
-import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
-import { Stats } from "@models/dto/Stats";
-import { BadRequestError } from "@models/errors/BadRequestError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
-import { getOutliers, groupAndComputeMeasurements, parseDate } from "@services/measurementService";
 import {
   closeTestDataSource,
   initializeTestDataSource,
