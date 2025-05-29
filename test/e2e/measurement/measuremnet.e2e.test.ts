@@ -1,307 +1,557 @@
-// tests/e2e/measurement/measurement.e2e.test.ts
-
-import request from "supertest";
 import { app } from "@app";
 import { generateToken } from "@services/authService";
-import {
-  beforeAllE2e,
-  afterAllE2e,
-  TEST_USERS,
-  TEST_NETWORKS,
-  TEST_GATEWAYS,
-  TEST_SENSORS
-} from "@test/e2e/lifecycle";
+import { beforeAllE2e, afterAllE2e, TEST_USERS } from "@test/e2e/lifecycle";
+import request from "supertest";
+import { NetworkRepository } from "@repositories/NetworkRepository";
+import { GatewayRepository } from "@repositories/GatewayRepository";
+import { SensorRepository } from "@repositories/SensorRepository";
+import { MeasurementRepository } from "@repositories/MeasurementRepository";
 
-const BASE = "/api/v1/networks";
-
-describe("Measurements E2E", () => {
-  let adminToken: string;
-  let opToken: string;
-  let viewerToken: string;
-
-  const netCode  = TEST_NETWORKS.network1.code;
-  const gwMac    = TEST_GATEWAYS.gateway1.macAddress;
-  const sensMac  = TEST_SENSORS.sensor1.macAddress;
-
-  const sensorUrl  = `${BASE}/${netCode}/gateways/${gwMac}/sensors/${sensMac}/measurements`;
-  const networkUrl = `${BASE}/${netCode}/measurements`;
+describe("POST /networks/:networkCode/gateways/:gatewayMac/sensors/:sensorMac/measurements", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
 
   beforeAll(async () => {
     await beforeAllE2e();
-    adminToken  = generateToken(TEST_USERS.admin);
-    opToken     = generateToken(TEST_USERS.operator);
-    viewerToken = generateToken(TEST_USERS.viewer);
+    token = generateToken(TEST_USERS.admin);
+
+    // seed a sensor under the existing NET01 / AA:AA:... gateway
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "temperature", "C");
   });
 
   afterAll(async () => {
     await afterAllE2e();
   });
 
+  it("201 Created - store measurements (Admin)", async () => {
+    const body = [
+      { createdAt: new Date().toISOString(), value: 12.5 },
+      { createdAt: new Date().toISOString(), value: 13.7 },
+    ];
+    const res = await request(app)
+      .post(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`)
+      .send(body);
 
-  describe("GET /networks/:net/gateways/:gat/sensors/:sens/measurements", () => {
-    it("200 – lista tutte le misurazioni di un sensore", async () => {
-      const res = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(201);
 
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBeGreaterThan(0);
-
-      res.body.forEach((m: any) => {
-        expect(m).toHaveProperty("value");
-        expect(m).toHaveProperty("createdAt");
-      });
-    });
-
-    it("200 – filtra per startDate", async () => {
-      const all = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer ${adminToken}`);
-      const sampleStart = all.body[0].createdAt;
-
-      const res = await request(app)
-        .get(sensorUrl)
-        .query({ startDate: sampleStart })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => new Date(m.createdAt) >= new Date(sampleStart))).toBe(true);
-    });
-
-    it("200 – filtra per endDate", async () => {
-      const all = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer ${adminToken}`);
-      const sampleEnd = all.body[0].createdAt;
-
-      const res = await request(app)
-        .get(sensorUrl)
-        .query({ endDate: sampleEnd })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => new Date(m.createdAt) <= new Date(sampleEnd))).toBe(true);
-    });
-
-    it("200 – filtra per startDate e endDate", async () => {
-      const all = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer ${adminToken}`);
-      const start = all.body[0].createdAt;
-      const end   = all.body[1]?.createdAt || start;
-
-      const res = await request(app)
-        .get(sensorUrl)
-        .query({ startDate: start, endDate: end })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => {
-        const d = new Date(m.createdAt);
-        return d >= new Date(start) && d <= new Date(end);
-      })).toBe(true);
-    });
-
-    it("400 – query params malformati", async () => {
-      const res = await request(app)
-        .get(sensorUrl)
-        .query({ startDate: "not-a-date", endDate: "12345" })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(400);
-    });
-
-    it("401/403 – token mancante, invalido o senza permessi", async () => {
-      // viewer può leggere
-      const ok = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer ${viewerToken}`);
-      expect(ok.status).toBe(200);
-
-      // token invalido → 401
-      const bad = await request(app)
-        .get(sensorUrl)
-        .set("Authorization", `Bearer invalid`);
-      expect(bad.status).toBe(401);
-    });
-
-    it("404 – network/gateway/sensor inesistenti", async () => {
-      const mk = (n: string, g: string, s: string) =>
-        `${BASE}/${n}/gateways/${g}/sensors/${s}/measurements`;
-
-      const combos = [
-        ["NOPE", gwMac, sensMac],
-        [netCode, "00:00:00:00:00:00", sensMac],
-        [netCode, gwMac, "11:11:11:11:11:11"]
-      ] as const;
-
-      for (const [n, g, s] of combos) {
-        const r = await request(app)
-          .get(mk(n, g, s))
-          .set("Authorization", `Bearer ${adminToken}`);
-        expect(r.status).toBe(404);
-      }
-    });
+    const mRepo = new MeasurementRepository();
+    const stored = await mRepo.getAllMeasurementsOfSensor(networkCode, gatewayMac, sensorMac);
+    expect(stored.length).toBe(2);
   });
 
+  
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .post(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .send([{ createdAt: new Date().toISOString(), value: 5 }]);
 
-  describe("GET /networks/:net/measurements", () => {
-    it("200 – lista tutte le misurazioni di una rete", async () => {
-      const res = await request(app)
-        .get(networkUrl)
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBeGreaterThan(0);
-    });
-
-    it("200 – operator e viewer possono leggere le misurazioni di una rete", async () => {
-      for (const token of [opToken, viewerToken]) {
-        const r = await request(app)
-          .get(networkUrl)
-          .set("Authorization", `Bearer ${token}`);
-        expect(r.status).toBe(200);
-      }
-    });
-
-    it("200 – filtra per sensorMacs multiple", async () => {
-      const macs = [TEST_SENSORS.sensor1.macAddress, TEST_SENSORS.sensor2.macAddress].join(",");
-      const res = await request(app)
-        .get(networkUrl)
-        .query({ sensorMacs: macs })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => macs.split(",").includes(m.sensorMacAddress))).toBe(true);
-    });
-
-    it("200 – filtra per endDate", async () => {
-      const all = (await request(app)
-        .get(networkUrl)
-        .set("Authorization", `Bearer ${adminToken}`)).body as any[];
-      const sampleEnd = all[0].createdAt;
-
-      const res = await request(app)
-        .get(networkUrl)
-        .query({ endDate: sampleEnd })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => new Date(m.createdAt) <= new Date(sampleEnd))).toBe(true);
-    });
-
-    it("200 – filtra per startDate e endDate", async () => {
-      const all = (await request(app)
-        .get(networkUrl)
-        .set("Authorization", `Bearer ${adminToken}`)).body as any[];
-      const start = all[0].createdAt;
-      const end   = all[1]?.createdAt || start;
-
-      const res = await request(app)
-        .get(networkUrl)
-        .query({ startDate: start, endDate: end })
-        .set("Authorization", `Bearer ${adminToken}`);
-
-      expect(res.status).toBe(200);
-      expect(res.body.every((m: any) => {
-        const d = new Date(m.createdAt);
-        return d >= new Date(start) && d <= new Date(end);
-      })).toBe(true);
-    });
-
-    it("400 – query params malformati", async () => {
-      const res = await request(app)
-        .get(networkUrl)
-        .query({ startDate: "foo", sensorMacs: 123 as any })
-        .set("Authorization", `Bearer ${adminToken}`);
-      expect(res.status).toBe(400);
-    });
-
-    it("401 – senza token", async () => {
-      const res = await request(app).get(networkUrl);
-      expect(res.status).toBe(401);
-    });
-
-    it("404 – network inesistente", async () => {
-      const res = await request(app)
-        .get(`${BASE}/NOPE/measurements`)
-        .set("Authorization", `Bearer ${adminToken}`);
-      expect(res.status).toBe(404);
-    });
+    expect(res.status).toBe(401);
   });
 
+  it("403 Forbidden - viewer role cannot POST", async () => {
+    const viewerToken = generateToken(TEST_USERS.viewer);
+    const res = await request(app)
+      .post(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${viewerToken}`)
+      .send([{ createdAt: new Date().toISOString(), value: 7 }]);
 
-  describe("POST /networks/:net/gateways/:gat/sensors/:sens/measurements", () => {
-    const postUrl = sensorUrl;
+    expect(res.status).toBe(403);
+  });
 
-    it("201 – crea nuove misurazioni (admin & operator)", async () => {
-      const payload = {
-        values: {
-          "2025-05-20T08:00:00.000Z": 42,
-          "2025-05-20T09:00:00.000Z": 43
-        }
-      };
+  it("400 Bad Request - missing fields", async () => {
+    const res = await request(app)
+      .post(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`)
+      .send([{ value: 21 }]);  // no createdAt
 
-      for (const token of [adminToken, opToken]) {
-        const res = await request(app)
-          .post(postUrl)
-          .set("Authorization", `Bearer ${token}`)
-          .send(payload);
-        expect(res.status).toBe(201);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBe(2);
-      }
-    });
+    expect(res.status).toBe(400);
+  });
 
-    it("403/401 – viewer o token invalido", async () => {
-      const r1 = await request(app)
-        .post(postUrl)
-        .set("Authorization", `Bearer ${viewerToken}`)
-        .send({ values: { "2025-05-21T00:00:00.000Z": 1 }});
-      expect(r1.status).toBe(403);
+  it("404 Not Found - invalid network/gateway/sensor", async () => {
+    // bad network
+    const res1 = await request(app)
+      .post(`/api/v1/networks/FAKE/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`)
+      .send([{ createdAt: new Date().toISOString(), value: 1 }]);
+    expect(res1.status).toBe(404);
 
-      const r2 = await request(app)
-        .post(postUrl)
-        .set("Authorization", `Bearer nope`)
-        .send({ values: { "2025-05-21T00:00:00.000Z": 1 }});
-      expect(r2.status).toBe(401);
-    });
+    // bad gateway
+    const fakeGateway = "XX:XX:XX:XX:XX:XX";
+    const res2 = await request(app)
+      .post(`/api/v1/networks/${networkCode}/gateways/${fakeGateway}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`)
+      .send([{ createdAt: new Date().toISOString(), value: 1 }]);
+    expect(res2.status).toBe(404);
 
-    it("400 – payload mancante o malformato", async () => {
-      const cases = [
-        {},
-        { values: "not-an-object" },
-        { values: { "bad-date": 5 } }
-      ];
-      for (const body of cases) {
-        const r = await request(app)
-          .post(postUrl)
-          .set("Authorization", `Bearer ${adminToken}`)
-          .send(body);
-        expect(r.status).toBe(400);
-      }
-    });
+    // bad sensor
+  const fakeSensor = "YY:YY:YY:YY:YY:YY";
+  const res3 = await request(app)
+    .post(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${fakeSensor}/measurements`)
+    .set("Authorization", `Bearer ${token}`)
+    .send([{ createdAt: new Date().toISOString(), value: 1 }]);
+  expect(res3.status).toBe(404);
+  });
+});
 
-    it("404 – network/gateway/sensor inesistenti", async () => {
-      const mk = (n: string, g: string, s: string) =>
-        `${BASE}/${n}/gateways/${g}/sensors/${s}/measurements`;
-      const body = { values: { "2025-05-22T00:00:00.000Z": 1 } };
+describe("GET /networks/:networkCode/gateways/:gatewayMac/sensors/:sensorMac/measurements", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
 
-      const combos = [
-        ["NOPE", gwMac, sensMac],
-        [netCode, "00:00:00:00:00:00", sensMac],
-        [netCode, gwMac, "11:11:11:11:11:11"]
-      ] as const;
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.admin);
 
-      for (const [n, g, s] of combos) {
-        const r = await request(app)
-          .post(mk(n, g, s))
-          .set("Authorization", `Bearer ${adminToken}`)
-          .send(body);
-        expect(r.status).toBe(404);
-      }
-    });
+    // seed sensor + a couple of measurements
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "humidity", "%");
+
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([
+        [new Date(Date.now() - 1000 * 60), 30],
+        [new Date(), 45],
+      ])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - Admin, Operator, Viewer all allowed", async () => {
+    for (const user of [TEST_USERS.admin, TEST_USERS.operator, TEST_USERS.viewer]) {
+      const tok = generateToken(user);
+      const res = await request(app)
+        .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+        .set("Authorization", `Bearer ${tok}`);
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.measurements)).toBe(true);
+    }
+  });
+
+  it("400 Bad Request - invalid startDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/measurements` +
+        `?startDate=not-a-date`
+      )
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("400 Bad Request - invalid endDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/measurements` +
+        `?endDate=12345`
+      )
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`);
+    expect(res.status).toBe(401);
+  });
+
+  it("404 Not Found - invalid network/gateway/sensor", async () => {
+    // bad network
+    const res1 = await request(app)
+      .get(`/api/v1/networks/FAKE/gateways/${gatewayMac}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res1.status).toBe(404);
+
+    // bad gateway
+    const fakeGateway = "XX:XX:XX:XX:XX:XX";
+    const res2 = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${fakeGateway}/sensors/${sensorMac}/measurements`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res2.status).toBe(404);
+
+    // bad sensor
+    const fakeSensor = "YY:YY:YY:YY:YY:YY";
+    const res3 = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${fakeGateway}/sensors/${fakeSensor}/measurements`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res3.status).toBe(404);
+  });
+});
+
+describe("GET /networks/:networkCode/gateways/:gatewayMac/sensors/:sensorMac/stats", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
+
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.operator);
+
+    // seed sensor + one measurement
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "pressure", "Pa");
+
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([[new Date(), 101.3]])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - compute stats", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/stats`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("mean");
+    expect(res.body).toHaveProperty("variance");
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/stats`);
+    expect(res.status).toBe(401);
+  });
+
+  it("400 Bad Request - invalid startDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/stats` +
+        `?startDate=not-a-date`
+      )
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("400 Bad Request - invalid endDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/stats` +
+        `?endDate=12345`
+      )
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("404 Not Found - invalid path params", async () => {
+    const res1 = await request(app)
+      .get(`/api/v1/networks/FAKE/gateways/${gatewayMac}/sensors/${sensorMac}/stats`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res1.status).toBe(404);
+
+    const fakeGatewayMac = "FF:FF:FF:FF:FF:FF";
+    const fakeSensorMac  = "EE:EE:EE:EE:EE:EE";
+    const res2 = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${fakeGatewayMac}/sensors/${sensorMac}/stats`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res2.status).toBe(404);
+
+    const res3 = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${fakeGatewayMac}/sensors/${fakeSensorMac}/stats`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res3.status).toBe(404);
+  });
+});
+
+describe("GET /networks/:networkCode/gateways/:gatewayMac/sensors/:sensorMac/outliers", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
+
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.viewer);
+
+    // seed sensor + some measurements with one outlier
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "voltage", "V");
+
+    const now = Date.now();
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([
+        [new Date(now), 5],
+        [new Date(now - 24*3600*1000), 5],
+        [new Date(now + 24*3600*1000), 5],
+        [new Date(now - 2 * 24*3600*1000), 5],
+        [new Date(now - 3 * 24*3600*1000), 5],
+        [new Date(now - 4 * 24*3600*1000), 5],
+        [new Date(now - 5 * 24*3600*1000), 5],
+        [new Date(now - 7 * 24*3600*1000), 5],
+        [new Date(now + 6 * 24*3600*1000), 1000],  // outlier
+      ])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - retrieve outliers", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/outliers`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.measurements)).toBe(true);
+    expect(res.body.measurements.length).toBe(1);
+    expect(res.body.measurements[0].value).toBe(1000);
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/gateways/${gatewayMac}/sensors/${sensorMac}/outliers`);
+    expect(res.status).toBe(401);
+  });
+
+  it("400 Bad Request - invalid startDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/outliers` +
+        `?startDate=not-a-date`
+      )
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("400 Bad Request - invalid endDate format", async () => {
+    const res = await request(app)
+      .get(
+        `/api/v1/networks/${networkCode}` +
+        `/gateways/${gatewayMac}` +
+        `/sensors/${sensorMac}/outliers` +
+        `?endDate=12345`
+      )
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("404 Not Found - invalid params", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/FAKE/gateways/${gatewayMac}/sensors/${sensorMac}/outliers`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("GET /networks/:networkCode/measurements", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
+
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.operator);
+
+    // seed sensor + one measurement
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "current", "A");
+
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([[new Date(), 0.1]])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - grouped measurements for network", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/measurements`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body[0]).toHaveProperty("sensorMacAddress");
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/measurements`);
+    expect(res.status).toBe(401);
+  });
+
+  it("400 Bad Request - invalid startDate format", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/measurements?startDate=not-a-date`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("400 Bad Request - invalid endDate format", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/measurements?endDate=12345`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/must match format "date-time"/);
+  });
+
+  it("404 Not Found - invalid network", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/NOPE/measurements`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
+});
+
+describe("GET /networks/:networkCode/stats", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
+
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.admin);
+
+    // seed sensor + one measurement
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "luminosity", "lux");
+
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([[new Date(), 300]])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - grouped stats for network", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/stats`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body[0]).toHaveProperty("stats");
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/stats`);
+    expect(res.status).toBe(401);
+  });
+});
+
+describe("GET /networks/:networkCode/outliers", () => {
+  let token: string;
+  const networkCode = "NET01";
+  const gatewayMac = "AA:AA:AA:AA:AA:AA";
+  const sensorMac = "00:11:22:33:44:55";
+
+  beforeAll(async () => {
+    await beforeAllE2e();
+    token = generateToken(TEST_USERS.operator);
+
+    // seed sensor + one measurement
+    const netRepo = new NetworkRepository();
+    const gateRepo = new GatewayRepository();
+    const senRepo = new SensorRepository();
+    const mRepo = new MeasurementRepository();
+
+    const network = await netRepo.getNetworkByCode(networkCode);
+    const gateway = await gateRepo.getGatewayByMacAddress(networkCode, gatewayMac);
+    await senRepo.createSensor(sensorMac, gateway, "SENSOR01", "Test sensor", "speed", "m/s");
+
+    await mRepo.storeMeasurements(
+      networkCode,
+      gatewayMac,
+      sensorMac,
+      new Map([[new Date(), 7.5]])
+    );
+  });
+
+  afterAll(async () => {
+    await afterAllE2e();
+  });
+
+  it("200 OK - grouped outliers for network", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/outliers`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("401 Unauthorized - missing token", async () => {
+    const res = await request(app)
+      .get(`/api/v1/networks/${networkCode}/outliers`);
+    expect(res.status).toBe(401);
   });
 });
