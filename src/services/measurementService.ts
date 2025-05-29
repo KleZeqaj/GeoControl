@@ -7,6 +7,11 @@ import { parseISODateParamToUTC } from "@utils";
 
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
+      if (measurementArray.length === 0 || measurementArray === undefined) {
+      // Il sensore non ha misurazioni
+      return createMeasurementsDTO(sensorMac, null, []);
+    }
+    
     const mean = measurementArray.reduce((acc, measurement) => acc + measurement.value, 0) / measurementArray.length;
     const variance = measurementArray.reduce((acc, measurement) => acc + Math.pow(measurement.value - mean, 2), 0) / measurementArray.length;
 

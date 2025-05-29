@@ -62,3 +62,21 @@ export function isValidMAC(str: string): boolean {
   return str.length > 0;
 }
 */
+
+export function stripMilliseconds(obj: any) {
+  if (Array.isArray(obj)) {
+    return obj.map(stripMilliseconds);
+  }
+  if (obj && typeof obj === "object") {
+    const newObj: any = {};
+    for (const key in obj) {
+      if (obj[key] instanceof Date) {
+        newObj[key] = obj[key].toISOString().replace(/\.\d{3}Z$/, "Z");
+      } else {
+        newObj[key] = stripMilliseconds(obj[key]);
+      }
+    }
+    return newObj;
+  }
+  return obj;
+}

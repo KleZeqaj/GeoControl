@@ -7,7 +7,7 @@ import { getAllMeasurementsOfSensor,
   getAllStatsOfNetwork,
   getAllOutliersOfNetwork,
   storeMeasurements } from "@controllers/measurementController";
-import { parseISODateParamToUTC, parseStringArrayParam} from "@utils";
+import { parseISODateParamToUTC, parseStringArrayParam, stripMilliseconds} from "@utils";
 import { UserType } from "@models/UserType";
 import { Router } from "express";
 import { BadRequestError } from "@models/errors/BadRequestError";
@@ -47,7 +47,7 @@ router.get(
         req.params.gatewayMac,
         req.params.sensorMac,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(measurements);
+      res.status(200).json(stripMilliseconds(measurements));
     }
     catch (error) {
       next(error);
@@ -66,7 +66,7 @@ router.get(CONFIG.ROUTES.V1_SENSORS + "/:sensorMac/stats",
         req.params.gatewayMac,
         req.params.sensorMac,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(stats);
+      res.status(200).json(stripMilliseconds(stats));
     }
     catch (error) {
       next(error);
@@ -85,7 +85,7 @@ router.get(
         req.params.gatewayMac,
         req.params.sensorMac,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(measurements);
+      res.status(200).json(stripMilliseconds(measurements));
     }
     catch (error) {
       next(error);
@@ -106,7 +106,7 @@ router.get(
         req.params.networkCode, 
         sensorMacs,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(measurements);
+      res.status(200).json(stripMilliseconds(measurements));
     }
     catch (error) {
       next(error);
@@ -127,7 +127,7 @@ router.get(
         req.params.networkCode, 
         sensorMacs,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(stats);
+      res.status(200).json(stripMilliseconds(stats));
     }
     catch (error) {
       next(error);
@@ -149,7 +149,7 @@ router.get(
         req.params.networkCode, 
         sensorMacs,
         startDate ? startDate.toString() : undefined, endDate ? endDate.toString() : undefined);
-      res.status(200).json(measurements);
+      res.status(200).json(stripMilliseconds(measurements));
     }
     catch (error) {
       next(error);
