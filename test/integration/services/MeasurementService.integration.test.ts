@@ -1,24 +1,22 @@
+import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { NetworkDAO } from "@models/dao/NetworkDAO";
+import { SensorDAO } from "@models/dao/SensorDAO";
+import type { Measurement } from '@models/dto/Measurement';
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
+import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
+import { Stats } from "@models/dto/Stats";
+import { BadRequestError } from "@models/errors/BadRequestError";
+import { GatewayRepository } from "@repositories/GatewayRepository";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
-import { GatewayRepository } from "@repositories/GatewayRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
+import { getOutliers, groupAndComputeMeasurements, parseDate } from "@services/measurementService";
 import {
   closeTestDataSource,
   initializeTestDataSource,
   TestDataSource
 } from "@test/setup/test-datasource";
-import { NetworkDAO } from "@models/dao/NetworkDAO";
-import { GatewayDAO } from "@models/dao/GatewayDAO";
-import { SensorDAO } from "@models/dao/SensorDAO";
-import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { getOutliers } from "@services/measurementService";
-import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
-import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
-import { parseDate } from "@services/measurementService";
-import { BadRequestError } from "@models/errors/BadRequestError";
-import { groupAndComputeMeasurements } from "@services/measurementService";
-import { Stats } from "@models/dto/Stats";
-import type { Measurement } from '@models/dto/Measurement';
 
 describe("Measurement Service integration", () => {
   const networkRepo = new NetworkRepository();
@@ -82,11 +80,12 @@ describe("Measurement Service integration", () => {
   });*/
 
     it("getOutliers: if measurements undefined/null set measurements on null", async () => {
-    const empty: MeasurementsDTO = {
-      sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
-      stats: null,
-      measurements: undefined as any
-  });
+      const empty: MeasurementsDTO = {
+        sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
+        stats: null,
+        measurements: undefined as any
+      }
+    });
 
     it("getOutliers: risultato corretto", async () => {
 

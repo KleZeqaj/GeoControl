@@ -426,19 +426,6 @@ it("getAllOutliersOfNetwork with specific sensorMacs", async () => {
     expect(outlierValues).toContain(50);
 });
 
-it("getAllMeasurementsOfNetwork with empty sensorMacs array", async () => {
-    await setupEntities();
-
-    const measurements = [
-        { createdAt: new Date(), value: 25 }
-    ];
-
-    await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
-
-    const result = await getAllMeasurementsOfNetwork(networkCode, []);
-    expect(result).toHaveLength(1);
-});
-
 it("getAllMeasurementsOfNetwork returns empty array when no data", async () => {
     await setupEntities();
 
@@ -510,7 +497,7 @@ it("getAllMeasurementsOfNetwork with sensorMacs explicitly empty array", async (
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
 
     const result = await getAllMeasurementsOfNetwork(networkCode, []);
-    expect(result[0].measurements.length).toBeGreaterThan(0);
+    expect(result.length).toBe(1);
 });
 
 

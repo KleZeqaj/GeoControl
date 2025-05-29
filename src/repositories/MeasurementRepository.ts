@@ -62,10 +62,6 @@ export class MeasurementRepository {
     } else if (endDate) {
       where.createdAt = LessThanOrEqual(endDate);
     }
-  const ris = await this.repo.find();
-  ris.map((a) => new Date(a.createdAt) >= new Date(startDate))
-  console.log(ris)
-
   const measurements = await this.repo.find({
     where
   });
@@ -109,6 +105,7 @@ export class MeasurementRepository {
     } else if (endDate) {
       where.createdAt = LessThanOrEqual(endDate);
     }
+
 
       return this.repo.find({
         where,

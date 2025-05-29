@@ -1,10 +1,9 @@
-import { Measurement, Measurement as MeasurementDTO } from "@models/dto/Measurement";
-import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
-import { createMeasurementsDTO , createMeasurementDTO, createStatsDTO} from "@services/mapperService";
 import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { mapMeasurementDAOToDTO } from "@services/mapperService";
-import { parseISODateParamToUTC } from "@utils";
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
+import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
 import { BadRequestError } from "@models/errors/BadRequestError";
+import { createMeasurementDTO, createMeasurementsDTO, createStatsDTO, mapMeasurementDAOToDTO } from "@services/mapperService";
+import { parseISODateParamToUTC } from "@utils";
 
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
@@ -87,7 +86,7 @@ export async function groupAndComputeMeasurements(
     }
   }
 
-  const selectedMacs = (sensorMacs ?? Array.from(groupedBySensor.keys()))
+  const selectedMacs = ((sensorMacs === undefined || sensorMacs.length === 0) ? Array.from(groupedBySensor.keys()) : sensorMacs)
   .filter(mac => groupedBySensor.has(mac));
   const results: MeasurementsDTO[] = [];
 

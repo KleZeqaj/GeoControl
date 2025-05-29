@@ -191,7 +191,7 @@ describe("POST /users", () => {
         const userRepo = new UserRepository();
         const user = new UserDAO();
         user.username = "s123456";
-        user.password = "1234";
+        user.password = "12345";
         user.type = UserType.Operator; 
 
         const res = await request(app)
@@ -210,7 +210,7 @@ describe("POST /users", () => {
     it("create a new user: 401 unauthorized", async () => {
         const user = new UserDAO();
         user.username = "s123456";
-        user.password = "1234";
+        user.password = "12345";
         user.type = UserType.Operator; 
 
         const res = await request(app)
@@ -225,7 +225,7 @@ describe("POST /users", () => {
     it("create a new user: 401 unauthorized", async () => {
         const user = new UserDAO();
         user.username = "s123456";
-        user.password = "1234";
+        user.password = "12345";
         user.type = UserType.Operator; 
 
         const res = await request(app)
@@ -240,7 +240,7 @@ describe("POST /users", () => {
     it("create a new user: 409 Conflict Error", async () => {
         const user = new UserDAO();
         user.username = "admin";
-        user.password = "1234";
+        user.password = "12345";
         user.type = UserType.Operator; 
 
         const res = await request(app)
