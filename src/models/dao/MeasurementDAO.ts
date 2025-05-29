@@ -11,7 +11,7 @@ export class MeasurementDAO {
   type: 'text',
   nullable: false,
   transformer: {
-    to: (value: Date) => value.toISOString(),
+    to: (value: Date) => value.toISOString().split('.')[0] + 'Z',
     from: (value: string) => new Date(value),
   }
 })

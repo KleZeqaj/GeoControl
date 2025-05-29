@@ -87,7 +87,9 @@ export async function groupAndComputeMeasurements(
     }
   }
 
-  const selectedMacs = (sensorMacs ?? Array.from(groupedBySensor.keys()))
+  const cleanArray = Array.from(groupedBySensor.keys()).filter(el => el);
+
+  const selectedMacs = (sensorMacs ?? cleanArray)
   .filter(mac => groupedBySensor.has(mac));
   const results: MeasurementsDTO[] = [];
 

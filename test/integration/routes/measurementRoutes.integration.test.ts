@@ -71,11 +71,82 @@ describe("MeasurementRoutes integration", () => {
     expect(response.status).toBe(201);
     const stored = await measurementRepo.getAllMeasurementsOfSensor(network.code, gateway.macAddress, sensor.macAddress);
     expect(stored.length).toBe(2);
+    expect(stored[0].value).toBe(22.5);
+    expect(stored[1].value).toBe(23.0);
 
     authorizeSpy.mockRestore();
   });
 
-  it("store measurements: 401 Unauthorized", async () => {
+  it("store measurements: 400 Failed", async () => {
+    const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+
+    const authorizeSpy = jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+    const body1 = [{ value: 22.5 }];
+    const body2 = [{ createdAt: new Date().toISOString() }];
+    const body3 = [{}];
+
+    const response1 = await request(app)
+      .post(`/api/v1/networks/${network.code}/gateways/${gateway.macAddress}/sensors/${sensor.macAddress}/measurements`)
+      .set("Authorization", token)
+      .send(body1);
+
+    expect(response1.status).toBe(400);
+    expect(response1.body.name).toBe("Bad Request");
+
+    const response2 = await request(app)
+      .post(`/api/v1/networks/${network.code}/gateways/${gateway.macAddress}/sensors/${sensor.macAddress}/measurements`)
+      .set("Authorization", token)
+      .send(body2);
+
+    expect(response2.status).toBe(400);
+    expect(response1.body.name).toBe("Bad Request");
+
+    const response3 = await request(app)
+      .post(`/api/v1/networks/${network.code}/gateways/${gateway.macAddress}/sensors/${sensor.macAddress}/measurements`)
+      .set("Authorization", token)
+      .send(body3);
+
+    expect(response3.status).toBe(400);
+    expect(response1.body.name).toBe("Bad Request");
+
+    authorizeSpy.mockRestore();
+  });
+
+  it("store measurements: 404 Failed", async () => {
+    const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+
+    const authorizeSpy = jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
+    const body = [{ value: 22.5, createdAt: new Date().toISOString() }];
+
+    const response1 = await request(app)
+      .post(`/api/v1/networks/NET06/gateways/${gateway.macAddress}/sensors/${sensor.macAddress}/measurements`)
+      .set("Authorization", token)
+      .send(body);
+
+    expect(response1.status).toBe(404);
+    expect(response1.body.name).toBe("NotFoundError");
+
+    const response2 = await request(app)
+      .post(`/api/v1/networks/${network.code}/gateways/GW10/sensors/${sensor.macAddress}/measurements`)
+      .set("Authorization", token)
+      .send(body);
+
+    expect(response2.status).toBe(404);
+    expect(response1.body.name).toBe("NotFoundError");
+
+    const response3 = await request(app)
+      .post(`/api/v1/networks/${network.code}/gateways/${gateway.macAddress}/sensors/PIPPO/measurements`)
+      .set("Authorization", token)
+      .send(body);
+
+    expect(response3.status).toBe(404);
+    expect(response1.body.name).toBe("NotFoundError");
+
+    authorizeSpy.mockRestore();
+  });
+
+  // MEGLIO VERIFICARLI IN E2E
+  /*it("store measurements: 401 Unauthorized", async () => {
     await setupNetworkGatewaySensor();
 
     const authorizeSpy = jest.spyOn(authService, "processToken").mockImplementation(() => {
@@ -109,16 +180,31 @@ describe("MeasurementRoutes integration", () => {
 
     storeSpy.mockRestore();
     authorizeSpy.mockRestore();
-  });
+  });*/
 
   describe("GET /measurements for a sensor", () => {
-    it("returns 200 OK with measurements", async () => {
+    it("returns 200 OK with measurements, no dates passed", async () => {
       const { network, gateway, sensor } = await setupNetworkGatewaySensor();
+      const date = new Date();
+      date.setMilliseconds(0);
+      const measurements = new Map();
+      const values = [1, 1, 1, 1, 1, 1, 1, 1, 1, 50];
+      const dates = [];
+      values.forEach((val, idx) => {
+        const dateNew = new Date(date.getTime() + 60*10*idx);
+        dateNew.setMilliseconds(0);
+        dates.push(dateNew)
+      });
+
+      values.forEach((val, idx) => {
+        measurements.set(dates[idx], val);
+      })
+      
       await measurementRepo.storeMeasurements(
         network.code,
         gateway.macAddress,
         sensor.macAddress,
-        new Map([[new Date(), 22.5]])
+        measurements
       );
 
       const authorizeSpy = jest.spyOn(authService, "processToken").mockResolvedValue(undefined);
@@ -128,6 +214,47 @@ describe("MeasurementRoutes integration", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.sensorMacAddress).toBe(sensor.macAddress);
+      expect(res.body.stats).toMatchObject({
+        startDate: date.toISOString().split('.')[0] + 'Z',
+        endDate: dates[9].toISOString().split('.')[0] + 'Z',
+        mean: 5.9,
+        variance: 216.09,
+        upperThreshold: 35.3,
+        lowerThreshold: -23.5
+      });
+      expect(res.body.measurements).toMatchObject([{
+        createdAt: date.toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[1].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[2].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[3].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[4].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[5].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[6].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[7].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[8].toISOString().split('.')[0] + 'Z',
+        value: 1,
+        isOutlier: false}, {
+        createdAt: dates[9].toISOString().split('.')[0] + 'Z',
+        value: 50,
+        isOutlier: true},
+      
+      ]);
       authorizeSpy.mockRestore();
     });
 
