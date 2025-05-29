@@ -1,10 +1,9 @@
-import { Measurements as MeasurementsDTO } from "@dto/Measurements";
 import { Measurement as MeasurementDTO } from "@dto/Measurement";
+import { Measurements as MeasurementsDTO } from "@dto/Measurements";
 import { Stats as StatsDTO } from "@dto/Stats";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
-import { mapMeasurementDAOToDTO } from "@services/mapperService";
-import { computeStats , getOutliers, groupAndComputeMeasurements, parseDate } from "@services/measurementService";
-import { createMeasurementsDTO } from "@services/mapperService";
+import { createMeasurementsDTO, mapMeasurementDAOToDTO } from "@services/mapperService";
+import { computeStats, getOutliers, groupAndComputeMeasurements, parseDate } from "@services/measurementService";
 
 export async function storeMeasurements(
   networkCode: string, 

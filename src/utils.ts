@@ -28,7 +28,14 @@ export function parseISODateParamToUTC(param: unknown): Date | undefined {
   if (typeof param !== "string") return undefined;
 
   const date = parseISO(decodeURIComponent(param));
-  return isValid(date) ? new Date(date.getTime()) : undefined;
+  if (isValid(date)){
+    let d = new Date(date.getTime());
+    d.setMilliseconds(0);
+    return d;
+  }else{
+    return undefined;
+  }
+  //return isValid(date) ? new Date(date.getTime()) : undefined;
 }
 
 export function parseStringArrayParam(param?: unknown): string[] | undefined {

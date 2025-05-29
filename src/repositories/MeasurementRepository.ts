@@ -1,10 +1,10 @@
 import { AppDataSource } from "@database";
-import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { LessThanOrEqual, MoreThanOrEqual, In, Between,  Repository } from "typeorm";
-import { SensorDAO } from "@models/dao/SensorDAO";
-import { NetworkDAO } from "@models/dao/NetworkDAO";
-import { findOrThrowNotFound } from "@utils";
 import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { NetworkDAO } from "@models/dao/NetworkDAO";
+import { SensorDAO } from "@models/dao/SensorDAO";
+import { findOrThrowNotFound } from "@utils";
+import { Between, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 
 export class MeasurementRepository {
     private repo: Repository<MeasurementDAO>;
@@ -24,6 +24,7 @@ export class MeasurementRepository {
     gatewayMacAddress: string, 
     sensorMacAddress: string, 
     startDate?: Date, endDate?: Date): Promise<MeasurementDAO[]> {
+  
 
     // Verifica se il network esiste, se non lo trova lancia un NotFoundError
     findOrThrowNotFound(
@@ -61,7 +62,6 @@ export class MeasurementRepository {
     } else if (endDate) {
       where.createdAt = LessThanOrEqual(endDate);
     }
-
   const measurements = await this.repo.find({
     where
   });
@@ -105,6 +105,7 @@ export class MeasurementRepository {
     } else if (endDate) {
       where.createdAt = LessThanOrEqual(endDate);
     }
+
 
       return this.repo.find({
         where,
@@ -158,6 +159,7 @@ export class MeasurementRepository {
   }
 
   // Salvataggio batch
+   
   return this.repo.save(measurements);
 
   }

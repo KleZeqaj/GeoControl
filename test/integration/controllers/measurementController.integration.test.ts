@@ -1,25 +1,25 @@
 import {
-  storeMeasurements,
-  getAllMeasurementsOfSensor,
-  getAllStatsOfSensor,
-  getAllOutliersOfSensor,
-  getAllMeasurementsOfNetwork,
-  getAllStatsOfNetwork,
-  getAllOutliersOfNetwork
+    getAllMeasurementsOfNetwork,
+    getAllMeasurementsOfSensor,
+    getAllOutliersOfNetwork,
+    getAllOutliersOfSensor,
+    getAllStatsOfNetwork,
+    getAllStatsOfSensor,
+    storeMeasurements
 } from "@controllers/measurementController";
-import {
-  initializeTestDataSource,
-  closeTestDataSource,
-  TestDataSource
-} from "@test/setup/test-datasource";
-import { MeasurementDAO } from "@dao/MeasurementDAO";
-import { SensorDAO } from "@dao/SensorDAO";
 import { GatewayDAO } from "@dao/GatewayDAO";
+import { MeasurementDAO } from "@dao/MeasurementDAO";
 import { NetworkDAO } from "@dao/NetworkDAO";
+import { SensorDAO } from "@dao/SensorDAO";
 import { NotFoundError } from "@models/errors/NotFoundError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
+import {
+    closeTestDataSource,
+    initializeTestDataSource,
+    TestDataSource
+} from "@test/setup/test-datasource";
 
 beforeAll(async () => {
   await initializeTestDataSource();
@@ -88,15 +88,31 @@ describe("MeasurementController: SQLite in-memory", () => {
 
   it("get stats of sensor", async () => {
     await setupEntities();
+
+    const t1 = new Date("2024-01-01T00:00:00Z");
+    const t2 = new Date("2024-01-02T00:00:00Z");
+    const t3 = new Date("2024-01-03T00:00:00Z");
+
     const measurements = [
-      { createdAt: new Date(), value: 10 },
-      { createdAt: new Date(), value: 20 },
-      { createdAt: new Date(), value: 30 }
+      { createdAt: t1, value: 10 },
+      { createdAt: t2, value: 20 },
+      { createdAt: t3, value: 30 }
     ];
+
+    const variance : number = Number(((Math.pow((10 - 20),2) + Math.pow((20 - 20),2)+ Math.pow((30 - 20),2)) / 3).toFixed(2));
+    const upperT = Number((20 + 2 * Math.sqrt(variance)).toFixed(2));
+    const lowerT = Number((20 - 2 * Math.sqrt(variance)).toFixed(2));
+    
+
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
     const stats = await getAllStatsOfSensor(networkCode, gatewayMac, sensorMac);
-    expect(stats).toHaveProperty("mean");
+    expect(stats.mean).toBe(20);
+    expect(stats.variance).toBe(variance);
+    expect(stats.upperThreshold).toBe(upperT);
+    expect(stats.lowerThreshold).toBe(lowerT);
+    
   });
+
 
   it("get outliers of sensor", async () => {
     await setupEntities();
@@ -107,24 +123,71 @@ describe("MeasurementController: SQLite in-memory", () => {
     ];
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
     const result = await getAllOutliersOfSensor(networkCode, gatewayMac, sensorMac);
-    expect(result.measurements.length).toBeGreaterThanOrEqual(0);
+    expect(result.measurements.length).toBe(0);
   });
-
+  
+  it("get outliers of sensor: case where there's at least 1 outlier", async() => {
+    await setupEntities();
+    const measurements = [
+      { createdAt: new Date(), value: 5 },
+      { createdAt: new Date(), value: 10000 },
+      { createdAt: new Date(), value: 6 },
+      { createdAt: new Date(), value: 6 },
+      { createdAt: new Date(), value: 6 },
+      { createdAt: new Date(), value: 6 },
+      { createdAt: new Date(), value: 6 },
+      { createdAt: new Date(), value: 6 },
+    ];
+    await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
+    const result = await getAllOutliersOfSensor(networkCode, gatewayMac, sensorMac);
+    expect(result.measurements.length).toBe(1);
+    expect(result.measurements[0].value).toBe(10000)
+    expect(result.measurements[0].isOutlier).toBeTruthy()
+  })
 
   it("get all measurements/stats/outliers of network", async () => {
-    await setupEntities();
+    const sensorRepo = new SensorRepository();
+    const {network, gateway, sensor} = await setupEntities();
+    const sens2 = await sensorRepo.createSensor("DD:DD:DD:DD:DD:DD", gateway, "TH02", "PROVA SENS", "Temperature", "C");
+
     const measurements = [
       { createdAt: new Date(), value: 20 },
       { createdAt: new Date(), value: 21 },
       { createdAt: new Date(), value: 22 }
     ];
+
+    const measurements2 = [
+      { createdAt: new Date(), value: 50 },
+      { createdAt: new Date(), value: 51 },
+      { createdAt: new Date(), value: 52 }
+    ]
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
+    await storeMeasurements(networkCode, gatewayMac, sens2.macAddress, measurements2);
 
     const netMeasurements = await getAllMeasurementsOfNetwork(networkCode);
     expect(netMeasurements[0].measurements.length).toBe(3);
 
+    const media1 = 21;
+    const variance1 = Number(((Math.pow((20 - media1),2) + Math.pow((21 - media1),2)+ Math.pow((22 - media1),2))/3).toFixed(2));
+    const upperT1 = Number((media1 + 2 * Math.sqrt(variance1)).toFixed(2));
+    const lowerT1 = Number((media1 - 2 * Math.sqrt(variance1)).toFixed(2));
+
+
+    const media2 = 51;
+    const variance2 = Number(((Math.pow((50 - media2),2) + Math.pow((51 - media2),2)+ Math.pow((52 - media2),2))/3).toFixed(2));
+    const upperT2 = Number((media2 + 2 * Math.sqrt(variance2)).toFixed(2));
+    const lowerT2 = Number((media2 - 2 * Math.sqrt(variance2)).toFixed(2));
+
     const netStats = await getAllStatsOfNetwork(networkCode);
-    expect(netStats[0].stats).toHaveProperty("mean");
+    expect(netStats[0].stats.mean).toBe(media1);
+    expect(netStats[0].stats.variance).toBe(variance1);
+    expect(netStats[0].stats.lowerThreshold).toBeCloseTo(lowerT1, 1);
+    expect(netStats[0].stats.upperThreshold).toBeCloseTo(upperT1, 1);
+
+    expect(netStats[1].stats.mean).toBe(media2);
+    expect(netStats[1].stats.variance).toBe(variance2);
+    expect(netStats[1].stats.lowerThreshold).toBeCloseTo(lowerT2, 1);
+    expect(netStats[1].stats.upperThreshold).toBeCloseTo(upperT2, 1);
 
     const netOutliers = await getAllOutliersOfNetwork(networkCode);
     expect(netOutliers[0].sensorMacAddress).toBe(sensorMac);
@@ -235,7 +298,14 @@ it("getAllStatsOfSensor with startDate and endDate", async () => {
         now.toISOString()
     );
 
-    expect(stats).toHaveProperty("mean");
+    const variance = Number(((Math.pow((15 - 22.5),2) + Math.pow((30 - 22.5),2)) / 2).toFixed(2));
+    const upperT = Number((22.5 + 2 * Math.sqrt(variance)).toFixed(2));
+    const lowerT = Number((22.5 - 2 * Math.sqrt(variance)).toFixed(2))
+    expect(stats.mean).toBe(22.5);
+    expect(stats.variance).toBe(variance);
+    expect(stats.upperThreshold).toBe(upperT);
+    expect(stats.lowerThreshold).toBe(lowerT);
+    
 });
 
 it("getAllOutliersOfSensor with startDate and endDate", async () => {
@@ -356,19 +426,6 @@ it("getAllOutliersOfNetwork with specific sensorMacs", async () => {
     expect(outlierValues).toContain(50);
 });
 
-it("getAllMeasurementsOfNetwork with empty sensorMacs array", async () => {
-    await setupEntities();
-
-    const measurements = [
-        { createdAt: new Date(), value: 25 }
-    ];
-
-    await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
-
-    const result = await getAllMeasurementsOfNetwork(networkCode, []);
-    expect(result).toHaveLength(1);
-});
-
 it("getAllMeasurementsOfNetwork returns empty array when no data", async () => {
     await setupEntities();
 
@@ -390,7 +447,7 @@ it("getAllMeasurementsOfNetwork with only startDate", async () => {
     ]);
 
     const result = await getAllMeasurementsOfNetwork(networkCode, undefined, yesterday.toISOString());
-    expect(result[0].measurements.length).toBeGreaterThan(0);
+    expect(result[0].measurements.length).toBe(2);
 });
 
 it("getAllMeasurementsOfNetwork with only endDate", async () => {
@@ -403,7 +460,7 @@ it("getAllMeasurementsOfNetwork with only endDate", async () => {
     ]);
 
     const result = await getAllMeasurementsOfNetwork(networkCode, undefined, undefined, tomorrow.toISOString());
-    expect(result[0].measurements.length).toBeGreaterThan(0);
+    expect(result[0].measurements).toHaveLength(1);
 });
 
 it("getValidMacs returns empty when no matching sensors", async () => {
@@ -440,7 +497,7 @@ it("getAllMeasurementsOfNetwork with sensorMacs explicitly empty array", async (
     await storeMeasurements(networkCode, gatewayMac, sensorMac, measurements);
 
     const result = await getAllMeasurementsOfNetwork(networkCode, []);
-    expect(result[0].measurements.length).toBeGreaterThan(0);
+    expect(result.length).toBe(1);
 });
 
 
@@ -466,9 +523,10 @@ it("getAllStatsOfNetwork with only startDate", async () => {
         { createdAt: now, value: 20 }
     ]);
 
-    const result = await getAllStatsOfNetwork(networkCode, undefined, yesterday.toISOString());
+    const result = await getAllStatsOfNetwork(networkCode, undefined, now.toISOString());
     expect(result).toHaveLength(1);
-    expect(result[0].stats).toHaveProperty("mean");
+    expect(result[0].stats.mean).toBe(20);
+    expect(result[0].stats.variance).toBe(0);
 });
 
 it("getAllStatsOfNetwork with only endDate", async () => {
@@ -477,12 +535,14 @@ it("getAllStatsOfNetwork with only endDate", async () => {
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
     await storeMeasurements(networkCode, gatewayMac, sensorMac, [
-        { createdAt: now, value: 30 }
+        { createdAt: now, value: 30 },
+        { createdAt: tomorrow, value: 20}
     ]);
 
-    const result = await getAllStatsOfNetwork(networkCode, undefined, undefined, tomorrow.toISOString());
+    const result = await getAllStatsOfNetwork(networkCode, undefined, undefined, now.toISOString());
     expect(result).toHaveLength(1);
-    expect(result[0].stats).toHaveProperty("mean");
+    expect(result[0].stats.mean).toBe(30);
+    expect(result[0].stats.variance).toBe(0);
 });
 
 it("getAllOutliersOfNetwork with only startDate", async () => {
