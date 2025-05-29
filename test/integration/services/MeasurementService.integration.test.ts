@@ -40,54 +40,18 @@ describe("Measurement Service integration", () => {
     
   });
 
-  /*it("store and retrieve measurements", async () => {
-    const network = await networkRepo.createNewNetwork("NET01", "Network1", "Desc");
-    const gateway = await gatewayRepo.createGateway("AA:AA:AA:AA:AA:AA", "GW1", "Desc", network);
-    const sensor = await sensorRepo.createSensor("00:11:22:33:44:55", gateway, "SENS01", "Temperature", "C", "temp");
+  it("getOutliers: if measurements undefined/null set measurements on null", async () => {
+    const empty: MeasurementsDTO = {
+      sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
+      stats: null,
+      measurements: undefined as any
+    };
 
-    const date = new Date();
-    const values = new Map<Date, number>([[date, 22.5], [new Date(date.getTime() + 1000), 23.1]]);
-    await measurementRepo.storeMeasurements(network.code, gateway.macAddress, sensor.macAddress, values);
-
-    const retrieved = await measurementRepo.getAllMeasurementsOfSensor(network.code, gateway.macAddress, sensor.macAddress);
-    expect(retrieved.length).toBe(2);
+    const result = await getOutliers(empty);
+    expect(result.measurements).toBeNull();
   });
 
-  it("get valid MACs with filtering", async () => {
-    const network = await networkRepo.createNewNetwork("NET01", "Network1", "Desc");
-    const gateway = await gatewayRepo.createGateway("AA:AA:AA:AA:AA:AA", "GW1", "Desc", network);
-    const sensor1 = await sensorRepo.createSensor("00:11:22:33:44:55",gateway, "SENS01", "Temperature", "C", "temp");
-    const sensor2 = await sensorRepo.createSensor("00:11:22:33:44:66", gateway, "SENS02", "Humidity", "%", "hum");
-
-    const macs = await measurementRepo.getValidMacs(network.code, [sensor1.macAddress]);
-    expect(macs).toContain(sensor1.macAddress);
-    expect(macs).not.toContain("nonexistent");
-  });
-
-  it("throws error on nonexistent network", async () => {
-    await expect(
-      measurementRepo.getAllMeasurementsOfSensor("NONET", "ANY", "ANY")
-    ).rejects.toThrow();
-  });
-
-  it("handles empty measurements gracefully", async () => {
-    const network = await networkRepo.createNewNetwork("NET01", "Network1", "Desc");
-    const gateway = await gatewayRepo.createGateway("AA:AA:AA:AA:AA:AA", "GW1", "Desc", network);
-    const sensor = await sensorRepo.createSensor("00:11:22:33:44:55", gateway, "SENS01", "Temperature", "C", "temp");
-
-    const result = await measurementRepo.getAllMeasurementsOfSensor(network.code, gateway.macAddress, sensor.macAddress);
-    expect(result.length).toBe(0);
-  });*/
-
-    it("getOutliers: if measurements undefined/null set measurements on null", async () => {
-      const empty: MeasurementsDTO = {
-        sensorMacAddress: "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ",
-        stats: null,
-        measurements: undefined as any
-      }
-    });
-
-    it("getOutliers: risultato corretto", async () => {
+  it("getOutliers: risultato corretto", async () => {
 
     const stats: Stats = {
       mean: 4.56,
@@ -227,6 +191,7 @@ it("groupAndComputeMeasurements: returns a MeasurementsDTO with null stats and a
   expect(one.sensorMacAddress).toBe(sen.macAddress);
   expect(one.stats == null).toBe(true);
   expect(one.measurements).toBeUndefined();
+
 });
 
 
