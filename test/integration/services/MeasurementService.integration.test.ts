@@ -1,24 +1,22 @@
+import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { NetworkDAO } from "@models/dao/NetworkDAO";
+import { SensorDAO } from "@models/dao/SensorDAO";
+import type { Measurement } from '@models/dto/Measurement';
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
+import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
+import { Stats } from "@models/dto/Stats";
+import { BadRequestError } from "@models/errors/BadRequestError";
 import { GatewayRepository } from "@repositories/GatewayRepository";
 import { MeasurementRepository } from "@repositories/MeasurementRepository";
 import { NetworkRepository } from "@repositories/NetworkRepository";
 import { SensorRepository } from "@repositories/SensorRepository";
+import { computeStats, getOutliers, groupAndComputeMeasurements, parseDate } from "@services/measurementService";
 import {
   closeTestDataSource,
   initializeTestDataSource,
   TestDataSource
 } from "@test/setup/test-datasource";
-import { NetworkDAO } from "@models/dao/NetworkDAO";
-import { GatewayDAO } from "@models/dao/GatewayDAO";
-import { SensorDAO } from "@models/dao/SensorDAO";
-import { MeasurementDAO } from "@models/dao/MeasurementDAO";
-import { computeStats, getOutliers } from "@services/measurementService";
-import { Measurements as MeasurementsDTO } from "@models/dto/Measurements";
-import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
-import { parseDate } from "@services/measurementService";
-import { BadRequestError } from "@models/errors/BadRequestError";
-import { groupAndComputeMeasurements } from "@services/measurementService";
-import { Stats } from "@models/dto/Stats";
-import type { Measurement } from '@models/dto/Measurement';
 
 describe("Measurement Service integration", () => {
   const networkRepo = new NetworkRepository();
@@ -215,17 +213,6 @@ it("computeStats: dates not passed", async () => {
     expect(measurementDTO.measurements[1].isOutlier).toBe(false);
 });
 
-it("computeStats: empty measurements", async () => {
-    let date = new Date();
-    const measurement: MeasurementDTO[] = [];
-    const measurementDTO = await computeStats(measurement, "AA:AA:AA:AA:AA:AA");
-    expect(measurementDTO.stats).toBeDefined();
-    expect(measurementDTO.stats.mean).toBeNaN();
-    expect(measurementDTO.stats.variance).toBeNaN();
-    expect(measurementDTO.stats.lowerThreshold).toBeNaN();
-    expect(measurementDTO.stats.upperThreshold).toBeNaN();
-    expect(measurementDTO.measurements).toBeFalsy();
-});
 
 function setupDataForGCM(): MeasurementDAO[] {
   

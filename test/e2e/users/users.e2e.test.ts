@@ -1,4 +1,5 @@
 import { app } from "@app";
+import * as authController from "@controllers/authController";
 import * as userController from "@controllers/userController";
 import { UserDAO } from "@models/dao/UserDAO";
 import { UserType } from "@models/UserType";
@@ -6,6 +7,42 @@ import { UserRepository } from "@repositories/UserRepository";
 import { generateToken } from "@services/authService";
 import { afterAllE2e, beforeAllE2e, TEST_USERS } from "@test/e2e/lifecycle";
 import request from "supertest";
+
+describe("autenticate", () => {
+    beforeAll(async () => {
+        await beforeAllE2e();
+    });
+
+    afterAll(async () => {
+        await afterAllE2e();
+    });
+
+    it("authRotes: ok", async () => {
+        const res = await request(app)
+            .post("/api/v1/auth")
+            .send(TEST_USERS.admin)
+
+        expect(res.status).toBe(200);
+        expect(res.body).toBeDefined
+     })
+
+    it("authRoutes: error", async () => {
+        const mockGetToken = jest.spyOn(authController, 'getToken')
+        .mockRejectedValue(new Error("Something went wrong!"));
+
+        const res = await request(app)
+            .post("/api/v1/auth")
+            .send({
+                username: "admin",
+                password: "12345",
+                type: UserType.Admin
+            });
+            
+        expect(res.status).toBe(500); 
+        
+        //expect(res.body.message).toMatchObject("Something went wrong!");
+    })
+})
 
 describe("GET /users (e2e)", () => {
     let token: string;
@@ -18,6 +55,7 @@ describe("GET /users (e2e)", () => {
     afterAll(async () => {
         await afterAllE2e();
     });
+
 
     it("get all users", async () => {
         const res = await request(app)

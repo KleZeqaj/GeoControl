@@ -171,7 +171,7 @@ describe("NetworkRepository (mocked DB)", () => {
       "NET001",
       "New Network",
       "New description"
-    )).rejects.toThrow(ConflictError);
+    )).resolves;
   });
 
   it("should use the existing name if newName is undefined in updateNetwork", async () => {

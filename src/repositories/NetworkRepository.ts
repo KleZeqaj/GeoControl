@@ -68,7 +68,7 @@ export class NetworkRepository {
 
         if (newCode === undefined)
             newCode = network.code;
-        else {
+        else if (newCode !== code){
             await this.checkOnNetID(newCode);
         }
         if (newName === undefined)

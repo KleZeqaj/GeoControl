@@ -1,11 +1,11 @@
-import request from "supertest";
 import { app } from "@app";
-import * as authService from "@services/authService";
 import * as userController from "@controllers/userController";
-import { UserType } from "@models/UserType";
 import { User as UserDTO } from "@dto/User";
-import { UnauthorizedError } from "@models/errors/UnauthorizedError";
 import { InsufficientRightsError } from "@models/errors/InsufficientRightsError";
+import { UnauthorizedError } from "@models/errors/UnauthorizedError";
+import { UserType } from "@models/UserType";
+import * as authService from "@services/authService";
+import request from "supertest";
 
 jest.mock("@services/authService");
 jest.mock("@controllers/userController");
