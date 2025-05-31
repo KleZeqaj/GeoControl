@@ -9,6 +9,7 @@ Goal of this document is to compare actual effort and size of the project, vs th
 To compute the lines of code use cloc    
 To install cloc:  
            `npm install -g cloc`   
+On Windows, also a perl interpreter needs to be installed. You find it here https://strawberryperl.com/  
 To run cloc  
            `cloc <directory containing ts files> --include-lang=TypeScript`  
 As a result of cloc collect the *code* value (rightmost column of the result table)  
