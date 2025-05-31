@@ -1,5 +1,5 @@
-import { Entity, PrimaryColumn, Column } from "typeorm";
 import { UserType } from "@models/UserType";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity("users")
 export class UserDAO {

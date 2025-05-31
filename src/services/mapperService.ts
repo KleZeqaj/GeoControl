@@ -1,7 +1,17 @@
+import { Measurements as MeasurementsDTO } from "@dto/Measurements";
+import { Network as NetworkDTO } from "@dto/Network";
+import { Stats as StatsDTO } from "@dto/Stats";
 import { Token as TokenDTO } from "@dto/Token";
 import { User as UserDTO } from "@dto/User";
+import { GatewayDAO } from "@models/dao/GatewayDAO";
+import { MeasurementDAO } from "@models/dao/MeasurementDAO";
+import { NetworkDAO } from "@models/dao/NetworkDAO";
+import { SensorDAO } from "@models/dao/SensorDAO";
 import { UserDAO } from "@models/dao/UserDAO";
 import { ErrorDTO } from "@models/dto/ErrorDTO";
+import { Gateway as GatewayDTO } from "@models/dto/Gateway";
+import { Measurement as MeasurementDTO } from "@models/dto/Measurement";
+import { Sensor as SensorDTO } from "@models/dto/Sensor";
 import { UserType } from "@models/UserType";
 
 export function createErrorDTO(
@@ -47,4 +57,124 @@ function removeNullAttributes<T>(dto: T): Partial<T> {
         (!Array.isArray(value) || value.length > 0)
     )
   ) as Partial<T>;
+}
+
+
+/*  NETWORK MAPPING  */
+
+export function createSensorDTO(macAddress: string, name?: string, description?: string, variable?: string, unit?: string) : SensorDTO {
+  return removeNullAttributes({
+    macAddress,
+    name,
+    description,
+    variable,
+    unit
+  }) as SensorDTO;
+}
+
+export function mapSensorDAOToDTO(sensor: SensorDAO) : SensorDTO{
+  return createSensorDTO(sensor.macAddress, sensor.name, sensor.description, sensor.variable, sensor.unit);
+}
+
+export function createGatewayDTO(macAddress: string, name?: string, description?: string, sensors?: Array<SensorDAO>) : GatewayDTO {
+  let sensorsDTO : Array<SensorDTO> = [];
+
+  if (sensors !== undefined){
+    for (let i = 0; i < sensors?.length; i++){
+      sensorsDTO.push(mapSensorDAOToDTO(sensors[i]));
+    }
+  }
+  
+
+  return removeNullAttributes({
+    macAddress,
+    name,
+    description,
+    sensors: sensorsDTO
+  }) as GatewayDTO;
+}
+
+
+
+export function mapGatewayDAOToDTO(gateway: GatewayDAO) : GatewayDTO{
+  return createGatewayDTO(gateway.macAddress, gateway.name, gateway.description, gateway.sensors);
+}
+
+
+export function createNetworkDTO(code: string, name?: string, description?: string,  gateways?: Array<GatewayDAO>) : NetworkDTO {
+  
+  let gatewaysDTO : Array<GatewayDTO> = [];
+
+  if (gateways !== undefined){
+    for (let i = 0; i < gateways?.length; i++){
+      gatewaysDTO.push(mapGatewayDAOToDTO(gateways[i])); 
+    }
+  }
+  
+
+  return removeNullAttributes({
+    code, 
+    name, 
+    description, 
+    gateways: gatewaysDTO
+  }) as NetworkDTO;
+}
+
+
+
+export function mapNetworkDAOToDTO(networkDAO: NetworkDAO): NetworkDTO{
+  return createNetworkDTO(networkDAO.code, networkDAO.name, networkDAO.description, networkDAO.gateways);
+}
+
+/* MEASUREMENTS MAPPING */
+
+export function createMeasurementsDTO(
+  sensorMacAddress: string,
+  stats?: StatsDTO,
+  measurements?: MeasurementDTO[]
+): MeasurementsDTO {
+
+  return removeNullAttributes({
+    sensorMacAddress,
+    stats,
+    measurements
+  }) as MeasurementsDTO;
+}
+
+
+export function createMeasurementDTO(
+  createdAt: Date,
+  value: number,
+  isOutlier?: boolean
+): MeasurementDTO {
+  return removeNullAttributes({
+    createdAt,
+    value,
+    isOutlier
+  }) as MeasurementDTO;
+}
+
+export function mapMeasurementDAOToDTO(measurementDAO: MeasurementDAO): MeasurementDTO {
+  return createMeasurementDTO(
+    measurementDAO.createdAt,
+    measurementDAO.value
+  );
+}
+
+export function createStatsDTO(
+  startDate: Date,
+  endDate: Date,
+  mean: number,
+  variance: number,
+  upperThreshold: number,
+  lowerThreshold: number
+): StatsDTO {
+  return removeNullAttributes({
+    startDate,
+    endDate,
+    mean,
+    variance,
+    upperThreshold,
+    lowerThreshold
+  }) as StatsDTO;
 }

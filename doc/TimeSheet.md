@@ -16,10 +16,10 @@ These figures will not be used to evaluate neither the project nor the team, the
 |  Apr 14 - 20   |      27ph                   |        |        |              |                     |                    |                  |            |
 |  Apr 21 - 27   |                         |        |        |              |                     |                    |                  |            |
 | Apr 28 - May 4 |                         |        |        |              |                     |                    |                  |            |
-|   May 5 - 11   |                         |        |        |              |                     |                    |                  |            |
-|  May 12 - 18   |                         |        |        |              |                     |                    |                  |            |
-|  May 19 - 25   |                         |        |        |              |                     |                    |                  |            |
-| May 26 - Jun 1 |                         |        |        |              |                     |                    |                  |            |
+|   May 5 - 11   |                         |        |    25ph    |              |                     |                    |                  |            |
+|  May 12 - 18   |                         |        |   36ph     |              |                     |                    |                  |            |
+|  May 19 - 25   |                         |        |   14ph     |       39ph       |        4ph             |                    |                  |            |
+| May 26 - Jun 1 |                         |        |   5ph     |   33ph           |    17ph                 |                    |                  |            |
 |   Jun 2 - 8    |                         |        |        |              |                     |                    |                  |            |
 |   Jun 9 - 15   |                         |        |        |              |                     |                    |                  |            |
 |  Jun 16 - 22   |                         |        |        |              |                     |                    |                  |            |

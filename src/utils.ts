@@ -28,7 +28,14 @@ export function parseISODateParamToUTC(param: unknown): Date | undefined {
   if (typeof param !== "string") return undefined;
 
   const date = parseISO(decodeURIComponent(param));
-  return isValid(date) ? new Date(date.getTime()) : undefined;
+  if (isValid(date)){
+    let d = new Date(date.getTime());
+    d.setMilliseconds(0);
+    return d;
+  }else{
+    return undefined;
+  }
+  //return isValid(date) ? new Date(date.getTime()) : undefined;
 }
 
 export function parseStringArrayParam(param?: unknown): string[] | undefined {
@@ -49,4 +56,27 @@ export function parseStringArrayParam(param?: unknown): string[] | undefined {
   }
 
   return undefined;
+}
+/*
+export function isValidMAC(str: string): boolean {
+  return str.length > 0;
+}
+*/
+
+export function stripMilliseconds(obj: any) {
+  if (Array.isArray(obj)) {
+    return obj.map(stripMilliseconds);
+  }
+  if (obj && typeof obj === "object") {
+    const newObj: any = {};
+    for (const key in obj) {
+      if (obj[key] instanceof Date) {
+        newObj[key] = obj[key].toISOString().replace(/\.\d{3}Z$/, "Z");
+      } else {
+        newObj[key] = stripMilliseconds(obj[key]);
+      }
+    }
+    return newObj;
+  }
+  return obj;
 }
