@@ -220,6 +220,10 @@ function setupDataForGCM(): MeasurementDAO[] {
   const dataOraPrecedente = new Date(dataAttuale.getTime() - 60 * 60 * 1000);
   const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
 
+  dataAttuale.setMilliseconds(0);
+  dataOraPrecedente.setMilliseconds(0);
+  dataDueOrePrec.setMilliseconds(0);
+
   const sensor1 = new SensorDAO();
   sensor1.macAddress = "11:11:11:11:11:11";
   const sensor3 = new SensorDAO();
@@ -342,8 +346,9 @@ it("groupAndComputeMeasurements: tutto ok, chiamata base", async () => {
 ];
 
 const dataAttuale = new Date();
-const dataOraPrecedente = new Date(dataAttuale.getTime() - 60 * 60 * 1000);
+dataAttuale.setMilliseconds(0);
 const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
+dataDueOrePrec.setMilliseconds(0);
 
   const measurementDAO = setupDataForGCM();
 
@@ -359,8 +364,8 @@ const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
     variance: 0.39,
     lowerThreshold: 19.92,
     upperThreshold: 22.41,
-    startDate: dataDueOrePrec,
-    endDate: dataAttuale
+    startDate: new Date(dataDueOrePrec.toISOString().split('.')[0] + 'Z'),
+    endDate: new Date(dataAttuale.toISOString().split('.')[0] + 'Z')
   });
   expect(el3.measurements.length).toBe(10);
   expect(el3.stats).toEqual({
@@ -368,8 +373,8 @@ const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
     variance: 216.09,
     lowerThreshold: -23.5,
     upperThreshold: 35.3,
-    startDate: dataDueOrePrec,
-    endDate: dataAttuale
+    startDate: new Date(dataDueOrePrec.toISOString().split('.')[0] + 'Z'),
+    endDate: new Date(dataAttuale.toISOString().split('.')[0] + 'Z')
   })
   expect(el3.measurements[0].isOutlier).toBe(false);
   expect(el3.measurements[1].isOutlier).toBe(false);
@@ -384,8 +389,8 @@ it("groupAndComputeMeasurements: tutto ok, filtro sui mac desiderati", async () 
 ];
 
 const dataAttuale = new Date();
-const dataOraPrecedente = new Date(dataAttuale.getTime() - 60 * 60 * 1000);
 const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
+dataDueOrePrec.setMilliseconds(0);
 
   const measurementDAO = setupDataForGCM();
 
@@ -400,8 +405,8 @@ const dataDueOrePrec = new Date(dataAttuale.getTime() - 2 * 60 * 60 * 1000);
     variance: 0.39,
     lowerThreshold: 19.92,
     upperThreshold: 22.41,
-    startDate: dataDueOrePrec,
-    endDate: dataAttuale
+    startDate: new Date(dataDueOrePrec.toISOString().split('.')[0] + 'Z'),
+    endDate: new Date(dataAttuale.toISOString().split('.')[0] + 'Z')
   });
 });
 
