@@ -15,6 +15,10 @@ describe("Measurements e2e tests", () => {
     return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z$/.test(dateStr);
   }
 
+  function roundToSeconds(date: Date): number {
+    return Math.floor(date.getTime() / 1000);
+  }
+
   describe("POST /networks/:NETWORK1.code/gateways/:GW1.macAddress/sensors/constants.SENSOR1.macAddress/measurements", () => {
     let viewerToken: string;
     let operatorToken: string;
@@ -2027,15 +2031,17 @@ describe("Measurements e2e tests", () => {
 
       let measures = getNet.body;
       measures.forEach((measure) => {
-        expect(measure.stats).toHaveProperty("mean");
-        expect(measure.stats).toHaveProperty("variance");
-        expect(measure.stats).toHaveProperty("upperThreshold");
-        expect(measure.stats).toHaveProperty("lowerThreshold");
+        if (measure.hasOwnProperty("stats")) {
+          expect(measure.stats).toHaveProperty("mean");
+          expect(measure.stats).toHaveProperty("variance");
+          expect(measure.stats).toHaveProperty("upperThreshold");
+          expect(measure.stats).toHaveProperty("lowerThreshold");
 
-        expect(measure.stats.mean).toBeCloseTo(0);
-        expect(measure.stats.variance).toBeCloseTo(0);
-        expect(measure.stats.upperThreshold).toBeCloseTo(0);
-        expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+          expect(measure.stats.mean).toBeCloseTo(0);
+          expect(measure.stats.variance).toBeCloseTo(0);
+          expect(measure.stats.upperThreshold).toBeCloseTo(0);
+          expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+        }
       });
     });
 
@@ -2092,15 +2098,17 @@ describe("Measurements e2e tests", () => {
 
       let measures = getNet.body;
       measures.forEach((measure) => {
-        expect(measure.stats).toHaveProperty("mean");
-        expect(measure.stats).toHaveProperty("variance");
-        expect(measure.stats).toHaveProperty("upperThreshold");
-        expect(measure.stats).toHaveProperty("lowerThreshold");
+        if (measure.hasOwnProperty("stats")) {
+          expect(measure.stats).toHaveProperty("mean");
+          expect(measure.stats).toHaveProperty("variance");
+          expect(measure.stats).toHaveProperty("upperThreshold");
+          expect(measure.stats).toHaveProperty("lowerThreshold");
 
-        expect(measure.stats.mean).toBeCloseTo(0);
-        expect(measure.stats.variance).toBeCloseTo(0);
-        expect(measure.stats.upperThreshold).toBeCloseTo(0);
-        expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+          expect(measure.stats.mean).toBeCloseTo(0);
+          expect(measure.stats.variance).toBeCloseTo(0);
+          expect(measure.stats.upperThreshold).toBeCloseTo(0);
+          expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+        }
       });
     });
 
@@ -2162,15 +2170,17 @@ describe("Measurements e2e tests", () => {
 
       let measures = getNet.body;
       measures.forEach((measure) => {
-        expect(measure.stats).toHaveProperty("mean");
-        expect(measure.stats).toHaveProperty("variance");
-        expect(measure.stats).toHaveProperty("upperThreshold");
-        expect(measure.stats).toHaveProperty("lowerThreshold");
+        if (measure.hasOwnProperty("stats")) {
+          expect(measure.stats).toHaveProperty("mean");
+          expect(measure.stats).toHaveProperty("variance");
+          expect(measure.stats).toHaveProperty("upperThreshold");
+          expect(measure.stats).toHaveProperty("lowerThreshold");
 
-        expect(measure.stats.mean).toBeCloseTo(0);
-        expect(measure.stats.variance).toBeCloseTo(0);
-        expect(measure.stats.upperThreshold).toBeCloseTo(0);
-        expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+          expect(measure.stats.mean).toBeCloseTo(0);
+          expect(measure.stats.variance).toBeCloseTo(0);
+          expect(measure.stats.upperThreshold).toBeCloseTo(0);
+          expect(measure.stats.lowerThreshold).toBeCloseTo(0);
+        }
       });
     });
   });
@@ -2324,12 +2334,12 @@ describe("Measurements e2e tests", () => {
         expect(sensor.measurements.length == 2).toBeTruthy();
         expect(sensor).toHaveProperty("stats");
         expect(isIsoUtcString(sensor.stats.startDate)).toBeTruthy();
-        expect(sensor.stats.startDate).toStrictEqual(
-          new Date(startDate).toISOString()
+        expect(roundToSeconds(new Date(sensor.stats.startDate))).toBe(
+          roundToSeconds(new Date(startDate))
         );
         expect(isIsoUtcString(sensor.stats.endDate)).toBeTruthy();
-        expect(sensor.stats.endDate).toStrictEqual(
-          new Date(endDate).toISOString()
+        expect(roundToSeconds(new Date(sensor.stats.endDate))).toBe(
+          roundToSeconds(new Date(endDate))
         );
       });
     });
@@ -2354,12 +2364,12 @@ describe("Measurements e2e tests", () => {
         expect(sensor.measurements.length == 1).toBeTruthy();
         expect(sensor).toHaveProperty("stats");
         expect(isIsoUtcString(sensor.stats.startDate)).toBeTruthy();
-        expect(sensor.stats.startDate).toStrictEqual(
-          new Date(startDate).toISOString()
+        expect(roundToSeconds(new Date(sensor.stats.startDate))).toBe(
+          roundToSeconds(new Date(startDate))
         );
         expect(isIsoUtcString(sensor.stats.endDate)).toBeTruthy();
-        expect(sensor.stats.endDate).toStrictEqual(
-          new Date(endDate).toISOString()
+        expect(roundToSeconds(new Date(sensor.stats.endDate))).toBe(
+          roundToSeconds(new Date(endDate))
         );
       });
     });

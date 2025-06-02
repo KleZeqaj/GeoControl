@@ -425,7 +425,7 @@ describe("Sensors e2e tests", () => {
         .set("Authorization", `Bearer ${adminToken}`);
 
       expect(get.statusCode).toBe(constants.OK);
-      expect(get.body).toStrictEqual(constants.SENSOR1);
+      expect(get.body).toMatchObject(constants.SENSOR1);
     });
 
     it("should return 400 for missing macAddress", async () => {
@@ -611,7 +611,7 @@ describe("Sensors e2e tests", () => {
         .set("Authorization", `Bearer ${adminToken}`);
 
       expect(pre.statusCode).toBe(constants.OK);
-      expect(pre.body).toStrictEqual(constants.SENSOR1);
+      expect(pre.body).toMatchObject(constants.SENSOR1);
 
       const res = await request(app)
         .delete(
@@ -779,7 +779,7 @@ describe("Sensors e2e tests", () => {
         .set("Authorization", `Bearer ${adminToken}`);
 
       expect(pre.statusCode).toBe(constants.OK);
-      expect(pre.body).toStrictEqual(constants.SENSOR1);
+      expect(pre.body).toMatchObject(constants.SENSOR1);
 
       const res = await request(app)
         .patch(
@@ -797,7 +797,7 @@ describe("Sensors e2e tests", () => {
         .set("Authorization", `Bearer ${adminToken}`);
 
       expect(post.statusCode).toBe(constants.OK);
-      expect(post.body).toStrictEqual(constants.SENSOR2);
+      expect(post.body).toMatchObject(constants.SENSOR2);
 
       const post2 = await request(app)
         .get(

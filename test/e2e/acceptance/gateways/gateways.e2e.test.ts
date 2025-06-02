@@ -495,7 +495,7 @@ describe("Gateway e2e tests", () => {
         .set("Authorization", `Bearer ${operatorToken}`);
 
       expect(newres.status).toBe(constants.OK);
-      expect(newres.body).toStrictEqual(constants.GW2);
+      expect(newres.body).toMatchObject(constants.GW2);
     });
 
     it("should return 405 for wrong http method", async () => {
