@@ -34,7 +34,7 @@ productivity = ((LOC of production code)+ (LOC of test code)) / effort
 | -------------------------------------------------------------------------------- | -------- |----|
 | production code size | unknown  |2253|
 | test code size | unknown |8925|
-| total size  |2400|145927|
+| total size  |2400|141501|
 | effort |240ph|233.25ph|
 | productivity  | 10 loc / hour | 67 loc / hour |
 
