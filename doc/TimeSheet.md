@@ -11,16 +11,16 @@ These figures will not be used to evaluate neither the project nor the team, the
 |      Week      | requirement engineering | design | coding | unit testing | integration testing | acceptance testing | containerization | management |
 | :------------: | :---------------------: | :----: | :----: | :----------: | :-----------------: | :----------------: | :--------------: | :--------: |
 |  Mar 24 - 30   |                         |        |        |              |                     |                    |                  |            |
-| Mar 31 - Apr 6 |          9ph            |        |        |              |                     |                    |                  |            |
+| Mar 31 - Apr 6 |          9ph            |        |        |              |                     |                    |                  |    1ph        |
 |   Apr 7 - 13   |           22ph              |        |        |              |                     |                    |                  |            |
 |  Apr 14 - 20   |      27ph                   |        |        |              |                     |                    |                  |            |
 |  Apr 21 - 27   |                         |        |        |              |                     |                    |                  |            |
 | Apr 28 - May 4 |                         |        |        |              |                     |                    |                  |            |
-|   May 5 - 11   |                         |        |    25ph    |              |                     |                    |                  |            |
+|   May 5 - 11   |                         |        |    25ph    |              |                     |                    |                  |    1ph        |
 |  May 12 - 18   |                         |        |   36ph     |              |                     |                    |                  |            |
 |  May 19 - 25   |                         |        |   14ph     |       39ph       |        4ph             |                    |                  |            |
 | May 26 - Jun 1 |                         |        |   5ph     |   33ph           |    17ph                 |                    |                  |            |
-|   Jun 2 - 8    |                         |        |        |              |                     |                    |                  |            |
+|   Jun 2 - 8    |                         |        |        |              |                     |         0.25ph           |                  |            |
 |   Jun 9 - 15   |                         |        |        |              |                     |                    |                  |            |
 |  Jun 16 - 22   |                         |        |        |              |                     |                    |                  |            |
 |  Jun 23 - 29   |                         |        |        |              |                     |                    |                  |            |

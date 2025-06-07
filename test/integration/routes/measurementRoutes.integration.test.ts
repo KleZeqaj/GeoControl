@@ -475,7 +475,6 @@ describe("MeasurementRoutes integration", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.sensorMacAddress).toBe(sensor.macAddress);
-      expect(res.body.stats).toBeUndefined();
       expect(res.body.measurements).toBeUndefined();
       authorizeSpy.mockRestore();
     });
@@ -835,8 +834,6 @@ it("filtra correttamente le misure usando startDate e endDate (copre la linea 49
         .set("Authorization", token);
 
       expect(res.status).toBe(200);
-      expect(res.body.startDate).toBeUndefined();
-      expect(res.body.endDate).toBeUndefined();
       expect(res.body.mean).toBe(0);
       expect(res.body.variance).toBe(0);
       expect(res.body.upperThreshold).toBe(0);
@@ -1238,7 +1235,6 @@ it("filtra correttamente le misure usando startDate e endDate (copre la linea 49
 
       expect(res.status).toBe(200);
       expect(res.body.sensorMacAddress).toBe(sensor.macAddress);
-      expect(res.body.stats).toBeUndefined();
       expect(res.body.measurements).toBeUndefined();
       authorizeSpy.mockRestore();
     });

@@ -8,6 +8,7 @@ import { parseISODateParamToUTC } from "@utils";
 export async function computeStats(measurementArray: MeasurementDTO[], sensorMac:string, startDate?: Date, endDate?: Date): Promise<MeasurementsDTO> {
   
       if (measurementArray.length === 0 || measurementArray === undefined) {
+        if (startDate || endDate) return createMeasurementsDTO(sensorMac, createStatsDTO(startDate, endDate, 0, 0, 0, 0), [])
       // Il sensore non ha misurazioni
       return createMeasurementsDTO(sensorMac, null, []);
     }
