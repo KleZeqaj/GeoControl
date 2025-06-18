@@ -3,6 +3,39 @@ x-constants:
   backend_port: &backend_port 5000
 
 services:
+
+  db:
+    image: mysql:8.0
+    container_name: geocontrol-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: geocontrol_db
+      MYSQL_USER: geocontrol_user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      # solo il tuo init.sql dentro initdb.d
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # poi i config e la cartella pid in posti diversi
+      - ./docker/db/my-custom.cnf:/etc/mysql/conf.d/my-custom.cnf:ro
+      - ./docker/db/mysql-safe:/var/run/mysql-safe:rw
+    command: --pid-file=/var/run/mysql-safe/mysqld.pid
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend/Dockerfile
+    container_name: geocontrol-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    restart: on-failure
+  
   frontend:
     image: smpolito/geocontrolui:latest
     container_name: geocontrol-frontend
