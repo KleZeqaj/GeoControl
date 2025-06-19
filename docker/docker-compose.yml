@@ -16,9 +16,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      # solo il tuo init.sql dentro initdb.d
       - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      # poi i config e la cartella pid in posti diversi
       - ./docker/db/my-custom.cnf:/etc/mysql/conf.d/my-custom.cnf:ro
       - ./docker/db/mysql-safe:/var/run/mysql-safe:rw
     command: --pid-file=/var/run/mysql-safe/mysqld.pid
@@ -39,8 +37,10 @@ services:
   frontend:
     image: smpolito/geocontrolui:latest
     container_name: geocontrol-frontend
+    depends_on:
+      - backend
     ports:
-      - "5173:5173" # Anchored variables defined above (e.g., &frontend_port) cannot be used within quoted strings.
-        # Values like port numbers must be written explicitly as literals, but they should remain consistent with the defined variables.
-    volumes: # Environment variables for the front-end must be defined in the frontend/env.vars.json and the file must be
-      - ./frontend/env-vars.json:/app/dist/config.json # explicitly mounted in the container to be effective
+      - "5173:5173" 
+    volumes: 
+      - ./frontend/env-vars.json:/app/dist/config.json 
+
