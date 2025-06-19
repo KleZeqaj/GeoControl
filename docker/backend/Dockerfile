@@ -7,7 +7,5 @@ RUN npm install
 
 COPY . .
 
-COPY prep.sh /prep.sh
-RUN chmod +x /prep.sh
 
 EXPOSE 5000
