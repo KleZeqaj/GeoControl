@@ -33,12 +33,19 @@ services:
     env_file:
       - ./backend/.env
     restart: on-failure
+    command: sh -c "echo 'Waiting for MySQL...'; sleep 5; echo 'Creating root user...'; npm run create-root || echo 'create-root failed'; echo 'Starting backend...'; npm start"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/v1/doc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   frontend:
     image: smpolito/geocontrolui:latest
     container_name: geocontrol-frontend
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "5173:5173" 
     volumes: 
